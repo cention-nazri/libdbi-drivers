@@ -15,5 +15,9 @@ used by the libdbi-drivers database drivers:
 * David A. Parker <david at neongoat.com>
 * Mark Tobenkin <mark at brentwoodradio.com>
 
+Those who helped one way or the other:
+* Peter O'Gorman <pogma@opendarwin.org>
+  - configure/Makefile/libtool fixes, OSX guru
 
-$Id: AUTHORS,v 1.3 2003/04/06 22:17:58 bhazer Exp $
+
+$Id: AUTHORS,v 1.4 2003/04/30 17:57:30 mhoenicka Exp $
