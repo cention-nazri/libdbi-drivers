@@ -1,7 +1,5 @@
-#	$Id: TODO,v 1.1 2003/08/25 06:51:58 bhazer Exp $	
+#	$Id: TODO,v 1.2 2003/08/31 19:12:44 bhazer Exp $	
 
-
-- fix segfault in dbi_shutdown() when driver is loaded. 
 
 - Implement Integers/Float types.
   
@@ -14,6 +12,7 @@
   unsigned char[21] as external datatype.
   We need to fetch OCI_ATTR_PRECISION and OCI_ATTR_SCALE using OCIAttrGet() to find out if 
   the column is a float column.
+
   
 - Implement all other "special" oracle types.
 
