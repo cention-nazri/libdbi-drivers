@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.29 2003/03/28 21:47:52 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.30 2003/04/11 22:12:50 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -232,8 +232,22 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, u
 }
 
 char *dbd_select_db(dbi_conn_t *conn, const char *db) {
-	/* postgresql doesn't support switching databases without reconnecting */
-	return NULL;
+  /* postgresql doesn't support switching databases without reconnecting */
+  if (!db || !*db) {
+    return NULL;
+  }
+
+  if (conn->connection) {
+    PQfinish((PGconn *)conn->connection);
+    conn->connection = NULL;
+  }
+
+  dbi_conn_set_option(conn, "dbname", db);
+  if (dbd_connect(conn)) {
+    return NULL;
+  }
+
+  return (char *)db;
 }
 
 int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
