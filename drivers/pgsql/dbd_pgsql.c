@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.18 2002/06/14 00:28:53 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.19 2002/06/14 04:20:21 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -263,6 +263,46 @@ int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
 	*errstr = strdup(PQerrorMessage((PGconn *)conn->connection));
 	
 	return 2;
+}
+
+unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
+	unsigned long long seq_last = 0;
+	char *sql_cmd;
+	char *rawdata;
+	dbi_result_t *result;
+
+	asprintf(&sql_cmd, "SELECT currval('%s')", sequence);
+	if (!sql_cmd) return 0;
+	result = dbd_query(conn, sql_cmd);
+	free(sql_cmd);
+	
+	rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
+	if (rawdata) {
+		seq_last = atoll(rawdata);
+	}
+	dbi_result_free((dbi_result)result);
+
+	return seq_last;
+}
+
+unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
+	unsigned long long seq_next = 0;
+	char *sql_cmd;
+	char *rawdata;
+	dbi_result_t *result;
+
+	asprintf(&sql_cmd, "SELECT nextval('%s')", sequence);
+	if (!sql_cmd) return 0;
+	result = dbd_query(conn, sql_cmd);
+	free(sql_cmd);
+	
+	rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
+	if (rawdata) {
+		seq_next = atoll(rawdata);
+	}
+	dbi_result_free((dbi_result)result);
+
+	return seq_next;
 }
 
 /* CORE POSTGRESQL DATA FETCHING STUFF */
