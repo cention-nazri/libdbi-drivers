@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.21 2004/01/03 18:12:38 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.22 2004/01/04 00:43:20 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -69,10 +69,10 @@ static const dbi_info_t driver_info = {
 static const char *custom_functions[] = {NULL}; // TODO
 static const char *reserved_words[] = SQLITE_RESERVED_WORDS;
 
-/* the encoding strings as PostgreSQL would return them */
-static const char sqlite_encoding_UTF8[] = "UNICODE";
+/* the encoding strings */
+static const char sqlite_encoding_UTF8[] = "UTF-8";
 /* the following is an assumption that is most likely correct */
-static const char sqlite_encoding_ISO8859[] = "LATIN1";
+static const char sqlite_encoding_ISO8859[] = "ISO-8859-1";
 
 /* forward declarations */
 int _real_dbd_connect(dbi_conn_t *conn, const char* database);
