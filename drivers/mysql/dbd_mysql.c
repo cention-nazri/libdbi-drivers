@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.62 2003/02/26 22:11:32 dap Exp $
+ * $Id: dbd_mysql.c,v 1.63 2003/03/28 21:47:52 dap24 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -40,13 +40,13 @@
 #include <dbi/dbd.h>
 
 #include <mysql/mysql.h>
-#include "mysql-stuff.h"
+#include "dbd_mysql.h"
 
 static const dbi_info_t driver_info = {
 	"mysql",
 	"MySQL database support (using libmysqlclient)",
 	"Mark M. Tobenkin <mark@brentwoodradio.com>",
-	"http://libdbi.sourceforge.net",
+	"http://libdbi-drivers.sourceforge.net",
 	"dbd_mysql v" VERSION,
 	__DATE__
 };

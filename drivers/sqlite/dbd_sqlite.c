@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.8 2003/02/27 23:05:26 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.9 2003/03/28 21:47:52 dap24 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -52,7 +52,7 @@ static const dbi_info_t driver_info = {
   "sqlite",
   "SQLite database support (using libsqlite)",
   "Markus Hoenicka <mhoenicka@users.sourceforge.net>",
-  "http://libdbi.sourceforge.net",
+  "http://libdbi-drivers.sourceforge.net",
   "dbd_sqlite v" VERSION,
   __DATE__
 };

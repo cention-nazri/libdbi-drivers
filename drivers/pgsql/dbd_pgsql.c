@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.28 2003/02/26 22:11:33 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.29 2003/03/28 21:47:52 dap24 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -39,13 +39,13 @@
 #include <dbi/dbd.h>
 
 #include <libpq-fe.h>
-#include "pgsql-stuff.h"
+#include "dbd_pgsql.h"
 
 static const dbi_info_t driver_info = {
 	"pgsql",
 	"PostgreSQL database support (using libpq)",
 	"David A. Parker <david@neongoat.com>",
-	"http://libdbi.sourceforge.net",
+	"http://libdbi-drivers.sourceforge.net",
 	"dbd_pgsql v" VERSION,
 	__DATE__
 };
