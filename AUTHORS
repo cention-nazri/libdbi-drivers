@@ -8,7 +8,7 @@ Driver developers:
 * SQLite - Markus Hoenicka <markus at mhoenicka.de>
 * MySQL - Mark Tobenkin <mark at brentwoodradio.com>
 * PostgreSQL - David A. Parker <david at neongoat.com>
-* mSQL, Oracle - Christian M. Stamgren <christian at centiongroup.com>
+* mSQL, Oracle, Firebird/Interbase - Christian M. Stamgren <christian at centiongroup.com>
 
 Main developers of the libdbi project that provides the framework
 used by the libdbi-drivers database drivers:
@@ -20,4 +20,4 @@ Those who helped one way or the other:
   - configure/Makefile/libtool fixes, OSX guru
 
 
-$Id: AUTHORS,v 1.6 2003/08/19 05:24:42 bhazer Exp $
+$Id: AUTHORS,v 1.7 2004/07/23 06:54:39 bhazer Exp $

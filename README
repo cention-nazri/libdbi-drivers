@@ -39,6 +39,7 @@ If you are building the OSX port, see README.osx.
 AVAILABLE DRIVERS:
 ------------------
 
+* Firebird/Interbase
 * mSQL
 * MySQL
 * Oracle
@@ -91,5 +92,5 @@ CONTACT INFO:
 http://libdbi-drivers.sourceforge.net
 Markus Hoenicka <mhoenicka@users.sourceforge.net>
 David Parker <david@neongoat.com>
-$Id: README,v 1.7 2004/01/11 13:41:20 mhoenicka Exp $
+$Id: README,v 1.8 2004/07/23 06:54:39 bhazer Exp $
 

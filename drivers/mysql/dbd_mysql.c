@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.72 2004/01/04 00:43:19 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.73 2004/07/23 06:54:40 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -462,7 +462,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 	char *raw = NULL;
 	unsigned long *strsizes = NULL;
 	unsigned long sizeattrib;
-	dbi_data_t *data;
+	dbi_data_t *data;	
 
 	_row = mysql_fetch_row(_res);
 	strsizes = mysql_fetch_lengths(_res);
