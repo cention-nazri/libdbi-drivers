@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.76 2005/01/12 07:40:30 bhazer Exp $
+ * $Id: dbd_mysql.c,v 1.77 2005/02/13 23:01:06 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -200,6 +200,10 @@ const char *dbd_get_encoding(dbi_conn_t *conn){
 
 	if (!mycon) return NULL;
 
+	/* this function apparently returns the collation rather than
+	   the character set, as the name would imply. However, the
+	   collation name starts with the character set name that it
+	   belongs to, so we can extract the latter */
 	my_enc = mysql_character_set_name(mycon);
 
 	if (!my_enc) {
@@ -210,7 +214,7 @@ const char *dbd_get_encoding(dbi_conn_t *conn){
 
 	  /* loop over all even entries in hash and compare to my_enc */
 	  while (*mysql_encoding_hash[i]) {
-	    if (!strcmp(mysql_encoding_hash[i], my_enc)) {
+	    if (!strncmp(mysql_encoding_hash[i], my_enc, strlen(mysql_encoding_hash[i]))) {
 	      /* return corresponding odd entry */
 	      return mysql_encoding_hash[i+1];
 	    }
