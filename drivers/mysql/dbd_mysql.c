@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.75 2004/11/22 20:33:44 bhazer Exp $
+ * $Id: dbd_mysql.c,v 1.76 2005/01/12 07:40:30 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -446,7 +446,7 @@ void _get_field_info(dbi_result_t *result) {
 	
 	while (idx < result->numfields) {
 		_translate_mysql_type(field[idx].type, &fieldtype, &fieldattribs);
-		if ((fieldtype == DBI_TYPE_INTEGER) && (field->flags & UNSIGNED_FLAG)) fieldattribs |= DBI_INTEGER_UNSIGNED;
+		if ((fieldtype == DBI_TYPE_INTEGER) && (field[idx].flags & UNSIGNED_FLAG)) fieldattribs |= DBI_INTEGER_UNSIGNED;
 		_dbd_result_add_field(result, idx, field[idx].name, fieldtype, fieldattribs);
 		idx++;
 	}
