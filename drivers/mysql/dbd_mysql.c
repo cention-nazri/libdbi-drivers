@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.73 2004/07/23 06:54:40 bhazer Exp $
+ * $Id: dbd_mysql.c,v 1.74 2004/11/22 20:20:23 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -280,7 +280,6 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	MYSQL_RES *res;
 	
 	if (mysql_query((MYSQL *)conn->connection, statement)) {
-		_error_handler(conn, DBI_ERROR_DBD);
 		return NULL;
 	}
 	
@@ -302,7 +301,6 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, u
 	MYSQL_RES *res;
 	
 	if (mysql_real_query((MYSQL *)conn->connection, statement, st_length)) {
-		_error_handler(conn, DBI_ERROR_DBD);
 		return NULL;
 	}
 	
