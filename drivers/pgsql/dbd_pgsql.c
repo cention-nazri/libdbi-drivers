@@ -21,7 +21,7 @@
  * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.11 2001/08/23 20:16:46 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.12 2001/10/15 01:46:36 mmt Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -155,6 +155,15 @@ int dbd_goto_row(dbi_result_t *result, unsigned int row) {
 	/* libpq doesn't have to do anything, the row index is specified when
 	 * fetching fields */
 	return 1;
+}
+
+int dbd_get_socket(dbi_driver_t *driver)
+{
+	PGconn *conn = (PGconn*) driver->connection;
+
+	if(!conn) return -1;
+
+	return PQsocket(conn);
 }
 
 dbi_result_t *dbd_list_dbs(dbi_driver_t *driver, const char *pattern) {

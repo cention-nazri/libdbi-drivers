@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.39 2001/10/14 02:36:13 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.40 2001/10/15 01:46:24 mmt Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -140,6 +140,14 @@ int dbd_goto_row(dbi_result_t *result, unsigned int row) {
 	// XXX TODO: kosherize this, handle efficient queries.
 	mysql_data_seek((MYSQL_RES *)result->result_handle, row);
 	return 1;
+}
+
+int dbd_get_socket(dbi_driver_t *driver){
+	MYSQL *mycon = (MYSQL*)driver->connection;
+
+	if(!mycon) return -1;
+
+	return (int)mycon->net.fd;
 }
 
 dbi_result_t *dbd_list_dbs(dbi_driver_t *driver, const char *pattern) {
