@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.23 2002/10/21 06:21:50 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.24 2002/12/03 08:25:32 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -288,6 +288,24 @@ unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
 	}
 
 	return seq_next;
+}
+
+int dbd_ping(dbi_conn_t *conn) {
+	PGconn *pgsql = (PGconn *)conn->connection;
+
+	PQexec(pgsql, "SELECT 1");
+
+	if (PQstatus(pgsql) == CONNECTION_OK) {
+		return 1;
+	}
+
+	PQreset(pgsql); // attempt a reconnection
+	
+	if (PQstatus(pgsql) == CONNECTION_OK) {
+		return 1;
+	}
+
+	return 0;
 }
 
 /* CORE POSTGRESQL DATA FETCHING STUFF */

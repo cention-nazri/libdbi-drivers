@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.58 2002/10/25 21:18:33 dap Exp $
+ * $Id: dbd_mysql.c,v 1.59 2002/12/03 08:25:31 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -260,6 +260,17 @@ unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
 }
 
 unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
+	return 0;
+}
+
+int dbd_ping(dbi_conn_t *conn) {
+	MYSQL *mysql = (MYSQL *)conn->connection;
+
+	if (mysql_ping(mysql) == 0) {
+		// server is alive and kicking
+		return 1;
+	}
+
 	return 0;
 }
 
