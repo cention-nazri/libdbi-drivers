@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.18 2003/06/08 16:33:48 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.19 2003/06/17 06:35:42 dap24 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -999,7 +999,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned int rowidx) {
       break;
     case DBI_TYPE_DATETIME:
       sizeattrib = _isolate_attrib(result->field_attribs[curfield], DBI_DATETIME_DATE, DBI_DATETIME_TIME);
-      data->d_datetime = _parse_datetime(raw, sizeattrib);
+      data->d_datetime = _dbd_parse_datetime(raw, sizeattrib);
       break;
       
     default:

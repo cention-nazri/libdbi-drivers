@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.33 2003/06/17 04:57:25 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.34 2003/06/17 06:35:42 dap24 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -475,7 +475,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				
 			case DBI_TYPE_DATETIME:
 				sizeattrib = _isolate_attrib(result->field_attribs[curfield], DBI_DATETIME_DATE, DBI_DATETIME_TIME);
-				data->d_datetime = _parse_datetime(raw, sizeattrib);
+				data->d_datetime = _dbd_parse_datetime(raw, sizeattrib);
 				break;
 				
 			default:
