@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark M. Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net/plugins/lookup.php?name=mysql
  * 
- * $Id: dbd_mysql.c,v 1.5 2001/03/29 09:53:35 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.6 2001/03/29 12:47:41 mmt Exp $
  */
 
 #include <stdio.h>
@@ -163,6 +163,7 @@ int dbd_fetch_row(dbi_result_t *result) {
 	result->row =  (dbi_row_t *) malloc(sizeof(dbi_row_t));
 	result->row->row_handle = (void *) row;
 	result->row->next = NULL;
+
 	
 	/*if(!trav){ /* If there are now rows already loaded, allocate a new one*/
 	/*	result->row = trav = (dbi_row_t *) malloc(sizeof(dbi_row_t));
