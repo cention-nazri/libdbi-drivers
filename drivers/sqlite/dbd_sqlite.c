@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.12 2003/04/13 21:01:43 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.13 2003/05/26 20:04:42 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -120,9 +120,19 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
     dbname = dbi_conn_get_option(conn, "dbname");
   }
 
+  if (!dbname) {
+    _dbd_internal_error_handler(conn, "no database specified", 0);
+    return -1;
+  }
+
   /* sqlite specific options */
   dbdir = dbi_conn_get_option(conn, "sqlite_dbdir");
 	
+  if (!dbdir) {
+    _dbd_internal_error_handler(conn, "no database directory specified", 0);
+    return -1;
+  }
+
   /* the requested database is a file in the given directory. Assemble
      full path of database */
   db_fullpath = malloc(strlen(dbname)+strlen(dbdir)+2); /* leave room
