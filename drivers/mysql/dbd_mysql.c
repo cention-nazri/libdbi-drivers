@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.28 2001/07/30 06:46:08 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.29 2001/07/30 08:33:17 mmt Exp $
  */
 
 #include <stdio.h>
@@ -80,7 +80,6 @@ int dbd_connect(dbi_driver_t *driver) {
 	mycon = mysql_init(NULL);
 
 	if(mycon == NULL){ /* Failure, Memory Problems */
-		_specific_error_handler(driver, "Not Enough Memory");
 		return -1;
 	}
 
@@ -110,7 +109,6 @@ int dbd_disconnect(dbi_driver_t *driver) {
 		return 0;
 	} else {
 
-		_specific_error_handler(driver, "Invalid MySQL Identifier");
 		
 		return -1;
 	}
