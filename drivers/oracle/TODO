@@ -1,7 +1,7 @@
-#	$Id: TODO,v 1.2 2003/08/31 19:12:44 bhazer Exp $	
+#	$Id: TODO,v 1.3 2003/09/01 21:25:04 bhazer Exp $	
 
 
-- Implement Integers/Float types.
+- Investigate further about Integers/Float types.
   
   Oracle stores all numeric types as SQLT_NUM (number) internaly.
   The only diffence with numeric columns is the set of contraints that 
