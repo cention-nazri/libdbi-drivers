@@ -1,6 +1,6 @@
 <!DOCTYPE Book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 
-<!ENTITY freedoc-license SYSTEM "include/copying-fdl.sgml">
+<!ENTITY freedoc-license SYSTEM "../../doc/include/copying-fdl.sgml">
 <!ENTITY www 'http://libdbi-drivers.sourceforge.net'>
 <!ENTITY www-libdbi 'http://libdbi.sourceforge.net'>
 
@@ -13,9 +13,9 @@
 
 ]>
 
-<!-- $Id: dbd_pgsql.sgml,v 1.2 2003/06/17 05:51:08 dap24 Exp $ -->
+<!-- $Id: dbd_pgsql.sgml,v 1.3 2003/06/22 18:07:18 dap24 Exp $ -->
 
-<book id="dbd_&dbd-name;">
+<book id="dbd-&dbd-name;">
 
 <bookinfo>
 	<title>&proper-name; Driver Notes</title>
@@ -29,8 +29,8 @@
 			<address><email>david@neongoat.com</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_pgsql.sgml,v 1.2 2003/06/17 05:51:08 dap24 Exp $</edition>
-	<pubdate>$Date: 2003/06/17 05:51:08 $</pubdate>
+	<edition>Document revision: $Id: dbd_pgsql.sgml,v 1.3 2003/06/22 18:07:18 dap24 Exp $</edition>
+	<pubdate>$Date: 2003/06/22 18:07:18 $</pubdate>
 	<revhistory>
 		<revision>
 			<revnumber>0.1</revnumber>
