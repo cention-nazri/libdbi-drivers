@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.65 2003/06/04 20:19:20 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.66 2003/06/05 00:21:47 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -484,7 +484,7 @@ time_t _parse_datetime(const char *raw, unsigned long attribs) {
       if (attribs & DBI_DATETIME_TIME) cur += 11;
     }
     
-    if (strlen(raw) > 5 && attribs & DBI_DATETIME_TIME) {
+    if (strlen(cur) > 5 && attribs & DBI_DATETIME_TIME) {
       cur[2] = '\0';
       cur[5] = '\0';
       unixtime.tm_hour = atoi(cur);
