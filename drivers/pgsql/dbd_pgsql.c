@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.26 2002/12/20 06:36:34 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.27 2002/12/30 00:21:55 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -118,7 +118,7 @@ int dbd_connect(dbi_conn_t *conn) {
 	}
 	else {
 		conn->connection = (void *)pgconn;
-		// XXX no conn->current_db assignment here like the mysql driver. investigate.
+		if (dbname) conn->current_db = strdup(dbname);
 	}
 	
 	return 0;
@@ -194,7 +194,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 
 int dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest) {
 	/* foo's -> 'foo\'s' */
-        int len;
+	int len;
 
 	strcpy(dest, "'");
 	len = PQescapeString(dest+1, orig, strlen(orig));
