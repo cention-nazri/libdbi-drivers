@@ -21,7 +21,7 @@
  * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.14 2002/01/29 05:59:39 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.15 2002/03/26 02:43:06 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -171,10 +171,10 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
 	char *sql_cmd;
 
 	if (pattern == NULL) {
-		return dbd_query(conn, "SELECT datname AS dbname FROM pg_database");
+		return dbd_query(conn, "SELECT datname FROM pg_database");
 	}
 	else {
-		asprintf(&sql_cmd, "SELECT datname AS dbname FROM pg_database WHERE datname LIKE '%s'", pattern);
+		asprintf(&sql_cmd, "SELECT datname FROM pg_database WHERE datname LIKE '%s'", pattern);
 		res = dbd_query(conn, sql_cmd);
 		free(sql_cmd);
 		return res;
@@ -182,7 +182,7 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
 }
 
 dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db) {
-	return (dbi_result_t *)dbi_conn_query((dbi_conn)conn, "SELECT relname AS tablename FROM pg_class WHERE relname !~ '^pg_' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", db);
+	return (dbi_result_t *)dbi_conn_query((dbi_conn)conn, "SELECT relname FROM pg_class WHERE relname !~ '^pg_' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", db);
 }
 
 int dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest) {
