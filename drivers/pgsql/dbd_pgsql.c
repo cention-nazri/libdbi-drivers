@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.27 2002/12/30 00:21:55 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.28 2003/02/26 22:11:33 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -443,8 +443,6 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				memcpy(data->d_string, raw, strsize);
 				break;
 				
-			case DBI_TYPE_ENUM:
-			case DBI_TYPE_SET:
 			case DBI_TYPE_DATETIME:
 			default:
 				break;

@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.61 2002/12/20 06:36:34 dap Exp $
+ * $Id: dbd_mysql.c,v 1.62 2003/02/26 22:11:32 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -432,6 +432,9 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 			case DBI_TYPE_BINARY:
 				row->field_sizes[curfield] = (unsigned long long) strsizes[curfield];
 				data->d_string = malloc(strsizes[curfield]+1); // one extra char for libdbi's null
+				if (!data->d_string) {
+					break;
+				}
 				memcpy(data->d_string, raw, strsizes[curfield]);
 				data->d_string[strsizes[curfield]] = '\0'; // manually null-terminate the data so C string casting still works
 				if (dbi_conn_get_option_numeric(result->conn, "mysql_include_trailing_null") == 1) {
@@ -443,8 +446,6 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				data->d_datetime = _parse_datetime(raw, sizeattrib);
 				break;
 				
-			case DBI_TYPE_ENUM:
-			case DBI_TYPE_SET:
 			default:
 				data->d_string = strdup(raw);
 				row->field_sizes[curfield] = (unsigned long long) strsizes[curfield];
