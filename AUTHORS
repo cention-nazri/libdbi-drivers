@@ -8,6 +8,7 @@ Driver developers:
 * SQLite - Markus Hoenicka <markus at mhoenicka.de>
 * MySQL - Mark Tobenkin <mark at brentwoodradio.com>
 * PostgreSQL - David A. Parker <david at neongoat.com>
+* mSQL - Christian M. Stamgren <christian@centiongroup.com>
 
 Main developers of the libdbi project that provides the framework
 used by the libdbi-drivers database drivers:
@@ -15,4 +16,4 @@ used by the libdbi-drivers database drivers:
 * Mark Tobenkin <mark at brentwoodradio.com>
 
 
-$Id: AUTHORS,v 1.2 2003/03/28 21:47:50 dap24 Exp $
+$Id: AUTHORS,v 1.3 2003/04/06 22:17:58 bhazer Exp $

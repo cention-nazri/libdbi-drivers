@@ -1,10 +1,10 @@
 #!/bin/sh
 # autogen.sh - generates configure using the autotools
-# $Id: autogen.sh,v 1.4 2003/03/28 21:47:50 dap24 Exp $
+# $Id: autogen.sh,v 1.5 2003/04/06 22:17:59 bhazer Exp $
 libtoolize --force --copy
 aclocal
 autoheader
-automake --add-missing --force-missing
+automake --add-missing 
 
 echo
 echo "Using `autoconf --version`, if you have problems"
