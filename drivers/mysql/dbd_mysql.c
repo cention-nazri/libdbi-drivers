@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.41 2001/12/09 10:28:28 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.42 2002/02/02 22:50:22 mmt Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -99,7 +99,7 @@ int dbd_connect(dbi_conn_t *conn) {
 		return -1;
 	}
 	else {
-		conn->connection = (void *)conn;
+		conn->connection = (void *)mycon;
 		if (dbname) conn->current_db = strdup(dbname);
 	}
 	
