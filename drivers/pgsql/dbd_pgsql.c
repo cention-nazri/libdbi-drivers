@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.22 2002/10/16 05:58:25 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.23 2002/10/21 06:21:50 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -187,10 +187,10 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 	}
 
 	if (pattern == NULL) {
-		return (dbi_result_t *)dbi_conn_query((dbi_conn)conn, "SELECT relname FROM pg_class WHERE relname !~ '^pg_' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", db);
+		return (dbi_result_t *)dbi_conn_queryf((dbi_conn)conn, "SELECT relname FROM pg_class WHERE relname !~ '^pg_' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", db);
 	}
 	else {
-		return (dbi_result_t *)dbi_conn_query((dbi_conn)conn, "SELECT relname FROM pg_class WHERE relname !~ '^pg_' AND relname LIKE '%s' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", pattern, db);
+		return (dbi_result_t *)dbi_conn_queryf((dbi_conn)conn, "SELECT relname FROM pg_class WHERE relname !~ '^pg_' AND relname LIKE '%s' AND relkind = 'r' AND relowner = (SELECT datdba FROM pg_database WHERE datname = '%s') ORDER BY relname", pattern, db);
 	}
 }
 
