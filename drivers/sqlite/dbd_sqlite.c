@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.11 2003/04/03 21:46:12 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.12 2003/04/13 21:01:43 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -61,6 +61,7 @@ static const char *custom_functions[] = {NULL}; // TODO
 static const char *reserved_words[] = SQLITE_RESERVED_WORDS;
 
 /* forward declarations */
+int _real_dbd_connect(dbi_conn_t *conn, const char* database);
 void _translate_sqlite_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs);
 void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned int rowidx);
 int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement);
@@ -92,11 +93,11 @@ int dbd_initialize(dbi_driver_t *driver) {
 
 
 int dbd_connect(dbi_conn_t *conn) {
-    return _dbd_connect(conn, "");
+    return _real_dbd_connect(conn, "");
   return 0;
 }
 
-int _dbd_connect(dbi_conn_t *conn, const char* database) {
+int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
   sqlite *sqcon;
   char* sq_errmsg = NULL;
   char* db_fullpath = NULL;
@@ -762,7 +763,7 @@ char *dbd_select_db(dbi_conn_t *conn, const char *db) {
     sqlite_close((sqlite *)conn->connection);
   }
 
-  if (_dbd_connect(conn, db)) {
+  if (_real_dbd_connect(conn, db)) {
     return NULL;
   }
 
