@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.59 2002/12/03 08:25:31 dap Exp $
+ * $Id: dbd_mysql.c,v 1.60 2002/12/20 05:53:07 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -44,7 +44,7 @@
 
 static const dbi_info_t driver_info = {
 	"mysql",
-	"MySQL database support (using libmysqlclient6)",
+	"MySQL database support (using libmysqlclient)",
 	"Mark M. Tobenkin <mark@brentwoodradio.com>",
 	"http://libdbi.sourceforge.net",
 	"dbd_mysql v" VERSION,
@@ -90,9 +90,15 @@ int dbd_connect(dbi_conn_t *conn) {
 	int _compression = (compression > 0) ? CLIENT_COMPRESS : 0;
 	
 	mycon = mysql_init(NULL);
-	if (!mycon || !mysql_real_connect(mycon , host, username, password, dbname, port, unix_socket, _compression)) {
-		mysql_close(mycon);
+	if (!mycon) {
 		return -1;
+	}
+	else if (!mysql_real_connect(mycon, host, username, password, dbname, port, unix_socket, _compression)) {
+		conn->connection = (void *)mycon; // still need this set so _error_handler can grab information
+		_error_handler(conn, DBI_ERROR_DBD);
+		mysql_close(mycon);
+		conn->connection = NULL; // myconn no longer valid
+		return -2;
 	}
 	else {
 		conn->connection = (void *)mycon;

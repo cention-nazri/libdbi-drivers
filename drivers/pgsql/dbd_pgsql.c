@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.24 2002/12/03 08:25:32 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.25 2002/12/20 05:53:07 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -110,12 +110,15 @@ int dbd_connect(dbi_conn_t *conn) {
 	if (!pgconn) return -1;
 
 	if (PQstatus(pgconn) == CONNECTION_BAD) {
-		_error_handler(conn, DBI_ERROR_DBD); /* grab any more specific error information from postgresql first */
+		conn->connection = (void *)pgconn; // still need this set so _error_handler can grab information
+		_error_handler(conn, DBI_ERROR_DBD);
 		PQfinish(pgconn);
+		conn->connection = NULL; // pgconn no longer valid
 		return -2;
 	}
 	else {
 		conn->connection = (void *)pgconn;
+		// XXX no conn->current_db assignment here like the mysql driver. investigate.
 	}
 	
 	return 0;
