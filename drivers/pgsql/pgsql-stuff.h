@@ -1,13 +1,13 @@
 /*
  * libdbi - database independent abstraction layer for C.
- * Copyright (C) 2001, David Parker and Mark Tobenkin.
+ * Copyright (C) 2001-2002, David Parker and Mark Tobenkin.
  * http://libdbi.sourceforge.net
  * 
  * dbd_pgsql.c: PostgreSQL database support (using libpq)
- * Copyright (C) 2001, David Parker <david@neongoat.com>.
+ * Copyright (C) 2001-2002, David Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: pgsql-stuff.h,v 1.1 2001/07/20 23:38:43 dap24 Exp $
+ * $Id: pgsql-stuff.h,v 1.2 2002/06/14 00:28:53 dap Exp $
  */
 
 /* OID declarations from src/interfaces/odbc/pgtypes.h */

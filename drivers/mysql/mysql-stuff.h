@@ -1,13 +1,13 @@
 /*
  * libdbi - database independent abstraction layer for C.
- * Copyright (C) 2001, David Parker and Mark Tobenkin.
+ * Copyright (C) 2001-2002, David Parker and Mark Tobenkin.
  * http://libdbi.sourceforge.net
  * 
  * dbd_mysql.c: MySQL database support (using libmysqlclient6)
- * Copyright (C) 2001, Mark M. Tobenkin <mark@brentwoodradio.com>.
+ * Copyright (C) 2001-2002, Mark M. Tobenkin <mark@brentwoodradio.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: mysql-stuff.h,v 1.1 2001/07/31 00:38:04 dap24 Exp $
+ * $Id: mysql-stuff.h,v 1.2 2002/06/14 00:28:53 dap Exp $
  */
 
 #define MYSQL_RESERVED_WORDS { \
