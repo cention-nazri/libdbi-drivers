@@ -21,7 +21,7 @@
  * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.15 2002/03/26 02:43:06 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.16 2002/03/26 04:18:31 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -46,7 +46,7 @@ static const dbi_info_t driver_info = {
 	"PostgreSQL database support (using libpq)",
 	"David A. Parker <david@neongoat.com>",
 	"http://libdbi.sourceforge.net",
-	"dbd_pgsql v0.02",
+	"dbd_pgsql v" VERSION,
 	__DATE__
 };
 
@@ -235,6 +235,10 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	result = _dbd_result_create(conn, (void *)res, PQntuples(res), atol(PQcmdTuples(res)));
 
 	return result;
+}
+
+dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, unsigned long st_length) {
+	return NULL;
 }
 
 char *dbd_select_db(dbi_conn_t *conn, const char *db) {
