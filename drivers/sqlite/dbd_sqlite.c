@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.23 2004/01/10 23:15:25 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.24 2004/02/07 15:00:40 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1118,7 +1118,7 @@ int wild_case_compare(const char *str,const char *str_end,
 
 /* this function is stolen from MySQL. The quoting was changed to the
  SQL standard, i.e. single and double quotes are escaped by doubling,
- not by a backslash */
+ not by a backslash. Newlines and carriage returns are left alone */
 static unsigned long sqlite_escape_string(char *to, const char *from, unsigned long length)
 {
   const char *to_start=to;
@@ -1131,26 +1131,10 @@ static unsigned long sqlite_escape_string(char *to, const char *from, unsigned l
 	*to++= '\\';
 	*to++= '0';
 	break;
-      case '\n':				/* Must be escaped for logs */
-	*to++= '\\';
-	*to++= 'n';
-	break;
-      case '\r':
-	*to++= '\\';
-	*to++= 'r';
-	break;
-/*       case '\\': */
-/* 	*to++= '\\'; */
-/* 	*to++= '\\'; */
-/* 	break; */
       case '\'':
 	*to++= '\''; /* double single quote */
 	*to++= '\'';
 	break;
-/*       case '"':				/\* Better safe than sorry *\/ */
-/* 	*to++= '"'; /\* double double quote *\/ */
-/* 	*to++= '"'; */
-/* 	break; */
       case '\032':			/* This gives problems on Win32 */
 	*to++= '\\';
 	*to++= 'Z';
