@@ -17,11 +17,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * dbd_mysql.c: MySQL database support (using libpq)
+ * dbd_mysql.c: MySQL database support (using libmysqlclient)
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.68 2003/06/07 23:23:34 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.69 2003/06/12 21:58:14 mmt Exp $
  */
 
 #ifdef HAVE_CONFIG_H

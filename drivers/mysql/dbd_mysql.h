@@ -3,11 +3,11 @@
  * Copyright (C) 2001-2002, David Parker and Mark Tobenkin.
  * http://libdbi.sourceforge.net
  * 
- * dbd_mysql.c: MySQL database support (using libmysqlclient6)
+ * dbd_mysql.c: MySQL database support (using libmysqlclient)
  * Copyright (C) 2001-2002, Mark M. Tobenkin <mark@brentwoodradio.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.h,v 1.2 2002/06/14 00:28:53 dap Exp $
+ * $Id: dbd_mysql.h,v 1.3 2003/06/12 21:58:15 mmt Exp $
  */
 
 #define MYSQL_RESERVED_WORDS { \
