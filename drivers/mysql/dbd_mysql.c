@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.36 2001/08/17 03:12:50 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.37 2001/08/22 21:25:48 dap24 Exp $
  */
 
 #define _GNU_SOURCE /* we need asprintf */
@@ -37,6 +37,8 @@
 
 #include <mysql/mysql.h>
 #include "mysql-stuff.h"
+
+#include "config.h"
 
 static const dbi_info_t plugin_info = {
 	"mysql",

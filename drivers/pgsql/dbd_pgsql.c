@@ -21,7 +21,7 @@
  * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.9 2001/08/15 19:20:47 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.10 2001/08/22 21:25:48 dap24 Exp $
  */
 
 #define _GNU_SOURCE /* we need asprintf */
@@ -36,6 +36,8 @@
 
 #include <libpq-fe.h>
 #include "pgsql-stuff.h"
+
+#include "config.h"
 
 static const dbi_info_t plugin_info = {
 	"pgsql",
