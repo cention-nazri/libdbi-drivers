@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.22 2004/01/04 00:43:20 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.23 2004/01/10 23:15:25 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -248,7 +248,7 @@ int dbd_get_socket(dbi_conn_t *conn){
 const char *dbd_get_encoding(dbi_conn_t *conn){
   /* encoding is a compile-time option with the sqlite
      library. Instead of using the sqlite-provided string, we use the
-     PostgreSQL names */
+     iana.org names */
   if (!strcmp(sqlite_encoding, "UTF-8")) {
     return sqlite_encoding_UTF8;
   }
