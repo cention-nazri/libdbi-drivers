@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.7 2003/02/05 23:57:34 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.8 2003/02/27 23:05:26 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -894,10 +894,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned int rowidx) {
     row->field_sizes[curfield] = 0;
     /* this will be set to the string size later on if the field is indeed a string */
 
-    /* sqlite is typeless, and all information is stored as \0-terminated
-       strings. Thus strlen is safe to use. UPDATE: Hehe, fooled myself here */
-/*     strsize = strlen(raw); */
-    if ((raw == NULL) || (strlen(raw) == 0)) {
+    if (raw == NULL) { /* no data available */
       curfield++;
       continue;
     }
