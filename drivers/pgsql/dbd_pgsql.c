@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.38 2004/01/04 00:43:20 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.39 2004/11/22 20:33:45 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -510,6 +510,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 		/* will be set to strlen later on for strings */
 		
 		if (PQgetisnull((PGresult *)result->result_handle, rowidx, curfield) == 1) {
+		        _set_field_flag( row, curfield, DBI_VALUE_NULL, 1);
 			curfield++;
 			continue;
 		}
