@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.19 2002/06/14 04:20:21 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.20 2002/06/19 01:23:33 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -275,12 +275,14 @@ unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
 	if (!sql_cmd) return 0;
 	result = dbd_query(conn, sql_cmd);
 	free(sql_cmd);
-	
-	rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
-	if (rawdata) {
-		seq_last = atoll(rawdata);
+
+	if (result) {
+		rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
+		if (rawdata) {
+			seq_last = atoll(rawdata);
+		}
+		dbi_result_free((dbi_result)result);
 	}
-	dbi_result_free((dbi_result)result);
 
 	return seq_last;
 }
@@ -295,12 +297,14 @@ unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
 	if (!sql_cmd) return 0;
 	result = dbd_query(conn, sql_cmd);
 	free(sql_cmd);
-	
-	rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
-	if (rawdata) {
-		seq_next = atoll(rawdata);
+
+	if (result) {	
+		rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
+		if (rawdata) {
+			seq_next = atoll(rawdata);
+		}
+		dbi_result_free((dbi_result)result);
 	}
-	dbi_result_free((dbi_result)result);
 
 	return seq_next;
 }
