@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.63 2003/03/28 21:47:52 dap24 Exp $
+ * $Id: dbd_mysql.c,v 1.64 2003/04/11 22:11:49 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -214,8 +214,10 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	/* if res is null, the query was something that doesn't return rows (like an INSERT) */
 	result = _dbd_result_create(conn, (void *)res, (res ? mysql_num_rows(res) : 0), mysql_affected_rows((MYSQL *)conn->connection));
 
-	_dbd_result_set_numfields(result, mysql_num_fields((MYSQL_RES *)result->result_handle));
-	_get_field_info(result);
+	if (res) {
+	  _dbd_result_set_numfields(result, mysql_num_fields((MYSQL_RES *)result->result_handle));
+	  _get_field_info(result);
+	}
 
 	return result;
 }
@@ -233,6 +235,11 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, u
 	
 	/* if res is null, the query was something that doesn't return rows (like an INSERT) */
 	result = _dbd_result_create(conn, (void *)res, (res ? mysql_num_rows(res) : 0), mysql_affected_rows((MYSQL *)conn->connection));
+
+	if (res) {
+	  _dbd_result_set_numfields(result, mysql_num_fields((MYSQL_RES *)result->result_handle));
+	  _get_field_info(result);
+	}
 
 	return result;
 }
