@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.31 2001/08/04 20:26:43 dap24 Exp $
+ * $Id: dbd_mysql.c,v 1.32 2001/08/10 07:38:52 mmt Exp $
  */
 
 #define _GNU_SOURCE /* we need asprintf */
@@ -87,7 +87,7 @@ int dbd_connect(dbi_driver_t *driver) {
 
 	conn = mysql_init(NULL);
 	if (!conn || !mysql_real_connect(conn, host, username, password, dbname, port, unix_socket, _compression)) {
-		_error_handler(driver);
+		/*_error_handler(driver); Need to add support for internal errors, and cleaning up after self :) */
 		mysql_close(conn);
 		return -1;
 	}
