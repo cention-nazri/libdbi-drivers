@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.5 2003/01/29 23:53:13 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.6 2003/02/01 21:39:08 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -426,7 +426,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
     char *item;
     
     type = find_result_field_types(result_table[idx], conn, statement);
-/*      printf("type: %d<<\n", type);  */
+/*     printf("type: %d<<\n", type); */
     _translate_sqlite_type(type, &fieldtype, &fieldattribs);
 
     /* we need the field name without the table name here */
@@ -718,7 +718,7 @@ char* get_field_type(const char* statement, const char* curr_field_name) {
 
     /* skip leading whitespace */
     field_name = item;
-    while (*field_name == ' ') {
+    while ((*field_name == ' ') || (*field_name == '\n')) {
       field_name++;
     }
 
