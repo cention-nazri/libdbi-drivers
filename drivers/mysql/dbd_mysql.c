@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.56 2002/10/16 05:58:24 dap Exp $
+ * $Id: dbd_mysql.c,v 1.57 2002/10/21 06:47:16 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -377,7 +377,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 		row->field_sizes[curfield] = 0;
 		/* this will be set to the string size later on if the field is indeed a string */
 
-		if (strsizes[curfield] == 0) {
+		if ((strsizes[curfield] == 0) && (raw == NULL)) {
 			curfield++;
 			continue;
 		}
