@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.43 2002/02/16 18:57:35 dap Exp $
+ * $Id: dbd_mysql.c,v 1.44 2002/03/19 17:31:51 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -412,7 +412,9 @@ time_t _parse_datetime(const char *raw, unsigned long attribs) {
 	char *cur = unparsed;
 
 	unixtime.tm_sec = unixtime.tm_min = unixtime.tm_hour = 0;
-	unixtime.tm_mday = unixtime.tm_mon = unixtime.tm_year = 0;
+	unixtime.tm_mday = 1;
+	unixtime.tm_mon = 0;
+	unixtime.tm_year = 70;
 	unixtime.tm_isdst = -1;
 	
 	if (attribs & DBI_DATETIME_DATE) {
@@ -420,7 +422,7 @@ time_t _parse_datetime(const char *raw, unsigned long attribs) {
 		cur[7] = '\0';
 		cur[10] = '\0';
 		unixtime.tm_year = atoi(cur)-1900;
-		unixtime.tm_mon = atoi(cur+5);
+		unixtime.tm_mon = atoi(cur+5)-1;
 		unixtime.tm_mday = atoi(cur+8);
 		if (attribs & DBI_DATETIME_TIME) cur = cur+11;
 	}
