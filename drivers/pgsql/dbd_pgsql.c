@@ -21,7 +21,7 @@
  * Copyright (C) 2001, David Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.2 2001/07/20 01:23:22 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.3 2001/07/20 01:40:19 dap24 Exp $
  */
 
 #include <stdio.h>
@@ -127,14 +127,12 @@ int dbd_disconnect(dbi_driver_t *driver) {
 	return 0;
 }
 
-
 int dbd_fetch_row(dbi_result_t *result, unsigned int rownum) {
 	/* XXX XXX XXX XXX XXX XXX XXX XXX */
 	return -1; /* return -1 on error, 0 on no more rows, 1 on successful fetchrow */
 }
 
 int dbd_free_query(dbi_result_t *result) {
-	/* do whatever's necessary... */
 	PQclear((PGresult *)result->result_handle);
 	return 0;
 }
