@@ -1,8 +1,10 @@
-$Id: TODO,v 1.2 2003/04/06 22:17:59 bhazer Exp $
+$Id: TODO,v 1.3 2003/04/12 17:10:09 mhoenicka Exp $
 
-- the sqlite code may be incomplete or may not fully use the features
-  provided by the libdbi 0.6.6 framework. Thorough testing and code
-  reading is required.
+- add and test support for more platforms
+
+- add drivers for all free database engines which are currently not
+  yet supported
+
 
 
 
