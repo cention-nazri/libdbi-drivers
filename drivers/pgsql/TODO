@@ -1,0 +1,6 @@
+$Id: TODO,v 1.1 2003/06/17 04:57:25 dap24 Exp $
+
+- finish documentation
+- define driver capabilities
+- dbd_query_null ?
+
