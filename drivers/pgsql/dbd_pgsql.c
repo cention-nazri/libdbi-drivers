@@ -21,8 +21,12 @@
  * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.10 2001/08/22 21:25:48 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.11 2001/08/23 20:16:46 dap24 Exp $
  */
+
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif
 
 #define _GNU_SOURCE /* we need asprintf */
 
@@ -36,8 +40,6 @@
 
 #include <libpq-fe.h>
 #include "pgsql-stuff.h"
-
-#include "config.h"
 
 static const dbi_info_t plugin_info = {
 	"pgsql",
@@ -155,8 +157,19 @@ int dbd_goto_row(dbi_result_t *result, unsigned int row) {
 	return 1;
 }
 
-dbi_result_t *dbd_list_dbs(dbi_driver_t *driver) {
-	return dbd_query(driver, "SELECT datname AS dbname FROM pg_database");
+dbi_result_t *dbd_list_dbs(dbi_driver_t *driver, const char *pattern) {
+	dbi_result_t *res;
+	char *sql_cmd;
+
+	if (pattern == NULL) {
+		return dbd_query(driver, "SELECT datname AS dbname FROM pg_database");
+	}
+	else {
+		asprintf(&sql_cmd, "SELECT datname AS dbname FROM pg_database WHERE datname LIKE '%s'", pattern);
+		res = dbd_query(driver, sql_cmd);
+		free(sql_cmd);
+		return res;
+	}
 }
 
 dbi_result_t *dbd_list_tables(dbi_driver_t *driver, const char *db) {
