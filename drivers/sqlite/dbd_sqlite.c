@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.2 2002/11/05 00:37:31 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.3 2002/11/05 23:39:42 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -466,7 +466,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
     }
 
     if (!table) {
-      fprintf(stderr, "no from keyword found\n");
+/*       fprintf(stderr, "no from keyword found\n"); */
       return 0;
     }
     
