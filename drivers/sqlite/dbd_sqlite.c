@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.15 2003/06/05 00:21:46 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.16 2003/06/05 22:48:00 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -30,6 +30,14 @@
 #endif
 
 #define _GNU_SOURCE /* we need asprintf */
+
+#ifndef HAVE_ATOLL
+long long atoll(const char *str);
+#endif
+
+#ifndef HAVE_STRTOLL
+long long strtoll(const char *nptr, char **endptr, int base);
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

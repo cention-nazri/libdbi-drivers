@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.30 2003/04/11 22:12:50 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.31 2003/06/05 22:47:59 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,6 +29,14 @@
 #endif
 
 #define _GNU_SOURCE /* we need asprintf */
+
+#ifndef HAVE_ATOLL
+long long atoll(const char *str);
+#endif
+
+#ifndef HAVE_STRTOLL
+long long strtoll(const char *nptr, char **endptr, int base);
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>

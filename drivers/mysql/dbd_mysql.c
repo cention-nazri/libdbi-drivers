@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.66 2003/06/05 00:21:47 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.67 2003/06/05 22:47:59 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -29,6 +29,14 @@
 #endif
 
 #define _GNU_SOURCE /* we need asprintf */
+
+#ifndef HAVE_ATOLL
+long long atoll(const char *str);
+#endif
+
+#ifndef HAVE_STRTOLL
+long long strtoll(const char *nptr, char **endptr, int base);
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
