@@ -13,11 +13,22 @@ libdbi-drivers can be compiled into DLL files on Win32 with the Cygwin
 package, available at http://www.cygwin.com/. libdbi must be properly
 installed before attempting to build libdbi-drivers.
 
-./configure --with-driverxy ...
+To build a particular driver, run these commands, where XYZ is one of
+mysql or pgsql:
+./configure --with-driverXYZ
+make
+make install
+make libXYZ-dll -f Makefile.w32
+make install-libXYZ -f Makefile.w32
+
+If you want to build and install all drivers, use the following commands:
+./configure --with-mysql --with-pgsql
 make
 make install
 make -f Makefile.w32
-make -f Makefile.w32 install
+make install -f Makefile.w32
+
+Note: msql and sqlite have not been included into this port yet.
 
 
 CYGWIN DETAILS:
@@ -45,5 +56,5 @@ MODIFICATIONS AND REDISTRIBUTION (GPL):
 See the file COPYING or http://www.gnu.org for more details.
 
 
-$Id: README.win32,v 1.2 2003/04/12 17:09:06 mhoenicka Exp $
+$Id: README.win32,v 1.3 2003/07/09 22:55:39 mhoenicka Exp $
 
