@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.35 2003/09/02 20:55:03 bhazer Exp $
+ * $Id: dbd_pgsql.c,v 1.36 2003/12/26 19:06:49 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -372,6 +372,14 @@ void _translate_postgresql_type(unsigned int oid, unsigned short *type, unsigned
 			_type = DBI_TYPE_DECIMAL;
 			_attribs |= DBI_DECIMAL_SIZE8;
 			break;
+	        case PG_TYPE_DATE:
+		       _type = DBI_TYPE_DATETIME;
+                       _attribs |= DBI_DATETIME_DATE;
+                       break;
+	        case PG_TYPE_TIME:
+                       _type = DBI_TYPE_DATETIME;
+                       _attribs |= DBI_DATETIME_TIME;
+                       break;
 	case PG_TYPE_DATETIME:
 	case PG_TYPE_TIMESTAMP:
 			_type = DBI_TYPE_DATETIME;
