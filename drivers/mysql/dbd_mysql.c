@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark M. Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net/plugins/lookup.php?name=mysql
  * 
- * $Id: dbd_mysql.c,v 1.4 2001/03/29 08:38:05 mmt Exp $
+ * $Id: dbd_mysql.c,v 1.5 2001/03/29 09:53:35 mmt Exp $
  */
 
 #include <stdio.h>
@@ -114,6 +114,7 @@ int dbd_fetch_field(dbi_result_t *result, const char *key, void *dest) {
 
 	if(!row){
 		dest = NULL;
+		strcpy(result->driver->error_string, "No row fetched yet"); /* later add sprintf here*/
 		return -1;
 	}
 
@@ -124,8 +125,11 @@ int dbd_fetch_field(dbi_result_t *result, const char *key, void *dest) {
 
 	if(i == row->numfields){
 		dest = NULL;
-		return 0;
+		strcpy(result->driver->error_string, "Field does not exist"); /* later add sprintf here*/
+		return -1;
 	}
+
+	dest = row->field_values[i];
 
 	return 0;
 }
@@ -188,6 +192,7 @@ int dbd_fetch_row(dbi_result_t *result) {
 
 int dbd_free_query(dbi_result_t *result) {
 	/* do whatever's necessary... */
+	mysql_free_result(result);
 	return 0;
 }
 
@@ -198,24 +203,30 @@ int dbd_goto_row(dbi_result_t *result, unsigned int row) {
 
 const char **dbd_list_dbs(dbi_driver_t *myself) {
 	/* do whatever's necessary... */
-	return NULL;
+	return 0;
 }
 
 const char **dbd_list_tables(dbi_driver_t *myself, const char *db) {
 	/* do whatever's necessary... */
-	return NULL;
+	return 0;
 }
 
 unsigned int dbd_num_rows(dbi_result_t *result) {
 	/* return the numrows_matched or numrows_changed from the
 	 * result struct, depending on what the database supports */
-	return 0;
+	if(result)
+		return result->numrows_matched;
+	else
+		return 0;
 }
 
 unsigned int dbd_num_rows_affected(dbi_result_t *result) {
 	/* return the numrows_matched or numrows_changed from the
 	 * result struct, depending on what the database supports */
-	return 0;
+	if(result)
+		return result->numrows_changed;
+	else
+		return 0;
 }
 
 dbi_result_t *dbd_query(dbi_driver_t *myself, const char *statement) {
@@ -229,11 +240,16 @@ dbi_result_t *dbd_query(dbi_driver_t *myself, const char *statement) {
 	} else {
 		strcpy(myself->error_message, mysql_error((MYSQL*)myself->connection));
 		myself->error_number = mysql_errno((MYSQL*)myself->connection);
-		return -1;
+		return NULL;
 	}
 
-	
-	return 0;
+	ret = malloc(sizeof(dbi_result_t));
+	ret->result_handle = res;
+	ret->driver = myself;
+	ret->numrows_changed = mysql_affected_rows((MYSQL*)myself->connection);
+	ret->numrows_matched = mysql_num_rows(res);
+
+	return ret;
 }
 
 dbi_result_t *dbd_efficient_query(dbi_driver_t *myself, const char *statement) {
