@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.48 2002/03/29 03:57:54 dap Exp $
+ * $Id: dbd_mysql.c,v 1.49 2002/04/03 17:20:39 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -173,13 +173,13 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 	}
 
 	if (pattern == NULL) {
-		asprintf(&sql_cmd, "SHOW TABLES FROM '%s'", db);
+		asprintf(&sql_cmd, "SHOW TABLES FROM %s", db);
 		res = dbd_query(conn, sql_cmd);
 		free(sql_cmd);
 		return res;
 	}
 	else {
-		asprintf(&sql_cmd, "SHOW TABLES FROM '%s' LIKE '%s'", db, pattern);
+		asprintf(&sql_cmd, "SHOW TABLES FROM %s LIKE '%s'", db, pattern);
 		res = dbd_query(conn, sql_cmd);
 		free(sql_cmd);
 		return res;
