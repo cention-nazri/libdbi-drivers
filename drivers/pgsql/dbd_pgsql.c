@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.21 2002/08/07 06:50:17 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.22 2002/10/16 05:58:25 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -196,32 +196,13 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 
 int dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest) {
 	/* foo's -> 'foo\'s' */
-	const char *escaped = "'\"\\"; // XXX TODO check if this is right
-	char *curdest = dest;
-	const char *curorig = orig;
-	const char *curescaped;
-	
+        int len;
+
 	strcpy(dest, "'");
-	strcat(dest, orig);
-
-	while (curorig) {
-		curescaped = escaped;
-		while (curescaped) {
-			if (*curorig == *curescaped) {
-				memmove(curdest+1, curorig, strlen(curorig)+1);
-				*curdest = '\\';
-				curdest++;
-				continue;
-			}
-			curescaped++;
-		}
-		curorig++;
-		curdest++;
-	}
-
+	len = PQescapeString(dest+1, orig, strlen(orig));
 	strcat(dest, "'");
 	
-	return strlen(dest);
+	return len+2;
 }
 
 dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {

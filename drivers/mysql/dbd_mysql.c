@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.55 2002/08/07 06:50:17 dap Exp $
+ * $Id: dbd_mysql.c,v 1.56 2002/10/16 05:58:24 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -188,7 +188,7 @@ int dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest) {
 	unsigned int len;
 	
 	strcpy(dest, "'");
-	len = mysql_escape_string(dest, orig, strlen(orig));	
+	len = mysql_escape_string(dest+1, orig, strlen(orig));	
 	strcat(dest, "'");
 	
 	return len+2;
@@ -416,8 +416,8 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				break;
 			case DBI_TYPE_BINARY:
 				row->field_sizes[curfield] = (unsigned long long) strsizes[curfield];
-				data->d_string = malloc(strsizes[curfield]);
-				memcpy(data->d_string, raw, strsizes[curfield]);
+				data->d_string = malloc(strsizes[curfield]+1); // XXX debatable for non-mysql, need to reread mailing list thread
+				memcpy(data->d_string, raw, strsizes[curfield]+1); // XXX
 				break;
 			case DBI_TYPE_DATETIME:
 				sizeattrib = _isolate_attrib(result->field_attribs[curfield], DBI_DATETIME_DATE, DBI_DATETIME_TIME);
