@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.45 2002/03/26 02:43:06 dap Exp $
+ * $Id: dbd_mysql.c,v 1.46 2002/03/26 02:46:08 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -165,7 +165,6 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
 }
 
 dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db) {
-	return dbd_query(conn, "SHOW TABLES");
 	dbi_result_t *res;
 	char *sql_cmd;
 
