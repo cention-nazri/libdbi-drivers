@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.25 2002/12/20 05:53:07 dap Exp $
+ * $Id: dbd_pgsql.c,v 1.26 2002/12/20 06:36:34 dap Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -135,16 +135,11 @@ int dbd_fetch_row(dbi_result_t *result, unsigned long long rownum) {
 	if (result->result_state == NOTHING_RETURNED) return -1;
 	
 	if (result->result_state == ROWS_RETURNED) {
-		/* this is the first time we've been here */
-		_dbd_result_set_numfields(result, PQnfields((PGresult *)result->result_handle));
-		_get_field_info(result);
-		result->result_state = GETTING_ROWS;
+		/* get row here */
+		row = _dbd_row_allocate(result->numfields);
+		_get_row_data(result, row, rownum);
+		_dbd_row_finalize(result, row, rownum);
 	}
-
-	/* get row here */
-	row = _dbd_row_allocate(result->numfields);
-	_get_row_data(result, row, rownum);
-	_dbd_row_finalize(result, row, rownum);
 	
 	return 1; /* 0 on error, 1 on successful fetchrow */
 }
@@ -226,6 +221,8 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	}
 
 	result = _dbd_result_create(conn, (void *)res, PQntuples(res), atol(PQcmdTuples(res)));
+	_dbd_result_set_numfields(result, PQnfields((PGresult *)result->result_handle));
+	_get_field_info(result);
 
 	return result;
 }
