@@ -18,10 +18,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
  * dbd_pgsql.c: PostgreSQL database support (using libpq)
- * Copyright (C) 2001, David Parker <david@neongoat.com>.
+ * Copyright (C) 2001, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.6 2001/07/31 00:42:40 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.7 2001/08/04 20:26:43 dap24 Exp $
  */
 
 #define _GNU_SOURCE /* we need asprintf */
@@ -40,7 +40,7 @@
 static const dbi_info_t plugin_info = {
 	"pgsql",
 	"PostgreSQL database support (using libpq)",
-	"David Parker <david@neongoat.com>",
+	"David A. Parker <david@neongoat.com>",
 	"http://libdbi.sourceforge.net",
 	"dbd_pgsql v0.01",
 	__DATE__

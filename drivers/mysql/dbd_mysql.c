@@ -21,7 +21,7 @@
  * Copyright (C) 2001, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.30 2001/07/31 00:38:04 dap24 Exp $
+ * $Id: dbd_mysql.c,v 1.31 2001/08/04 20:26:43 dap24 Exp $
  */
 
 #define _GNU_SOURCE /* we need asprintf */
@@ -193,12 +193,12 @@ void _translate_mysql_type(enum enum_field_types fieldtype, unsigned short *type
 	unsigned int _attribs = 0;
 
 	switch (fieldtype) {
-		case FIELD_TYPE_YEAR:
-			_attribs |= DBI_INTEGER_UNSIGNED;
 		case FIELD_TYPE_TINY:
 			_type = DBI_TYPE_INTEGER;
 			_attribs |= DBI_INTEGER_SIZE1;
 			break;
+		case FIELD_TYPE_YEAR:
+			_attribs |= DBI_INTEGER_UNSIGNED;
 		case FIELD_TYPE_SHORT:
 			_type = DBI_TYPE_INTEGER;
 			_attribs |= DBI_INTEGER_SIZE2;
