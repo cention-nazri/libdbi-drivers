@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.34 2003/06/17 06:35:42 dap24 Exp $
+ * $Id: dbd_pgsql.c,v 1.35 2003/09/02 20:55:03 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -115,6 +115,8 @@ int dbd_connect(dbi_conn_t *conn) {
 		password ? password : "",
 		options ? options : "",
 		tty ? tty : "");
+
+	if (conninfo_kludge) free(conninfo_kludge);
 
 	pgconn = PQconnectdb(conninfo);
 	if (conninfo) free(conninfo);
