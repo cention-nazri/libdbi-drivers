@@ -24,7 +24,7 @@ int main(int argc, char **argv) {
 	const char *errmsg;
 	int numdrivers;
 
-	printf("\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.15 2005/04/29 20:38:27 mhoenicka Exp $\n"
+	printf("\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.16 2005/05/01 21:06:27 mhoenicka Exp $\n"
 	       "Library version: %s\n\n", dbi_version());
 	
 	printf("libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
@@ -167,6 +167,10 @@ int main(int argc, char **argv) {
 	
 	dbi_conn_set_option(conn, "dbname", initial_dbname);
 	
+
+	if (!strcmp(drivername, "sqlite3")) {
+	  dbi_conn_set_option(conn, "sqlite3_encoding", "UTF-8");
+	}
 
 	if (dbi_conn_connect(conn) < 0) {
 		dbi_conn_error(conn, &errmsg);
