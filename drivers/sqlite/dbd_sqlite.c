@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.24 2004/02/07 15:00:40 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.25 2005/05/16 16:53:07 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -424,6 +424,10 @@ int dbd_quote_string(dbi_driver_t *driver, const char *orig, char *dest) {
   strcat(dest, "'");
 	
   return len+2;
+}
+
+int dbd_conn_quote_string(dbi_conn_t *conn, const char *orig, char *dest) {
+  return dbd_quote_string(conn->driver, orig, dest);
 }
 
 dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
