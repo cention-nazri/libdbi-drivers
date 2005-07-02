@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.41 2005/05/22 20:07:05 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.42 2005/07/02 11:11:05 bhazer Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -588,7 +588,6 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 
 	while (curfield < result->numfields) {
 		raw = PQgetvalue((PGresult *)result->result_handle, rowidx, curfield);
-		strsize = (unsigned long long) PQfmod((PGresult *)result->result_handle, curfield);
 		data = &row->field_values[curfield];
 
 		row->field_sizes[curfield] = 0;
@@ -629,10 +628,12 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				}
 				break;
 			case DBI_TYPE_STRING:
+			        strsize = PQgetlength((PGresult *)result->result_handle, rowidx, curfield);
 				data->d_string = strdup(raw);
 				row->field_sizes[curfield] = strsize;
 				break;
-			case DBI_TYPE_BINARY:
+			case DBI_TYPE_BINARY:		  
+       			        strsize = PQgetlength((PGresult *)result->result_handle, rowidx, curfield);
 				row->field_sizes[curfield] = strsize;
 				data->d_string = malloc(strsize);
 				memcpy(data->d_string, raw, strsize);
