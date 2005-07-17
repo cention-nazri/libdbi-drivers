@@ -22,7 +22,7 @@
  * Copyright (C) 2005, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.7 2005/07/14 20:26:54 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.8 2005/07/17 00:56:35 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -889,7 +889,7 @@ char* get_field_type(const char* statement, const char* curr_field_name) {
   return curr_type;
 }
 
-char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
   /*
     sqlite3 does not separate connecting to a database server and using
     or opening a database. If we want to switch to a different database,
@@ -909,7 +909,7 @@ char *dbd_select_db(dbi_conn_t *conn, const char *db) {
     return NULL;
   }
 
-  return (char *)db;
+  return db;
 }
 
 int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
