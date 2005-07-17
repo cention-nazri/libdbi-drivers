@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.44 2005/07/14 20:26:53 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.45 2005/07/17 00:55:06 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -136,7 +136,6 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 	char *port_str;
 	char *conninfo;
 	char *conninfo_kludge;
-	char* sql_cmd;
 
 	if (db && *db) {
 	  dbname = db;
@@ -417,7 +416,7 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, s
 	return NULL;
 }
 
-char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
   /* postgresql doesn't support switching databases without reconnecting */
   if (!db || !*db) {
     return NULL;
@@ -432,7 +431,7 @@ char *dbd_select_db(dbi_conn_t *conn, const char *db) {
     return NULL;
   }
 
-  return (char *)db;
+  return db;
 }
 
 int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
