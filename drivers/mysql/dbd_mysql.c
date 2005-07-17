@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.81 2005/07/14 20:26:52 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.82 2005/07/17 00:51:40 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -238,9 +238,7 @@ const char *dbd_get_encoding(dbi_conn_t *conn){
 	dbi_result dbires1 = NULL;
 	const char* schemastring;
 	const char* encodingopt;
-	char* encodingstart = NULL;
 	char* sql_cmd;
-	int i = 0;
 
 	if (!mycon) return NULL;
 
@@ -470,7 +468,7 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, s
 	return result;
 }
 
-char *dbd_select_db(dbi_conn_t *conn, const char *db) {
+const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
 	if (mysql_select_db((MYSQL *)conn->connection, db)) {
 		_error_handler(conn, DBI_ERROR_DBD);
 		return "";
@@ -480,7 +478,7 @@ char *dbd_select_db(dbi_conn_t *conn, const char *db) {
 	  free(conn->current_db);
 	}
 	conn->current_db = strdup(db);
-	return (char *)db;
+	return db;
 }
 
 int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
