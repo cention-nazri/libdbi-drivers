@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
   dbi_driver driver;
   dbi_conn conn;
   const char *errmsg;
+  unsigned int dbengine_version;
 
   struct CONNINFO cinfo;
 
@@ -61,7 +62,7 @@ int main(int argc, char **argv) {
 	 "\tCompiled:   %s\n", 
 	 dbi_driver_get_name(driver), dbi_driver_get_filename(driver), 
 	 dbi_driver_get_description(driver), dbi_driver_get_maintainer(driver), 
-	 dbi_driver_get_url(driver), dbi_driver_get_version(driver), 
+	 dbi_driver_get_url(driver), dbi_driver_get_version(driver),
 	 dbi_driver_get_date_compiled(driver));
 	
   if (set_driver_options(&cinfo, conn, "", NULL)) {
@@ -75,8 +76,10 @@ int main(int argc, char **argv) {
     dbi_shutdown();
     exit(1);
   }
-	
-  printf("\nSuccessfully connected!\n");
+  
+  dbengine_version = dbi_conn_get_engine_version(conn);
+
+  printf("\nSuccessfully connected!\n\tUsing database engine version %d\n", dbengine_version);
 
   /* Test 1: list available databases */
   printf("\nTest 1: List databases: \n");
@@ -179,7 +182,7 @@ int main(int argc, char **argv) {
   dbi_conn_close(conn);
   conn = NULL;
 
-  if (!strcmp(cinfo.drivername, "mysql")
+  if ((!strcmp(cinfo.drivername, "mysql") && dbengine_version > 40100)
       ||!strcmp(cinfo.drivername, "pgsql")) {
 
     printf("\nNow run a couple of tests related to character encodings\nThe previous tests used the default encoding, if any. Now we try to connect using UTF-8 and create an UTF-8 database\n");
@@ -389,7 +392,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.22 2005/07/17 00:59:01 mhoenicka Exp $\n"
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.23 2005/08/04 21:39:31 mhoenicka Exp $\n"
 	 "Library version: %s\n\n", dbi_version());
 	
   fprintf(stderr, "libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
