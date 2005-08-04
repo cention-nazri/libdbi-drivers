@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.29 2005/07/17 00:56:35 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.30 2005/08/04 21:38:04 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -265,6 +265,27 @@ const char* dbd_encoding_to_iana(const char *db_encoding) {
 const char* dbd_encoding_from_iana(const char *iana_encoding) {
   /* nothing to translate, return original encoding */
   return iana_encoding;
+}
+
+char *dbd_get_engine_version(dbi_conn_t *conn, char *versionstring) {
+  dbi_result_t *dbi_result;
+  const char *versioninfo = NULL;
+
+  /* initialize return string */
+  *versionstring = '\0';
+
+  dbi_result = dbd_query(conn, "SELECT sqlite_version()");
+
+  if (dbi_result) {
+    if (dbi_result_next_row(dbi_result)) {
+      versioninfo = dbi_result_get_string_idx(dbi_result, 1);
+      strncpy(versionstring, versioninfo, VERSIONSTRING_LENGTH-1);
+      versionstring[VERSIONSTRING_LENGTH-1] = '\0';
+    }
+    dbi_result_free(dbi_result);
+  }
+
+  return versionstring;
 }
 
 dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {

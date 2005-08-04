@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.82 2005/07/17 00:51:40 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.83 2005/08/04 21:38:04 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -340,6 +340,27 @@ const char* dbd_encoding_from_iana(const char *iana_encoding) {
 
   /* don't know how to translate, return original encoding */
   return iana_encoding;
+}
+
+char *dbd_get_engine_version(dbi_conn_t *conn, char *versionstring) {
+  dbi_result_t *dbi_result;
+  const char *versioninfo = NULL;
+
+  /* initialize return string */
+  *versionstring = '\0';
+
+  dbi_result = dbd_query(conn, "SELECT VERSION()");
+
+  if (dbi_result) {
+    if (dbi_result_next_row(dbi_result)) {
+      versioninfo = dbi_result_get_string_idx(dbi_result, 1);
+      strncpy(versionstring, versioninfo, VERSIONSTRING_LENGTH-1);
+      versionstring[VERSIONSTRING_LENGTH-1] = '\0';
+    }
+    dbi_result_free(dbi_result);
+  }
+
+  return versionstring;
 }
 
 dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
