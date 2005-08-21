@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.47 2005/08/07 23:39:33 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.48 2005/08/21 10:32:35 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -345,18 +345,18 @@ char *dbd_get_engine_version(dbi_conn_t *conn, char *versionstring) {
       dot = strchr(versioninfo, (int)'.');
       if (dot) {
 	start = dot-1;
-	while (start>versioninfo && isdigit((int)(*start))) {
+	while (start>versioninfo && isdigit((int)(*(start-1)))) {
 	  start--;
 	}
 
 	stop = start;
-	while (*stop && (isdigit((int)(*stop)) || *stop=='.')) {
+	while (*(stop+1) && (isdigit((int)(*(stop+1))) || *(stop+1)=='.')) {
 	  stop++;
 	}
 
 	if (stop-start < VERSIONSTRING_LENGTH) {
-	  strncpy(versionstring, start, VERSIONSTRING_LENGTH-1);
-	  versionstring[VERSIONSTRING_LENGTH-1] = '\0';
+	  strncpy(versionstring, start, stop-start+1);
+	  versionstring[stop-start+1] = '\0';
 	}
       }
     }
