@@ -1,5 +1,12 @@
-#	$Id: TODO,v 1.4 2004/01/10 19:52:46 bhazer Exp $	
+#	$Id: TODO,v 1.5 2005/08/22 19:47:05 mhoenicka Exp $	
 
+- write documentation.
+
+- Update the test program to work with oracle
+
+- Mingw+MSys portability
+
+- Oracle 8i portability
 
 - Investigate further about Integers/Float types.
   
@@ -18,10 +25,4 @@
 - Implement other oracle types (Dates,refs ..).
 
 - define driver capabilities.
-
-- write documentation.
-
-
-
-
 
