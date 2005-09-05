@@ -22,7 +22,7 @@
  * Copyright (C) 2005, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.10 2005/08/07 23:39:33 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.11 2005/09/05 20:03:48 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -128,6 +128,8 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
   const char *dbdir;
   const char *encoding;
 
+  int timeout;
+
   /* initialize error stuff */
   conn->error_number = 0;
   conn->error_message = NULL;
@@ -214,7 +216,16 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
       conn->current_db = strdup(dbname);
     }
   }
-	
+
+  /* set the SQLite timeout to timeout milliseconds */
+  timeout = dbi_conn_get_option_numeric(conn, "sqlite3_timeout");
+
+  if (timeout == -1) {
+    timeout = 0;
+  }
+
+  sqlite3_busy_timeout(sqcon, timeout);	
+  
   return 0;
 }
 
