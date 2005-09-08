@@ -15,6 +15,7 @@ struct CONNINFO {
   char username[64];
   char password[64];
   char hostname[256];
+  char version[64];
 };
 
 char string_to_quote[] = "Can \'we\' \"quote\" this properly?";
@@ -424,7 +425,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.28 2005/09/07 19:23:39 mhoenicka Exp $\n"
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.29 2005/09/08 19:46:33 mhoenicka Exp $\n"
 	 "Library version: %s\n\n", dbi_version());
 	
   fprintf(stderr, "libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
@@ -526,6 +527,12 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
     }
   }
 
+  if (!strcmp(ptr_cinfo->drivername, "freetds")) {
+    fprintf(stderr, "database version? ");
+    fgets(ptr_cinfo->version, 64, stdin);
+    (ptr_cinfo->version)[strlen(ptr_cinfo->version)-1] = '\0';
+  }
+
   fprintf(stderr, "database name? [libdbitest] ");
   fgets(ptr_cinfo->dbname, 64, stdin);
   if ((ptr_cinfo->dbname)[0] == '\n') {
@@ -547,7 +554,10 @@ int set_driver_options(struct CONNINFO* ptr_cinfo, dbi_conn conn, const char* en
     dbi_conn_set_option(conn, "host", ptr_cinfo->hostname);
     dbi_conn_set_option(conn, "username", ptr_cinfo->username);
     dbi_conn_set_option(conn, "password", ptr_cinfo->password);
-	
+
+    if (!strcmp(ptr_cinfo->drivername, "freetds") && strlen(ptr_cinfo->version)){
+      dbi_conn_set_option(conn, "freetds_version", ptr_cinfo->version);
+    }
   } 
   else if (!strcmp(ptr_cinfo->drivername, "msql")) {
     if( *(ptr_cinfo->hostname)) {
