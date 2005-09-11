@@ -22,7 +22,7 @@
  * Copyright (C) 2005, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.11 2005/09/05 20:03:48 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.12 2005/09/11 20:04:47 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -653,14 +653,12 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
     }
 
     /* table now points to the table name; find the end of table */
-    item = strchr(table, ' ');
-    if (!item) {
-      strcpy(curr_table, table);
+    item = table;
+    while (*item && *item != ' ' && *item != ',') {
+      item++;
     }
-    else {
-      strncpy(curr_table, table, item-table);
-      curr_table[item-table] = '\0'; /* terminate just in case */
-    }
+    strncpy(curr_table, table, item-table);
+    curr_table[item-table] = '\0'; /* terminate just in case */
 
     /* for obvious reasons, the internal tables do not contain the
        commands how they were created themselves. We have to use known
