@@ -11,7 +11,7 @@ Driver developers/maintainers:
   developed by Christian M. Stamgren <christian at centiongroup.com>
 
 * FreeTDS
-  developed by Vadym Kononenko <vkononenko@atlantic-link.com.ua>
+  developed by Vadym Kononenko <vkononenko at atlantic-link.com.ua>
 
 * mSQL
   developed by Christian M. Stamgren <christian at centiongroup.com>
@@ -22,7 +22,7 @@ Driver developers/maintainers:
 
 * Oracle
   developed by Christian M. Stamgren <christian at centiongroup.com>
-  maintained by Ashish Ranjan <ashishwave@yahoo.com>
+  maintained by Ashish Ranjan <ashishwave at yahoo.com>
 
 * PostgreSQL
   developed by David A. Parker <david at neongoat.com>
@@ -40,4 +40,4 @@ Those who helped one way or another:
   - configure/Makefile/libtool fixes, OSX guru
 
 
-$Id: AUTHORS,v 1.9 2005/09/21 18:49:48 mhoenicka Exp $
+$Id: AUTHORS,v 1.10 2005/09/21 22:10:31 mhoenicka Exp $
