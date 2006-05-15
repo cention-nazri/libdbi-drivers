@@ -7,7 +7,7 @@
  * Copyright (C) 2001-2002, David Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.h,v 1.3 2003/06/07 23:26:06 mhoenicka Exp $
+ * $Id: dbd_pgsql.h,v 1.4 2006/05/15 21:06:50 mhoenicka Exp $
  */
 
 /* OID declarations from src/interfaces/odbc/pgtypes.h */
@@ -50,9 +50,10 @@
 #define PG_TYPE_BPCHAR			1042
 #define PG_TYPE_VARCHAR			1043
 #define PG_TYPE_DATE			1082
-#define PG_TYPE_TIME			1083
-#define PG_TYPE_DATETIME		1114  /* 1184 ?? */
-#define PG_TYPE_TIMESTAMP		1184  /* 1296 ?? */
+#define PG_TYPE_TIME			1083  /* w/o timezone */
+#define PG_TYPE_TIMETZ			1266  /* with timezone */
+#define PG_TYPE_TIMESTAMP		1114  /* w/o timezone */
+#define PG_TYPE_TIMESTAMPTZ		1184  /* with timezone */
 #define PG_TYPE_NUMERIC			1700
 
 /* list from http://www.postgresql.org/idocs/index.php?sql-keywords-appendix.html */
