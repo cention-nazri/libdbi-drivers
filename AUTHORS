@@ -33,6 +33,9 @@ Driver developers/maintainers:
 
 * SQLite3
   developed by Markus Hoenicka <markus at mhoenicka.de>
+  
+* Ingres 2006
+  developed by Toby Thain <qu1j0t3 at sourceforge.net>
 
 
 Those who helped one way or another:
@@ -40,4 +43,4 @@ Those who helped one way or another:
   - configure/Makefile/libtool fixes, OSX guru
 
 
-$Id: AUTHORS,v 1.10 2005/09/21 22:10:31 mhoenicka Exp $
+$Id: AUTHORS,v 1.11 2006/05/31 06:52:33 qu1j0t3 Exp $
