@@ -23,10 +23,8 @@ For more information about the Ingres(R) open source RDBMS, see http://ingres.co
 
 STATUS
 ------
-30-May-2006:
-	Ingres driver is partially implemented.
-	Simple queries work but result set handling is entirely unimplemented so far.
-	Connection defaults to 'autocommit' mode (or try 'ingres_autocommit' option)
+1-Jun-2006:
+	Ingres driver is mostly implemented. See TODO for missing/incomplete features.
 
 CONTACT INFO:
 -------------
@@ -35,5 +33,5 @@ libdbi-drivers-devel@lists.sourceforge.net
 http://libdbi-drivers.sourceforge.net
 
 
-$Id: README,v 1.1 2006/05/30 07:15:31 qu1j0t3 Exp $
+$Id: README,v 1.2 2006/06/01 06:54:15 qu1j0t3 Exp $
 
