@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.8 2006/06/02 07:44:13 qu1j0t3 Exp $
+ * $Id: dbd_ingres.c,v 1.9 2006/06/02 15:27:53 qu1j0t3 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -449,7 +449,7 @@ static int ingres_results(dbi_result_t *result){
 			break;
 		}else if(gcParm.gc_moreSegments){
 			_verbose_handler(result->conn,"long/blob columns not yet supported; aborting\n");
-			break;
+			//break;
 		}
 
 		if((row = _dbd_row_allocate(result->numfields))){
@@ -502,9 +502,12 @@ static int ingres_results(dbi_result_t *result){
 						//_verbose_handler(result->conn,"  [%d] converted string %d bytes (desc %d bytes)\n",i,len,desc[i].ds_length);
 						break;
 					// the blob types aren't implemented by fetch yet (TODO)
-					//case IIAPI_LBYTE_TYPE:
-					//case IIAPI_LVCH_TYPE:
-					//case IIAPI_LTXT_TYPE:
+					case IIAPI_LBYTE_TYPE:
+					case IIAPI_LVCH_TYPE:
+					case IIAPI_LTXT_TYPE:
+						data->d_string = strdup("?");
+						row->field_sizes[i] = 1;
+						break;
 					// variable length (first 2 bytes define length)
 					case IIAPI_VCH_TYPE:
 					case IIAPI_VBYTE_TYPE:

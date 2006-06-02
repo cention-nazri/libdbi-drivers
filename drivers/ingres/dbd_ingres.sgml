@@ -13,7 +13,7 @@
 
 ]>
 
-<!-- $Id: dbd_ingres.sgml,v 1.4 2006/06/01 20:11:08 qu1j0t3 Exp $ -->
+<!-- $Id: dbd_ingres.sgml,v 1.5 2006/06/02 15:27:53 qu1j0t3 Exp $ -->
 
 <book id="dbd-&dbd-name;">
 
@@ -27,8 +27,8 @@
 			<address><email>qu1j0t3@sourceforge.net</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.4 2006/06/01 20:11:08 qu1j0t3 Exp $</edition>
-	<pubdate>$Date: 2006/06/01 20:11:08 $</pubdate>
+	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.5 2006/06/02 15:27:53 qu1j0t3 Exp $</edition>
+	<pubdate>$Date: 2006/06/02 15:27:53 $</pubdate>
 	<revhistory>
       <revision>
 	<revnumber>0.2</revnumber>
@@ -277,6 +277,10 @@
 		of all types - tables, views, indexes and partitions -
 		in the <literal>iitables</literal> catalog for the named database
 		(except those beginning with <literal>ii</literal>, which are reserved for Ingres).
+	</para>
+	<para>
+		The driver will not be loaded at all by <function>dbi_initialize()</function>
+		if the current user does not have permission to use the Ingres DBMS.
 	</para>
 </chapter>
 
