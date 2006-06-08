@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.15 2006/06/08 19:14:34 qu1j0t3 Exp $
+ * $Id: dbd_ingres.c,v 1.16 2006/06/08 19:39:51 qu1j0t3 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -686,7 +686,7 @@ static int ingres_commit(dbi_conn_t *conn, II_PTR tranHandle){
     cmParm.cm_tranHandle = tranHandle;
 	IIapi_commit(&cmParm);
     status = ingres_wait(conn, &cmParm.cm_genParm);
-	DEBUG_ERROR(cmParm.cm_genParm.gp_errorHandle);
+	SAVE_ERROR(conn, cmParm.cm_genParm.gp_errorHandle);
     return status == IIAPI_ST_SUCCESS;
 }
 
@@ -699,7 +699,7 @@ static int ingres_rollback(dbi_conn_t *conn, II_PTR tranHandle){
     rbParm.rb_savePointHandle = NULL;
 	IIapi_rollback(&rbParm);
     status = ingres_wait(conn, &rbParm.rb_genParm);
-	DEBUG_ERROR(rbParm.rb_genParm.gp_errorHandle);
+	SAVE_ERROR(conn, rbParm.rb_genParm.gp_errorHandle);
     return status == IIAPI_ST_SUCCESS;
 }
 
