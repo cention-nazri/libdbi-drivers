@@ -13,7 +13,7 @@
 
 ]>
 
-<!-- $Id: dbd_ingres.sgml,v 1.10 2006/06/08 19:14:34 qu1j0t3 Exp $ -->
+<!-- $Id: dbd_ingres.sgml,v 1.11 2006/06/09 00:57:04 qu1j0t3 Exp $ -->
 
 <book id="dbd-&dbd-name;">
 
@@ -27,8 +27,8 @@
 			<address><email>qu1j0t3@sourceforge.net</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.10 2006/06/08 19:14:34 qu1j0t3 Exp $</edition>
-	<pubdate>$Date: 2006/06/08 19:14:34 $</pubdate>
+	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.11 2006/06/09 00:57:04 qu1j0t3 Exp $</edition>
+	<pubdate>$Date: 2006/06/09 00:57:04 $</pubdate>
 	<revhistory>
       <revision>
 	<revnumber>0.3</revnumber>
@@ -324,7 +324,7 @@
 		<term>Blank handling</term>
 		<listitem>
 			<para>Blanks are preserved in column values (except that DECIMAL and MONEY columns
-			are converted to strings, and then stripped of leading and trailing blanks).
+			are converted to strings, and then stripped of trailing blanks).
 			Note that names returned by <function>dbi_conn_get_table_list()</function>
 			and <function>dbi_conn_get_db_list()</function> are padded with blanks
 			to a fixed width.</para>
