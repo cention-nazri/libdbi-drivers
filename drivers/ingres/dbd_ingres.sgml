@@ -13,7 +13,7 @@
 
 ]>
 
-<!-- $Id: dbd_ingres.sgml,v 1.14 2006/06/12 00:00:25 qu1j0t3 Exp $ -->
+<!-- $Id: dbd_ingres.sgml,v 1.15 2006/06/12 16:58:17 qu1j0t3 Exp $ -->
 
 <book id="dbd-&dbd-name;">
 
@@ -27,8 +27,8 @@
 			<address><email>qu1j0t3@sourceforge.net</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.14 2006/06/12 00:00:25 qu1j0t3 Exp $</edition>
-	<pubdate>$Date: 2006/06/12 00:00:25 $</pubdate>
+	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.15 2006/06/12 16:58:17 qu1j0t3 Exp $</edition>
+	<pubdate>$Date: 2006/06/12 16:58:17 $</pubdate>
 	<revhistory>
       <revision>
 	<revnumber>0.3</revnumber>
@@ -350,6 +350,10 @@
 			last error message, but the message text will include all relevant messages. At verbosity level 2,
 			errors directly relating to libdbi function calls are logged. At verbosity 3,
 			all errors are logged including those caused by API calls made internally by the driver.</para>
+			
+			<para>Environment variables <literal>II_API_TRACE</literal> and
+			<literal>II_API_LOG</literal> control logging by the API itself. 
+			See Chapter 6 of the Ingres OpenAPI User Guide for details.</para>
 		</listitem>
 	</varlistentry>
 	<varlistentry>

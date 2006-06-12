@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.22 2006/06/12 04:06:35 qu1j0t3 Exp $
+ * $Id: dbd_ingres.c,v 1.23 2006/06/12 16:58:17 qu1j0t3 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -456,6 +456,7 @@ size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char* orig,
 	}
 	return DBI_LENGTH_ERROR;
 }
+
 
 /* ---------- result handling ---------- */
 
@@ -1022,6 +1023,7 @@ static dbi_result_t *ingres_sys_query(dbi_conn_t *conn, const char *sql) {
 	ingres_rollback(iconn->sysConn, ((ingres_conn_t*)iconn->sysConn->connection)->currTran);
 	return res;
 }
+
 
 /* ---------- DBMS queries ---------- */
 
