@@ -13,7 +13,7 @@
 
 ]>
 
-<!-- $Id: dbd_ingres.sgml,v 1.13 2006/06/11 22:18:44 qu1j0t3 Exp $ -->
+<!-- $Id: dbd_ingres.sgml,v 1.14 2006/06/12 00:00:25 qu1j0t3 Exp $ -->
 
 <book id="dbd-&dbd-name;">
 
@@ -27,8 +27,8 @@
 			<address><email>qu1j0t3@sourceforge.net</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.13 2006/06/11 22:18:44 qu1j0t3 Exp $</edition>
-	<pubdate>$Date: 2006/06/11 22:18:44 $</pubdate>
+	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.14 2006/06/12 00:00:25 qu1j0t3 Exp $</edition>
+	<pubdate>$Date: 2006/06/12 00:00:25 $</pubdate>
 	<revhistory>
       <revision>
 	<revnumber>0.3</revnumber>
@@ -355,8 +355,17 @@
 	<varlistentry>
 		<term>Connection options</term>
 		<listitem>
-			<para>All Ingres option values are specified as strings (using 
-			<function>dbi_conn_set_option()</function>).</para>
+			<para>All Ingres option values are specified as <emphasis>strings</emphasis> 
+			(using <function>dbi_conn_set_option()</function>).</para>
+		</listitem>
+	</varlistentry>
+	<varlistentry>
+		<term><literal>ingres_blobsegment</literal> option</term>
+		<listitem>
+			<para>This option specifies the size of individual segments
+			returned for BLOB columns (by default this is approx 2000 bytes).
+			If your BLOBs are large, increasing this value reduces the number
+			of API calls required by the Ingres driver.</para>
 		</listitem>
 	</varlistentry>
 </variablelist>

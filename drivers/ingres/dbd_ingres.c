@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.20 2006/06/11 22:18:44 qu1j0t3 Exp $
+ * $Id: dbd_ingres.c,v 1.21 2006/06/12 00:00:25 qu1j0t3 Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -131,7 +131,7 @@ static time_t ingres_date(char *raw){
 	struct tm unixtime;
 	char *p = raw, *q, sep;
 
-	//PRINT_VERBOSE(NULL,"date: '%s'\n",raw);
+	PRINT_DEBUG(NULL,"parsing date: '%s'\n",raw);
 	
 	unixtime.tm_sec = unixtime.tm_min = unixtime.tm_hour = 0;
 	unixtime.tm_isdst = -1;
@@ -356,10 +356,10 @@ static int ingres_connect(dbi_conn_t *conn, const char *db, const char *autocomm
 	iconn->errorMsg = NULL;
 	iconn->autocommit = FALSE;
 
-	scParm.sc_connHandle = NULL; // FIXME: should be envHandle, but currently that causes connect to fail (?!)
+	scParm.sc_connHandle = envHandle;
 
 	// set environment options (as distinct from connection options)
-	//ingres_envoption_num(conn, IIAPI_EP_MAX_SEGMENT_LEN, "ingres_blobsegment"); // size of returned BLOB segments
+	ingres_envoption_num(conn, IIAPI_EP_MAX_SEGMENT_LEN, "ingres_blobsegment"); // size of returned BLOB segments
 		
 	// see OpenAPI reference for meaning of these options. Numeric codes in iiapi.h
 	ingres_option_num(conn, &scParm, IIAPI_CP_CENTURY_BOUNDARY, "ingres_century_bdry"); // interpretation of 2-digit years
@@ -376,12 +376,13 @@ static int ingres_connect(dbi_conn_t *conn, const char *db, const char *autocomm
 	ingres_option_str(conn, &scParm, IIAPI_CP_TIMEZONE, "ingres_timezone");
 
 	connParm.co_target = db ? db : dbi_conn_get_option(conn, "dbname");
-	connParm.co_connHandle = scParm.sc_connHandle; // if any options were set above, this is now a valid connHandle
-	PRINT_DEBUG(NULL, "ingres_connect: co_connHandle=%#x\n",connParm.co_connHandle);
-	connParm.co_tranHandle = NULL;
 	connParm.co_username = dbi_conn_get_option(conn, "username");
 	connParm.co_password = dbi_conn_get_option(conn, "password");
 	connParm.co_timeout = -1;
+	connParm.co_connHandle = scParm.sc_connHandle; // if any options were set above, this is now a valid connHandle
+	PRINT_DEBUG(NULL, "ingres_connect: co_connHandle=%#x\n",connParm.co_connHandle);
+	connParm.co_tranHandle = NULL;
+	connParm.co_type = IIAPI_CT_SQL;
 
 	IIapi_connect(&connParm);
 	status = ingres_wait(conn, &connParm.co_genParm);
