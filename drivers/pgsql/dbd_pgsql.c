@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.50 2006/05/29 19:19:43 qu1j0t3 Exp $
+ * $Id: dbd_pgsql.c,v 1.51 2006/09/21 19:44:13 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +36,12 @@ long long atoll(const char *str);
 
 #ifndef HAVE_STRTOLL
 long long strtoll(const char *nptr, char **endptr, int base);
+#endif
+
+/* In 7.4 PQfreeNotify was deprecated and PQfreemem is used instead.  A
+   macro exists in 7.4 for backwards compatibility. */
+#ifndef PQfreeNotify   /* must be earlier than 7.4 */
+#define PQfreemem PQfreeNotify
 #endif
 
 #include <stdio.h>
@@ -536,8 +542,12 @@ unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
 
 int dbd_ping(dbi_conn_t *conn) {
 	PGconn *pgsql = (PGconn *)conn->connection;
+	PGresult *res;
 
-	PQexec(pgsql, "SELECT 1");
+	res = PQexec(pgsql, "SELECT 1");
+	if (res) {
+	  PQclear (res);
+	}
 
 	if (PQstatus(pgsql) == CONNECTION_OK) {
 		return 1;
