@@ -22,7 +22,7 @@
  * Copyright (C) 2005, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.12 2005/09/11 20:04:47 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.13 2006/10/17 19:01:44 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -546,7 +546,6 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 			       &errmsg);
 
   if (query_res) {
-    _error_handler(conn, errflag);
     return NULL;
   }
 	
@@ -945,17 +944,10 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
 int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
   /* put error number into errno, error string into errstr
    * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
-  int result = 0;
 
-  if (conn->error_number) {
-    *errno = conn->error_number;
-    result++;
-  }
-  if (conn->error_message) {
-    *errstr = conn->error_message;
-    result += 2;
-  }
-  return result;
+  *errno = sqlite3_errcode((sqlite3 *)conn->connection);
+  *errstr = strdup((char*)sqlite3_errmsg((sqlite3 *)conn->connection));
+  return 3;
 }
 
 
