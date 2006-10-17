@@ -22,7 +22,7 @@
  * Copyright (C) 2002, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.34 2006/10/17 19:00:20 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.35 2006/10/17 19:18:47 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -622,7 +622,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
 
     /* table now points to the table name; find the end of table */
     item = table;
-    while (*item && *item != ' ' && *item != ',') {
+    while (*item && *item != ' ' && *item != ',' && *item != ';') {
       item++;
     }
     strncpy(curr_table, table, item-table);
