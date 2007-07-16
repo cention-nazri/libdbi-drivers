@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.91 2007/03/13 21:27:44 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.92 2007/07/16 20:24:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -36,6 +36,10 @@ long long atoll(const char *str);
 
 #ifndef HAVE_STRTOLL
 long long strtoll(const char *nptr, char **endptr, int base);
+#endif
+
+#ifdef __MINGW32__
+#include <winsock.h>
 #endif
 
 #include <stdio.h>
