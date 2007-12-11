@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.92 2007/07/16 20:24:29 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.93 2007/12/11 21:49:35 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -172,14 +172,14 @@ int dbd_connect(dbi_conn_t *conn) {
 		conn->connection = (void *)mycon;
 		if (dbname) conn->current_db = strdup(dbname);
 	}
-	
+/* 	printf("dbname went to %s\n", dbname);	 */
 	if (encoding && *encoding) {
 	  /* set connection encoding */
 	  if (!strcmp(encoding, "auto")) {
 	    encoding = dbd_get_encoding(conn);
 	    if (encoding) {
-	      asprintf(&sql_cmd, "SET NAMES '%s'", encoding);
-/* 	      printf("SET NAMES '%s'", encoding); */
+	      asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
+/*  	      printf("SET NAMES '%s'\n", dbd_encoding_from_iana(encoding)); */
 	      dbd_query(conn, sql_cmd);
 	      free(sql_cmd);
 	    }
@@ -190,11 +190,11 @@ int dbd_connect(dbi_conn_t *conn) {
 	  }
 	  else {
 	    asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-/*  	    printf("SET NAMES '%s'", dbd_encoding_from_iana(encoding)); */
+/*   	    printf("SET NAMES '%s'", dbd_encoding_from_iana(encoding)); */
 	    dbd_query(conn, sql_cmd);
 	    free(sql_cmd);
 	  }
-/* 	  printf("set encoding to %s<<\n", encoding); */
+/*  	  printf("set encoding to %s<<\n", dbd_encoding_from_iana(encoding)); */
 	}
 /* 	else { */
 /* 	  printf("leave encoding alone\n"); */
