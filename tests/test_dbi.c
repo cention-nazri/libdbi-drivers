@@ -456,11 +456,11 @@ int init_db(struct CONNINFO* ptr_cinfo) {
       fprintf(stderr, "Could not create initial database\n");
       return 1;
     }
-    snprintf(command, 1024, "sudo chmod 666 %s/%s", ptr_cinfo->dbdir, ptr_cinfo->dbname);
-    if (system(command)) {
-      fprintf(stderr, "Could not set database permissions\n");
-      return 1;
-    }
+/*     snprintf(command, 1024, "sudo chmod 666 %s/%s", ptr_cinfo->dbdir, ptr_cinfo->dbname); */
+/*     if (system(command)) { */
+/*       fprintf(stderr, "Could not set database permissions\n"); */
+/*       return 1; */
+/*     } */
   }
   
   return 0;
@@ -471,7 +471,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.38 2007/12/18 20:50:11 mhoenicka Exp $\n"
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.39 2007/12/30 20:07:26 mhoenicka Exp $\n"
 	 "Library version: %s\n\n", dbi_version());
 	
   fprintf(stderr, "libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
