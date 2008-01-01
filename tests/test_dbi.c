@@ -436,19 +436,19 @@ int init_db(struct CONNINFO* ptr_cinfo) {
   if (!strcmp(ptr_cinfo->drivername, "firebird")) {
     if (!strcmp(ptr_cinfo->hostname, "localhost")) {
       snprintf(command, 1024, 
-	       "echo \"CREATE DATABASE \'%s/%s\' user '%s' password '%s';\""
+	       "echo \"CREATE DATABASE \'%s/%s\';\""
 	       "| %s -e -pas %s "
 	       "-u %s -sql_dialect 3", ptr_cinfo->dbdir, 
-	       ptr_cinfo->dbname, ptr_cinfo->username, ptr_cinfo->password, 
+	       ptr_cinfo->dbname,  
 	       ( boolean ? "isql" : "isql-fb"), 
 	       ptr_cinfo->password, ptr_cinfo->username);
     }
     else { /* remote */
       snprintf(command, 1024, 
-	       "echo \"CREATE DATABASE \'%s:%s/%s\' user '%s' password '%s';\""
+	       "echo \"CREATE DATABASE \'%s:%s/%s\';\""
 	       "| %s -e -pas %s "
 	       "-u %s -sql_dialect 3", ptr_cinfo->hostname, ptr_cinfo->dbdir, 
-	       ptr_cinfo->dbname, ptr_cinfo->username, ptr_cinfo->password, 
+	       ptr_cinfo->dbname,  
 	       ( boolean ? "isql" : "isql-fb"), 
 	       ptr_cinfo->password, ptr_cinfo->username);
     }
@@ -471,7 +471,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.39 2007/12/30 20:07:26 mhoenicka Exp $\n"
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.40 2008/01/01 00:16:50 mhoenicka Exp $\n"
 	 "Library version: %s\n\n", dbi_version());
 	
   fprintf(stderr, "libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
