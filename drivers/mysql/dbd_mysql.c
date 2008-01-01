@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.93 2007/12/11 21:49:35 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.94 2008/01/01 00:18:19 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -126,7 +126,7 @@ int dbd_initialize(dbi_driver_t *driver) {
 	 * this is called right after dbd_register_driver().
 	 * return -1 on error, 0 on success. if -1 is returned, the driver will not
 	 * be added to the list of available drivers. */
-	
+        _dbd_register_driver_cap(driver, "safe_dlclose", 1);
 	return 0;
 }
 

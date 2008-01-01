@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.52 2007/03/26 21:08:17 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.53 2008/01/01 00:18:19 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -141,6 +141,7 @@ int dbd_initialize(dbi_driver_t *driver) {
 	 * return -1 on error, 0 on success. if -1 is returned, the driver will not
 	 * be added to the list of available drivers. */
 	
+        _dbd_register_driver_cap(driver, "safe_dlclose", 1);
 	return 0;
 }
 

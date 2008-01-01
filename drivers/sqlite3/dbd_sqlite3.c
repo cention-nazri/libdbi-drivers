@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.16 2007/12/07 00:30:42 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.17 2008/01/01 00:18:19 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -102,6 +102,7 @@ int dbd_initialize(dbi_driver_t *driver) {
    * return -1 on error, 0 on success. if -1 is returned, the driver will not
    * be added to the list of available drivers. */
 
+  _dbd_register_driver_cap(driver, "safe_dlclose", 1);
   return 0;
 }
 
