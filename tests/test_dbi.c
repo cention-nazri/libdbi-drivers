@@ -484,7 +484,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.42 2008/01/02 16:26:08 mhoenicka Exp $\n"
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.43 2008/01/04 00:44:42 mhoenicka Exp $\n"
 	 "Library version: %s\n\n", dbi_version());
 	
   fprintf(stderr, "libdbi driver directory? [%s] ", DBI_DRIVER_DIR);
@@ -1518,12 +1518,12 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
 	errflag = dbi_conn_error_flag(dbi_result_get_conn(result));
 	if (errflag) {
 	  printf("the_time_tz errflag=%d\n", errflag);
-/* 	printf("type went to %d, attribs went to %d\n", dbi_result_get_field_type(result, "the_time_tz"), dbi_result_get_field_attribs(result, "the_time_tz")); */
-	  ptr_tm_time = gmtime(&the_time_dt_tz);
-	  hour_tz = ptr_tm_time->tm_hour;
-	  min_tz = ptr_tm_time->tm_min;
-	  sec_tz = ptr_tm_time->tm_sec;
 	}
+/* 	printf("type went to %d, attribs went to %d\n", dbi_result_get_field_type(result, "the_time_tz"), dbi_result_get_field_attribs(result, "the_time_tz")); */
+	ptr_tm_time = gmtime(&the_time_dt_tz);
+	hour_tz = ptr_tm_time->tm_hour;
+	min_tz = ptr_tm_time->tm_min;
+	sec_tz = ptr_tm_time->tm_sec;
       }
 			
       ptr_tm_date = gmtime(&the_date_dt);
