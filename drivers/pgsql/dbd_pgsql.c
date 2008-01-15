@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.53 2008/01/01 00:18:19 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.54 2008/01/15 00:27:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -216,7 +216,7 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 
 	if (PQstatus(pgconn) == CONNECTION_BAD) {
 		conn->connection = (void *)pgconn; // still need this set so _error_handler can grab information
-		_error_handler(conn, DBI_ERROR_DBD);
+		_dbd_internal_error_handler(conn, NULL, DBI_ERROR_DBD);
 		PQfinish(pgconn);
 		conn->connection = NULL; // pgconn no longer valid
 		return -2;
