@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.19 2008/01/15 00:27:29 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.20 2008/01/15 14:07:24 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -895,6 +895,7 @@ unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
 }
 
 unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
+  _dbd_internal_error_handler(conn, NULL, DBI_ERROR_UNSUPPORTED);
   return 0;
 }
 
