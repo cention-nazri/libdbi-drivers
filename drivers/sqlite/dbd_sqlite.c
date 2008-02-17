@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.39 2008/01/15 14:07:24 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.40 2008/02/17 16:29:50 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -403,6 +403,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
    */
   dbi_result_t *dbi_result;
   dbi_conn_t* tempconn;
+  dbi_inst instance;
   int retval;
   char* sq_errmsg;
   char* sql_cmd;
@@ -410,7 +411,8 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
   /* this function tries to query a specific database, so we need a
    separate connection to that other database, retrieve the table names,
    and feed them to a temporary table in our main connection */
-  tempconn = dbi_conn_new("sqlite");
+  instance = dbi_driver_get_instance(dbi_conn_get_driver(conn));
+  tempconn = dbi_conn_new_r("sqlite", instance);
 
   /* we explicitly cast to (char*) as we discard the "const" thing here */
   dbi_conn_set_option(tempconn, "dbname", (char*)db);
