@@ -7,7 +7,7 @@
  * Copyright (C) 2001-2002, David Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.h,v 1.4 2006/05/15 21:06:50 mhoenicka Exp $
+ * $Id: dbd_pgsql.h,v 1.5 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 /* OID declarations from src/interfaces/odbc/pgtypes.h */
@@ -572,3 +572,92 @@
 	"YEAR", \
 	"ZONE", \
 	NULL }
+
+#define PGSQL_CUSTOM_FUNCTIONS { \
+        "PQconnectdb", \
+        "PQsetdbLogin", \
+        "PQsetdb", \
+        "PQconnectStart", \
+        "PQconnectPoll", \
+        "PQconndefaults", \
+        "PQfinish", \
+        "PQreset", \
+        "PQresetStart", \
+        "PQresetPoll", \
+        "PQdb", \
+        "PQuser", \
+        "PQpass", \
+        "PQhost", \
+        "PQport", \
+        "PQtty", \
+        "PQoptions", \
+        "PQstatus", \
+        "PQtransactionStatus", \
+        "PQparameterStatus", \
+        "PQprotocolVersion", \
+        "PQserverVersion", \
+        "PQerrorMessage", \
+        "PQsocket", \
+        "PQbackendPID", \
+        "PQgetssl", \
+        "PQexec", \
+        "PQexecParams", \
+        "PQprepare", \
+        "PQexecPrepared", \
+        "PQresultStatus", \
+        "PQresStatus", \
+        "PQresultErrorMessage", \
+        "PQresultErrorField", \
+        "PQclear", \
+        "PQmakeEmptyPGresult", \
+        "PQntuples", \
+        "PQnfields", \
+        "PQfname", \
+        "PQfnumber", \
+        "PQftable", \
+        "PQftablecol", \
+        "PQfformat", \
+        "PQftype", \
+        "PQfmod", \
+        "PQfsize", \
+        "PQbinaryTuples", \
+        "PQgetvalue", \
+        "PQgetisnull", \
+        "PQgetlength", \
+        "PQprint", \
+        "PQcmdStatus", \
+        "PQcmdTuples", \
+        "PQoidValue", \
+        "PQoidStatus", \
+        "PQescapeString", \
+        "PQescapeBytea", \
+        "PQunescapeBytea", \
+        "PQfreemem", \
+        "PQsendQuery", \
+        "PQsendQueryParams", \
+        "PQsendPrepare", \
+        "PQsendQueryPrepared", \
+        "PQgetResult", \
+        "PQconsumeInput", \
+        "PQisBusy", \
+        "PQsetnonblocking", \
+        "PQisnonblocking", \
+        "PQflush", \
+        "PQgetCancel", \
+        "PQfreeCancel", \
+        "PQcancel", \
+        "PQrequestCancel", \
+        "PQfn", \
+        "PQnotifies", \
+        "PQputCopyData", \
+        "PQputCopyEnd", \
+        "PQgetCopyData", \
+        "PQgetline", \
+        "PQgetlineAsync", \
+        "PQputline", \
+        "PQputnbytes", \
+        "PQendcopy", \
+        "PQsetErrorVerbosity", \
+        "PQtrace", \
+        "PQuntrace", \
+        NULL}

@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.55 2008/01/26 17:39:50 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.56 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -65,7 +65,7 @@ static const dbi_info_t driver_info = {
 	__DATE__
 };
 
-static const char *custom_functions[] = {NULL}; // TODO
+static const char *custom_functions[] = PGSQL_CUSTOM_FUNCTIONS;
 static const char *reserved_words[] = PGSQL_RESERVED_WORDS;
 
 /* encoding strings, array is terminated by a pair of empty strings */

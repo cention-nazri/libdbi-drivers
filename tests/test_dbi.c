@@ -19,12 +19,13 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.49 2008/03/04 07:57:55 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.50 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 #include <stdio.h>
 #include <string.h>
 #include <dbi/dbi.h>
+#include <dbi/dbi-dev.h> /* need this to access custom functions */
 #include <time.h>
 #include <unistd.h>
 #include <limits.h>
@@ -91,6 +92,7 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
 int test_drop_table(dbi_conn conn);
 int test_drop_db(struct CONNINFO* ptr_cinfo, dbi_conn conn);
 int test_error_messages(struct CONNINFO* ptr_cinfo, dbi_conn conn, int n);
+int test_custom_function(struct CONNINFO* ptr_cinfo, dbi_conn conn);
 int my_dbi_initialize(const char *driverdir, dbi_inst *Inst);
 void my_dbi_shutdown(dbi_inst Inst);
 dbi_driver my_dbi_driver_list(dbi_driver Current, dbi_inst Inst);
@@ -174,6 +176,15 @@ int main(int argc, char **argv) {
   printf("\nTest %d: List databases: \n", testnumber++);
 	
   if (test_list_db(&cinfo, conn)) {
+    dbi_conn_close(conn);
+    my_dbi_shutdown(dbi_instance);
+    exit(1);
+  }
+
+  /* Test: custom function */
+  printf("\n\nTest %d: Run driver-specific function: \n", testnumber++, cinfo.dbname);
+	
+  if (test_custom_function(&cinfo, conn)) {
     dbi_conn_close(conn);
     my_dbi_shutdown(dbi_instance);
     exit(1);
@@ -546,12 +557,95 @@ int init_db(struct CONNINFO* ptr_cinfo) {
 }
 
 /* returns 0 on success, 1 on error */
+int test_custom_function(struct CONNINFO* ptr_cinfo, dbi_conn conn) {
+  dbi_conn_t *myconn = conn;
+
+  /* attempt to call a trivial function of the client library */
+  if (!strcmp(ptr_cinfo->drivername, "firebird")) {
+    fprintf(stderr, "\tnot yet implemented for this driver\n");
+    return 0;
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "freetds")) {
+    fprintf(stderr, "\tnot yet implemented for this driver\n");
+    return 0;
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "ingres")) {
+    fprintf(stderr, "\tnot yet implemented for this driver\n");
+    return 0;
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "msql")) {
+    fprintf(stderr, "\tnot yet implemented for this driver\n");
+    return 0;
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "mysql")) {
+    int protocol;
+    unsigned int (*custom_function)(void*);
+
+    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "mysql_get_proto_info")) != NULL) {
+      protocol = custom_function(myconn->connection);
+      printf("\tmysql_get_proto_info returned: %d\n", protocol);
+      return 0;
+    }
+    else {
+      printf("\tD'uh! Cannot run custom function\n");
+      return 1;
+    }
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "oracle")) {
+    fprintf(stderr, "not yet implemented\n");
+    return 0;
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "pgsql")) {
+    int protocol;
+    int (*custom_function)(void*);
+
+    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "PQprotocolVersion")) != NULL) {
+      protocol = custom_function(myconn->connection);
+      printf("\tPQprotocolVersion returned: %d\n", protocol);
+      return 0;
+    }
+    else {
+      printf("\tD'uh! Cannot run custom function\n");
+      return 1;
+    }
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "sqlite")) {
+    const char* version;
+    const char* (*custom_function)(void);
+
+    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "sqlite_version")) != NULL) {
+      version = custom_function();
+      printf("\tsqlite_version returned: %s\n", version);
+      return 0;
+    }
+    else {
+      printf("\tD'uh! Cannot run custom function\n");
+      return 1;
+    }
+  }
+  else if (!strcmp(ptr_cinfo->drivername, "sqlite3")) {
+    const char* version;
+    const char* (*custom_function)(void);
+
+    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "sqlite3_libversion")) != NULL) {
+      version = custom_function();
+      printf("\tsqlite3_libversion returned: %s\n", version);
+      return 0;
+    }
+    else {
+      printf("\tD'uh! Cannot run custom function\n");
+      return 1;
+    }
+  }
+}
+
+/* returns 0 on success, 1 on error */
 int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   int numdrivers;
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.49 2008/03/04 07:57:55 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.50 2008/03/07 20:51:27 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);

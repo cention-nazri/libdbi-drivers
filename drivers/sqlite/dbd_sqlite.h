@@ -21,7 +21,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_sqlite.h,v 1.3 2007/12/07 00:30:41 mhoenicka Exp $
+ * $Id: dbd_sqlite.h,v 1.4 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 enum enum_field_types { FIELD_TYPE_DECIMAL, FIELD_TYPE_TINY,
@@ -281,3 +281,26 @@ enum enum_field_types { FIELD_TYPE_DECIMAL, FIELD_TYPE_TINY,
 	"YEAR_MONTH", \
 	"ZEROFILL", \
 	NULL }
+
+#define SQLITE_CUSTOM_FUNCTIONS { \
+        "sqlite_open", \
+        "sqlite_close", \
+        "sqlite_exec", \
+        "sqlite_last_insert_rowid", \
+        "sqlite_changes", \
+        "sqlite_get_table", \
+        "sqlite_free_table", \
+        "sqlite_interrupt", \
+        "sqlite_complete", \
+        "sqlite_busy_handler", \
+        "sqlite_busy_timeout", \
+        "sqlite_version", \
+        "sqlite_encoding", \
+        "sqlite_exec_printf", \
+        "sqlite_exec_vprintf", \
+        "sqlite_get_table_printf", \
+        "sqlite_get_table_vprintf", \
+        "sqlite_mprintf", \
+        "sqlite_vmprintf", \
+        "sqlite_freemem", \
+        NULL}

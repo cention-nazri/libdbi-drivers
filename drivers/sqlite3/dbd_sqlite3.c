@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.22 2008/03/04 07:55:43 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.23 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -69,7 +69,7 @@ static const dbi_info_t driver_info = {
   __DATE__
 };
 
-static const char *custom_functions[] = {NULL}; // TODO
+static const char *custom_functions[] = SQLITE3_CUSTOM_FUNCTIONS;
 static const char *reserved_words[] = SQLITE3_RESERVED_WORDS;
 static const char default_dbdir[] = DBDIR;
 

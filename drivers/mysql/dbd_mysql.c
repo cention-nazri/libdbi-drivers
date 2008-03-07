@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.95 2008/01/15 00:27:29 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.96 2008/03/07 20:51:27 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -63,7 +63,7 @@ static const dbi_info_t driver_info = {
 	__DATE__
 };
 
-static const char *custom_functions[] = {NULL}; // TODO
+static const char *custom_functions[] = MYSQL_CUSTOM_FUNCTIONS;
 static const char *reserved_words[] = MYSQL_RESERVED_WORDS;
 
 /* encoding strings, array is terminated by a pair of empty strings */
