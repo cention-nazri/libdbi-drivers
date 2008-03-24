@@ -13,7 +13,7 @@
 
 ]>
 
-<!-- $Id: dbd_ingres.sgml,v 1.15 2006/06/12 16:58:17 qu1j0t3 Exp $ -->
+<!-- $Id: dbd_ingres.sgml,v 1.16 2008/03/24 01:47:24 qu1j0t3 Exp $ -->
 
 <book id="dbd-&dbd-name;">
 
@@ -27,8 +27,8 @@
 			<address><email>qu1j0t3@sourceforge.net</email></address>
 		</affiliation>
 	</author>
-	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.15 2006/06/12 16:58:17 qu1j0t3 Exp $</edition>
-	<pubdate>$Date: 2006/06/12 16:58:17 $</pubdate>
+	<edition>Document revision: $Id: dbd_ingres.sgml,v 1.16 2008/03/24 01:47:24 qu1j0t3 Exp $</edition>
+	<pubdate>$Date: 2008/03/24 01:47:24 $</pubdate>
 	<revhistory>
       <revision>
 	<revnumber>0.3</revnumber>
@@ -120,13 +120,13 @@
 				<listitem>
 					<para>
 						This is the C shared library to enable user programs
-						to communicate with the Ingres(R) 2006 Community Edition
+						to communicate with the Ingres(R) Community Edition
 						RDBMS.
 					</para>
 					<para>
 						The current version of the dbd_ingres driver was
 						written and tested with the 32-bit NPTL version II 9.0.4
-						for Linux/x86, running on Gentoo 
+						and 9.2 for Linux/x86, running on Gentoo 
 						(see <ulink url="http://slashdot.org/~toby/journal/136300">my installation notes</ulink>).
 					</para>
 				</listitem>
