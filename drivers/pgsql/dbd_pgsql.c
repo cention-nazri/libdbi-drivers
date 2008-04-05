@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.57 2008/04/05 00:14:59 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.58 2008/04/05 23:44:41 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -471,7 +471,9 @@ size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char* orig, size_t from
   PQfreemem((void*)temp);
 
   *ptr_dest = quoted_temp;
-  return to_length;
+
+  /* to_length already contains one extra byte for the trailing NULL byte */
+  return to_length+1;
 }
 
 dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
