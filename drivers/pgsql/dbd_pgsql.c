@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.56 2008/03/07 20:51:27 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.57 2008/04/05 00:14:59 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -486,7 +486,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	
 	res = PQexec((PGconn *)conn->connection, statement);
 	if (res) resstatus = PQresultStatus(res);
-	if (!res || ((resstatus != PGRES_COMMAND_OK) && (resstatus != PGRES_TUPLES_OK))) {
+	if (!res || ((resstatus != PGRES_COMMAND_OK) && (resstatus != PGRES_TUPLES_OK) && (resstatus != PGRES_COPY_OUT) && (resstatus != PGRES_COPY_IN))) {
 		PQclear(res);
 		return NULL;
 	}
