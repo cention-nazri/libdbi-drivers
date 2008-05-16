@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.24 2008/04/19 23:26:12 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.25 2008/05/16 15:09:43 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -225,11 +225,17 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
     }
   }
 
-  /* set the SQLite timeout to timeout milliseconds */
+  /* set the SQLite timeout to timeout milliseconds. The older
+     SQLite3-specific setting takes precedence over the generic timeout
+     option for backwards compatibility */
   timeout = dbi_conn_get_option_numeric(conn, "sqlite3_timeout");
 
   if (timeout == -1) {
-    timeout = 0;
+    /* generic timeout is specified in seconds, not milliseconds */
+    timeout = 1000*dbi_conn_get_option_numeric(conn, "timeout");
+    if (timeout == -1) {
+      timeout = 0;
+    }
   }
 
   sqlite3_busy_timeout(sqcon, timeout);	

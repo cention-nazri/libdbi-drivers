@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.58 2008/04/05 23:44:41 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.59 2008/05/16 15:09:43 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -174,6 +174,10 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 	  /* Map "username" to "user" */
 	  else if( !strcmp( pgopt, "username" ) ) {
 	    pgopt = "user";
+	  }
+
+	  else if (!strcmp(pgopt, "timeout")) {
+	    pgopt = "connect_timeout";
 	  }
 
 	  /* Map "pgsql_foo" to "foo" */

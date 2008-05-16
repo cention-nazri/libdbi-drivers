@@ -1,7 +1,7 @@
 <!DOCTYPE Book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY freedoc-license SYSTEM "../../doc/include/copying-fdl.sgml">
 ]>
-<!-- $Id: dbd_sqlite.sgml,v 1.10 2008/03/04 07:57:55 mhoenicka Exp $ -->
+<!-- $Id: dbd_sqlite.sgml,v 1.11 2008/05/16 15:09:43 mhoenicka Exp $ -->
 <book>
   <bookinfo>
     <title>sqlite driver manual</title>
@@ -30,8 +30,8 @@
     </legalnotice>
     <revhistory>
       <revision>
-	<revnumber>$Revision: 1.10 $</revnumber>
-	<date>$Date: 2008/03/04 07:57:55 $</date>
+	<revnumber>$Revision: 1.11 $</revnumber>
+	<date>$Date: 2008/05/16 15:09:43 $</date>
       </revision>
     </revhistory>
   </bookinfo>
@@ -122,9 +122,18 @@
 	</listitem>
       </varlistentry>
       <varlistentry>
-	<term>sqlite_timeout</term>
+	<term>timeout (numeric)</term>
+	<listitem>
+	  <para>The connection timeout in seconds.</para>
+	</listitem>
+      </varlistentry>
+      <varlistentry>
+	<term>sqlite_timeout (numeric)</term>
 	<listitem>
 	  <para>The design of SQLite does not allow concurrent access by two clients. However, if the timeout is larger than zero, the second client will wait for the given amount of time for the first client to release its lock. If the timeout is set to zero, the second client will return immediately, indicating a busy status. The numerical value of this option specifies the timeout in milliseconds.</para>
+	  <note>
+	    <para>This option is deprecated. Use the generic option <option>timeout</option> instead. In the current implementation, <option>sqlite_timeout</option> overrides <option>timeout</option> if both are set. Please be aware that these options use different time scales.</para>
+	  </note>
 	</listitem>
       </varlistentry>
     </variablelist>
