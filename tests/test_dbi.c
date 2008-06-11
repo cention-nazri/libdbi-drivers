@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.53 2008/05/16 20:05:14 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.54 2008/06/11 22:52:19 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -636,9 +636,9 @@ int test_custom_function(struct CONNINFO* ptr_cinfo, dbi_conn conn) {
     const char* version;
     const char* (*custom_function)(void);
 
-    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "sqlite_version")) != NULL) {
+    if ((custom_function = dbi_driver_specific_function(dbi_conn_get_driver(conn), "sqlite_libversion")) != NULL) {
       version = custom_function();
-      printf("\tsqlite_version returned: %s\n", version);
+      printf("\tsqlite_libversion returned: %s\n", version);
       return 0;
     }
     else {
@@ -828,7 +828,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.53 2008/05/16 20:05:14 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.54 2008/06/11 22:52:19 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);

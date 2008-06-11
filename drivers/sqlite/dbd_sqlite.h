@@ -21,7 +21,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_sqlite.h,v 1.4 2008/03/07 20:51:27 mhoenicka Exp $
+ * $Id: dbd_sqlite.h,v 1.5 2008/06/11 22:52:19 mhoenicka Exp $
  */
 
 enum enum_field_types { FIELD_TYPE_DECIMAL, FIELD_TYPE_TINY,
@@ -294,7 +294,7 @@ enum enum_field_types { FIELD_TYPE_DECIMAL, FIELD_TYPE_TINY,
         "sqlite_complete", \
         "sqlite_busy_handler", \
         "sqlite_busy_timeout", \
-        "sqlite_version", \
+        "sqlite_libversion", \
         "sqlite_encoding", \
         "sqlite_exec_printf", \
         "sqlite_exec_vprintf", \
