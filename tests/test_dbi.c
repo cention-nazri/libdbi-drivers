@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.54 2008/06/11 22:52:19 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.55 2008/06/12 20:20:04 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -828,7 +828,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.54 2008/06/11 22:52:19 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.55 2008/06/12 20:20:04 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);
@@ -909,6 +909,11 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
     }
     else {
       (ptr_cinfo->dbdir)[strlen(ptr_cinfo->dbdir)-1] = '\0';
+    }
+    if (!strcmp(ptr_cinfo->drivername, "firebird")
+	&& (ptr_cinfo->dbdir)[0] == '\0') {
+      strcpy(ptr_cinfo->dbdir, default_dbdir);
+      strcat(ptr_cinfo->dbdir, "/firebird");
     }
   }
 
