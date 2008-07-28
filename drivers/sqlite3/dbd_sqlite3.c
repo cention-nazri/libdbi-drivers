@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.27 2008/07/05 19:49:53 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.28 2008/07/28 20:25:03 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -136,6 +136,7 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
   const char *encoding;
 
   int timeout;
+  dbi_result dbi_result;
 
   /* initialize error stuff */
   conn->error_number = 0;
@@ -239,7 +240,13 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
     }
   }
 
-  sqlite3_busy_timeout(sqcon, timeout);	
+  sqlite3_busy_timeout(sqcon, timeout);
+
+  /* this is required to make SQLite work like other database engines
+     in that it returns the column information even if there are no
+     rows in a result set */
+  dbi_result = dbd_query(conn, "PRAGMA empty_result_callbacks=1");
+  
   
   return 0;
 }
@@ -571,7 +578,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
   }
 	
   result = _dbd_result_create(conn, (void *)result_table, numrows, (unsigned long long)sqlite3_changes((sqlite3*)conn->connection));
-  /*   printf("numrows:%d, numcols:%d<<\n", numrows, numcols); */
+/*    printf("numrows:%d, numcols:%d<<\n", numrows, numcols); */
   _dbd_result_set_numfields(result, numcols);
 
   /* assign types to result */
