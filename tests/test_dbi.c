@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.55 2008/06/12 20:20:04 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.56 2008/08/03 10:08:30 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -91,6 +91,7 @@ int test_create_table(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, d
 int test_list_tables(struct CONNINFO* ptr_cinfo, dbi_conn conn);
 int test_insert_row(struct CONNINFO* ptr_cinfo, dbi_conn conn);
 int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, dbi_conn conn);
+int test_retrieve_zero_rows(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, dbi_conn conn);
 int test_retrieve_data_as(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, dbi_conn conn);
 int test_drop_table(dbi_conn conn);
 int test_drop_db(struct CONNINFO* ptr_cinfo, dbi_conn conn);
@@ -263,6 +264,16 @@ int main(int argc, char **argv) {
     my_dbi_shutdown(dbi_instance);
     exit(1);
   }
+
+  /* Test: run a query which returns zero rows */
+  printf("\nTest %d: Retrieve zero rows: \n", testnumber++);
+	
+  if (test_retrieve_zero_rows(&cinfo, &tinfo, conn)) {
+    dbi_conn_close(conn);
+    my_dbi_shutdown(dbi_instance);
+    exit(1);
+  }
+
 
   /* Test: retrieve data as string or integer */
   printf("\nTest %d: Retrieve data as string or integer: \n", testnumber++);
@@ -828,7 +839,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.55 2008/06/12 20:20:04 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.56 2008/08/03 10:08:30 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);
@@ -2288,6 +2299,31 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
 
   /* todo: check field sizes */
   dbi_result_free(result);
+
+  return 0;
+}
+
+/* returns 0 on success, 1 on error */
+int test_retrieve_zero_rows(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, dbi_conn conn) {
+  const char *errmsg;
+  dbi_result result;
+  int numfields;
+
+  if ((result = dbi_conn_query(conn, "SELECT * from test_datatypes WHERE 0=1")) == NULL) {
+    dbi_conn_error(conn, &errmsg);
+    printf("\tAAH! Can't get read data! Error message: %s\n", errmsg);
+    return 1;
+  }
+
+  numfields = dbi_result_get_numfields(result);
+
+  if (numfields == DBI_FIELD_ERROR) {
+    dbi_conn_error(conn, &errmsg);
+    printf("\tAAH! Can't access data! Error message: %s\n", errmsg);
+    return 1;
+  }
+
+  printf("\ttest_datatypes contains %d columns\n", numfields);
 
   return 0;
 }
