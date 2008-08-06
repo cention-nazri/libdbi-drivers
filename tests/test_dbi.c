@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.56 2008/08/03 10:08:30 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.57 2008/08/06 21:55:18 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -108,6 +108,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst);
 int main(int argc, char **argv) {
   dbi_driver driver;
   dbi_conn conn;
+  dbi_conn another_conn;
   int testnumber = 1;
   const char *errmsg;
   unsigned int dbengine_version;
@@ -196,6 +197,46 @@ int main(int argc, char **argv) {
   }
 
   
+  /* Test: create another connection */
+  printf("\nTest %d: Create another connection: \n", testnumber++);
+	
+  if ((another_conn = my_dbi_conn_new(cinfo.drivername, dbi_instance)) == NULL) {
+    printf("Can't instantiate '%s' driver into a dbi_conn!\n", cinfo.drivername);
+    my_dbi_shutdown(dbi_instance);
+    return 1;
+  }
+
+  if (set_driver_options(&cinfo, another_conn, "", NULL)) {
+    my_dbi_shutdown(dbi_instance);
+    exit(1);
+  }
+
+  if (dbi_conn_connect(another_conn) < 0) {
+    dbi_conn_error(another_conn, &errmsg);
+    printf("\nUnable to open another connection! Error message: %s\n", errmsg);
+    my_dbi_shutdown(dbi_instance);
+    exit(1);
+  }
+  
+  dbengine_version = dbi_conn_get_engine_version(another_conn);
+  dbi_conn_get_engine_version_string(another_conn, versionstring);
+
+  printf("\nSuccessfully opened another connection!\n\tUsing database engine version %d (numeric) and %s (string)\n", dbengine_version, versionstring);
+
+  dbi_conn_close(another_conn);
+
+  printf("\nSuccessfully closed second connection\n");
+
+  /* Test: list available databases */
+  printf("\nTest %d: List databases: \n", testnumber++);
+	
+  if (test_list_db(&cinfo, conn)) {
+    dbi_conn_close(conn);
+    my_dbi_shutdown(dbi_instance);
+    exit(1);
+  }
+
+
   /* Test: create database */
   printf("\nTest %d: Create database %s using default encoding: \n", testnumber++, cinfo.dbname);
 	
@@ -839,7 +880,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.56 2008/08/03 10:08:30 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.57 2008/08/06 21:55:18 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);
