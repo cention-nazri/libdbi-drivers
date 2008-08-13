@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.30 2008/08/13 22:51:49 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.31 2008/08/13 22:56:03 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -247,7 +247,10 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
      rows in a result set */
   dbi_result = dbd_query(conn, "PRAGMA empty_result_callbacks=1");
   
-  
+  if (dbi_result) {
+    dbi_result_free(dbi_result);
+  }
+
   return 0;
 }
 
