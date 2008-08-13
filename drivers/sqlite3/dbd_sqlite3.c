@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.29 2008/07/29 06:57:59 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.30 2008/08/13 22:51:49 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -85,7 +85,7 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database);
 void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs);
 void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
 int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement);
-int getTables(char** tables, int index, const char* statement);
+int getTables(char** tables, int index, const char* statement, char* curr_table);
 char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows);
 static size_t sqlite3_escape_string(char *to, const char *from, size_t length);
 int wild_case_compare(const char *str,const char *str_end,
@@ -246,9 +246,7 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
      in that it returns the column information even if there are no
      rows in a result set */
   dbi_result = dbd_query(conn, "PRAGMA empty_result_callbacks=1");
-  if (dbi_result) {
-    dbi_result_free(dbi_result);
-  }
+  
   
   return 0;
 }
@@ -696,6 +694,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
     which can be increased in dbd_sqlite3.h if need arises.
   */
 
+  int curr_table_index;
   char* statement_copy = strdup(statement);
   char* item;
   char curr_field[MAX_IDENT_LENGTH];
@@ -724,16 +723,21 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
      It would seem that even if the table is aliased in the statement,
      we still have the original table name.
      sqlite3_get_table returns the tablename and not the alias when returning table.column.
-     It probably isn't a good idea to rely on this, but we will. */
+     It probably isn't a good idea to rely on this, but we will.
 
-  if ( strlen(curr_table) < 1 ) {
-    //printf("not curr_table\n");
-    table_count = getTables(tables,0,statement_copy);
-    //printf("*********TABLELIST************\n");
-    //		for ( counter = 0 ; counter < table_count ; counter++) {
-    //			printf("%s\n",tables[counter]);
-    //		}
-  }
+     I knew it wasn't a good idea :( Select using distinct breaks the above assumptions.
+     now we have to resolve the table name as well (if it is given). */
+
+  /* We have to assume that curr_table is an alias.
+     This call will resolve the curr_table if given
+     */
+  //printf("curr_table before getTables = %s\n",curr_table);
+  table_count = getTables(tables,0,statement_copy,curr_table);
+  //printf("curr_table after getTables = %s\n",curr_table);
+  //printf("*********TABLELIST************\n");
+  //		for ( counter = 0 ; counter < table_count ; counter++) {
+  //			//printf("%s\n",tables[counter]);
+  //		}
 
   // resolve our curr_field to a real column
   char* token;
@@ -1138,7 +1142,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
   return type;
 }
 
-int getTables(char** tables, int index, const char* statement) {
+int getTables(char** tables, int index, const char* statement, char* curr_table) {
   //printf("getTables\n");
   //printf("processing %s\n",statement);
   char* item;
@@ -1180,7 +1184,7 @@ int getTables(char** tables, int index, const char* statement) {
 	char substatement[item-start];
 	strncpy(substatement,start+1,item-(start+1));
 	substatement[item-(start+1)] = '\0';
-	index = getTables(tables,index,substatement);
+	index = getTables(tables,index,substatement,curr_table);
 	//printf("index is at %d\n",index);
 	item ++;
       }
@@ -1231,9 +1235,15 @@ int getTables(char** tables, int index, const char* statement) {
 	}
 	else {
 	  if ( as_flag == 1) {
-	    //printf("skipping alias\n");
-	    // this word is an alias, ignore it
+            // if this word matches what is currently in curr_table
+	    // then curr_table is an alias for the last found table
+	    //printf("++++ AS FLAG ++++ curr_table = %s , word = %s\n",curr_table,word);
+	    if ( strcmp(curr_table,word) == 0 ) {
+	      //printf("Setting curr_table\n",curr_table,word);
+	      strcpy(curr_table,tables[index - 1]);
+            }
 	    as_flag = 0;
+	    //printf("++++ AS FLAG ++++ curr_table set to %s\n",curr_table);
 	  }
 	  else {
 	    //printf("found table!\n");
