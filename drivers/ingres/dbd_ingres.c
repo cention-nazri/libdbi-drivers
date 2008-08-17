@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.24 2008/03/24 01:43:26 qu1j0t3 Exp $
+ * $Id: dbd_ingres.c,v 1.25 2008/08/17 21:42:53 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -119,6 +119,7 @@ int dbd_initialize(dbi_driver_t *driver) {
 	 * this is called right after dbd_register_driver().
 	 * return -1 on error, 0 on success. if -1 is returned, the driver will not
 	 * be added to the list of available drivers. */
+        _dbd_register_driver_cap(driver, "safe_dlclose", 1);
 	IIAPI_INITPARM  initParm;
 
 	initParm.in_version = IIAPI_VERSION_4;
@@ -389,11 +390,11 @@ int dbd_ping(dbi_conn_t *conn) {
 	return test;
 }
 
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
-	/* put error number into errno, error string into errstr
-	 * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
+	/* put error number into err_no, error string into errstr
+	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
 	if(conn && conn->connection && ((ingres_conn_t*)conn->connection)->errorMsg){
-		*errno = ((ingres_conn_t*)conn->connection)->errorCode;
+		*err_no = ((ingres_conn_t*)conn->connection)->errorCode;
 		*errstr = strdup( ((ingres_conn_t*)conn->connection)->errorMsg );
 		return 3;
 	}
@@ -1008,6 +1009,7 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, s
 }
 
 static dbi_result_t *ingres_sys_query(dbi_conn_t *conn, const char *sql) {
+        dbi_inst instance;
 	dbi_result_t *res = NULL;
 	ingres_conn_t *iconn = conn->connection;
 	
@@ -1015,7 +1017,9 @@ static dbi_result_t *ingres_sys_query(dbi_conn_t *conn, const char *sql) {
 		// note that we need to keep the system connection around,
 		// because closing it prematurely will kill result sets
 		// FIXME: could use _disjoin_from_conn() instead
-		iconn->sysConn = dbi_conn_new_r(driver_info.name, dbi_instance);
+
+                instance = dbi_driver_get_instance(dbi_conn_get_driver(conn));
+		iconn->sysConn = dbi_conn_new_r(driver_info.name, instance);
 		if(ingres_connect(iconn->sysConn, SYS_CATALOGS, NO_AUTOCOMMIT) < 0){
 			_verbose_handler(conn,"can't connect to '%s'\n",SYS_CATALOGS);
 			return NULL;
@@ -1054,11 +1058,15 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
 }
 
 dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *pattern) {
+        dbi_inst instance;
 	static char *select = "SELECT table_name FROM iitables WHERE table_name NOT LIKE 'ii%'";
 	char *sql = select;
 	dbi_result_t *res = NULL;
-	dbi_conn_t *newconn = dbi_conn_new_r(driver_info.name, dbi_instance);
-	
+	dbi_conn_t *newconn;
+
+        instance = dbi_driver_get_instance(dbi_conn_get_driver(conn));
+        newconn = dbi_conn_new_r(driver_info.name, instance);
+
 	if(ingres_connect(newconn, db, NO_AUTOCOMMIT) < 0)
 		_verbose_handler(conn,"dbd_list_tables: can't connect to '%s'\n",db);
 	else{

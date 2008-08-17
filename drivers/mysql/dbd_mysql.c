@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.97 2008/05/16 15:09:42 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.98 2008/08/17 21:42:53 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -561,15 +561,15 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
 	return db;
 }
 
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
-	/* put error number into errno, error string into errstr
-	 * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
+	/* put error number into err_no, error string into errstr
+	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
 
 	if (strcmp("",mysql_error((MYSQL *)conn->connection)) == 0) {
 		return -1;
 	}
 	
-	*errno = mysql_errno((MYSQL *)conn->connection);
+	*err_no = mysql_errno((MYSQL *)conn->connection);
 	*errstr = strdup(mysql_error((MYSQL *)conn->connection));
 	return 3;
 }

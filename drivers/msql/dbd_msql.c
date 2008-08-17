@@ -277,12 +277,12 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
 	return db;
 }
 
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) 
 {
 	if(!msqlErrMsg)
 		return -1;
   
-	*errno = 0;
+	*err_no = 0;
 	*errstr = strdup(msqlErrMsg);
 	return 2;
 }

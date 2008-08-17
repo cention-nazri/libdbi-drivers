@@ -524,10 +524,10 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db)
 	return db; 
 }
 
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) 
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) 
 {
 	/* error_message and error_number were already set by calls to _dbd_internal_error_handler */
-	*errno = conn->error_number;
+	*err_no = conn->error_number;
 	*errstr = (conn->error_message) ? strdup(conn->error_message):NULL;
 	return 1;
 }

@@ -733,10 +733,10 @@ const char *dbd_select_db(dbi_conn_t * conn, const char *db)
     return (char *) db;
 }
 
-int dbd_geterror(dbi_conn_t * conn, int *errno, char **errstr)
+int dbd_geterror(dbi_conn_t * conn, int *err_no, char **errstr)
 {
     /* put error number into errno, error string into errstr
-     * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
+     * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
 
     /* We havn't functions for read error types in freetds */
     return -1;

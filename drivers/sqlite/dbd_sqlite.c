@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.45 2008/06/11 22:53:43 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.46 2008/08/17 21:42:53 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -981,13 +981,13 @@ const char *dbd_select_db(dbi_conn_t *conn, const char *db) {
   return db;
 }
 
-int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
-  /* put error number into errno, error string into errstr
-   * return 0 if error, 1 if errno filled, 2 if errstr filled, 3 if both errno and errstr filled */
+int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
+  /* put error number into err_no, error string into errstr
+   * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
   int result = 0;
 
   if (conn->error_number) {
-    *errno = conn->error_number;
+    *err_no = conn->error_number;
     result++;
   }
   if (conn->error_message) {
