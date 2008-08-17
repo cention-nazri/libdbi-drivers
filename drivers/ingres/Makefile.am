@@ -2,10 +2,17 @@ AUTOMAKE_OPTIONS = foreign
 
 if HAVE_INGRES
 
+if BUILDDOCS
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 htmldir = $(docdir)/dbd_ingres
 doc_DATA = dbd_ingres.pdf
 html_DATA = dbd_ingres/* 
+else
+docdir =
+htmldir =
+doc_DATA =
+html_DATA =
+endif
 
 ingres_ltlibs = libdbdingres.la
 ingres_ldflags = -module -avoid-version
@@ -24,7 +31,7 @@ ingres_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @INGRES_INCLUDE@
+INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @INGRES_INCLUDE@ @LIBADD_LIBDBI@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(ingres_ltlibs)
