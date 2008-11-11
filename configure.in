@@ -159,6 +159,7 @@ AM_CONDITIONAL(BUILDDOCS, test "x$docs_subdirs" != "x")
 
 dnl ===========================================
 dnl See whether to link libdbi into the drivers
+dnl     and set -no-undefined
 dnl ===========================================
 
 ac_libdbi="YES"
@@ -169,10 +170,10 @@ AC_ARG_ENABLE(libdbi,
 	   fi ])
 
 if test "$ac_libdbi" = "YES"; then
-   LIBADD_LIBDBI=-ldbi
+   LIBADD_LIBDBI="-no-undefined -ldbi"
 
 else
-   LIBADD_LIBDBI=""
+   LIBADD_LIBDBI="-no-undefined"
 fi
 
 dnl ===========================================
