@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.25 2008/08/17 21:42:53 mhoenicka Exp $
+ * $Id: dbd_ingres.c,v 1.26 2008/11/11 23:53:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -134,6 +134,15 @@ int dbd_initialize(dbi_driver_t *driver) {
 		return -1;
 	}
 	// FIXME: need to call terminate at driver shutdown.
+}
+
+int dbd_finalize(dbi_driver_t *driver) {
+	/* perform any database-specific client library shutdown.
+	 * this is called right before dlclose()ing the driver.
+	 * return -1 on error, 0 on success. */
+
+  /* todo: see above FIXME */
+	return 0;
 }
 
 

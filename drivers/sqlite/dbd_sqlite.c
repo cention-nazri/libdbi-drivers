@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.46 2008/08/17 21:42:53 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.47 2008/11/11 23:53:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -108,7 +108,13 @@ int dbd_initialize(dbi_driver_t *driver) {
   return 0;
 }
 
+int dbd_finalize(dbi_driver_t *driver) {
+	/* perform any database-specific client library shutdown.
+	 * this is called right before dlclose()ing the driver.
+	 * return -1 on error, 0 on success. */
 
+	return 0;
+}
 
 int dbd_connect(dbi_conn_t *conn) {
   /* connect using the database set with the "dbname" option */

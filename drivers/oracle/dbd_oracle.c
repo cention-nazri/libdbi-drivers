@@ -89,6 +89,14 @@ int dbd_initialize(dbi_driver_t *driver)
 			     (void (*)(dvoid *, dvoid *)) 0 );
 }
 
+int dbd_finalize(dbi_driver_t *driver) {
+	/* perform any database-specific client library shutdown.
+	 * this is called right before dlclose()ing the driver.
+	 * return -1 on error, 0 on success. */
+
+	return 0;
+}
+
 int dbd_connect(dbi_conn_t *conn) 
 {
 	Oraconn *Oconn = malloc( sizeof( Oraconn ));
