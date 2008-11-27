@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.47 2008/11/11 23:53:29 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.48 2008/11/27 23:30:16 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -320,8 +320,10 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
   char *sq_errmsg = NULL;
   char old_cwd[_POSIX_PATH_MAX] = "";
   int retval;
+  size_t entry_size;
   DIR *dp;
   struct dirent *entry;
+  struct dirent *result;
   struct stat statbuf;
   dbi_result rs;
 
@@ -347,10 +349,30 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
     _dbd_internal_error_handler(conn, "could not open data directory", DBI_ERROR_CLIENT);
     return NULL;
   }
+
+  /* allocate memory for readdir_r(3) */
+  entry_size = _dirent_buf_size(dp);
+  if (entry_size == 0) {
+    return NULL;
+  }
+
+  entry = (struct dirent *) malloc (entry_size);
+  if (entry == NULL) {
+    return NULL;
+  }
+
+  memset (entry, 0, entry_size);
+
   getcwd(old_cwd, _POSIX_PATH_MAX);
   chdir(sq_datadir);
 
-  while ((entry = readdir(dp)) != NULL) {
+  while (1) {
+    result = NULL;
+    retval = readdir_r(dp, entry, &result);
+    if (retval != 0 || result == NULL) {
+      break;
+    }
+
     stat(entry->d_name, &statbuf);
     if (S_ISREG(statbuf.st_mode)) {
       /* we do a magic number check here to make sure we
@@ -407,7 +429,9 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
       }
       /* else: we can't read it, so forget about it */
     }
-  }
+  } /* end while */
+
+  free(entry);
   closedir(dp);
   chdir(old_cwd);
 
@@ -905,6 +929,7 @@ char* get_field_type(const char* statement, const char* curr_field_name) {
     if an error occurred
   */
   char *item;
+  char* saveptr;
   char *my_statement;
   char *field_name;
   char *end_field_name;
@@ -928,7 +953,7 @@ char* get_field_type(const char* statement, const char* curr_field_name) {
   item++;
 
   /* now tokenize the field list */
-  for (item = strtok(item, ","); item; item = strtok(NULL, ",")) {
+  for (item = strtok_r(item, ",", &saveptr); item; item = strtok_r(NULL, ",", &saveptr)) {
 /*     printf("item:%s<<\n", item); */
 
     /* skip leading whitespace */
