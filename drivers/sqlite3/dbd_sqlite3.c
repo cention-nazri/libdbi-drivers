@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.34 2008/11/27 23:30:16 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.35 2008/12/16 23:09:06 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1105,7 +1105,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
      PostgreSQL. Some conflicts remain, like the REAL type which is a
      different thing in MySQL and PostgreSQL */
 
-  /*   printf("field type: %s<<\n", curr_type); */
+/*      printf("field type before type assignment: %s<<\n", curr_type);  */
   if (strstr(curr_type, "CHAR(") /* note the opening bracket */
       || strstr(curr_type, "CLOB")
       || strstr(curr_type, "TEXT") /* also catches TINYTEXT */
@@ -1171,7 +1171,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
   }
 
   free(curr_type);
-  //printf("GET FIELD TYPE RETURNS %d !\n",type);
+/*   printf("GET FIELD TYPE RETURNS %d !\n",type); */
   return type;
 }
 
@@ -1352,13 +1352,15 @@ char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int 
   /*
     ptr_table is a ptr to a string array as returned by the
     sqlite3_get_table() function called with the table_info pragma.
-    The array is 6 cols wide and contains one row for each field
-    in the table. The first row contains the column names, but it
-    is not included in numrows, so the real data start at [6].
-    The columns are:
-    Number|column_name|type|may_be_null|default_value|?
-    Thus, the column names are in [6+6*i], and the corresponding
-    type of the result is in [7+6*i].
+    The array is 6 cols wide and contains one row for each field in
+    the table. The first row contains the column names, but it is not
+    included in numrows, so the real data start at [6].  The columns
+    are: Number|column_name|type|may_be_null|default_value|pk?  Thus,
+    the column names are in [6+6*i], and the corresponding type of the
+    result is in [7+6*i]. pk is set to 1 if the column is part of a
+    primary key. An autoincrementing column is identified by type
+    INTEGER and by being the only column with pk set to 1 in this
+    table
     curr_field_name is a ptr to a string holding the field name
     numrows is the number of rows in the string array
 
@@ -1367,10 +1369,29 @@ char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int 
   */
   char* curr_type = NULL;
   int i;
+  int pk_count = 0;
 
   for (i=6;i<=numrows*6;i+=6) {
     if (!strcmp((*ptr_result_table)[i+1], curr_field_name)) {
       curr_type = strdup((*ptr_result_table)[i+2]);
+    }
+    if (strcmp((*ptr_result_table)[i+5], "1") == 0) {
+      pk_count++;
+    }
+  }
+/*   printf("curr_type went to %s<<\n", curr_type); */
+
+  /* sqlite has the bad habit to turn INTEGER PRIMARY KEY columns into
+     INTEGER columns when using the table_info pragma. If a column is
+     an INTEGER and the only column with pk set to "1", turn it back
+     to INTEGER PRIMARY KEY */
+
+  if (curr_type) {
+    if (pk_count == 1
+	&& (strcmp(curr_type, "INTEGER") == 0
+	    || strcmp(curr_type, "integer") == 0)) {
+      free(curr_type);
+      curr_type = strdup("INTEGER PRIMARY KEY");
     }
   }
   return curr_type;
@@ -1433,7 +1454,7 @@ int dbd_ping(dbi_conn_t *conn) {
 void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs) {
   unsigned int _type = 0;
   unsigned int _attribs = 0;
-  /* printf("fieldtype:%d<<\n", fieldtype); */
+/*   printf("fieldtype:%d<<\n", fieldtype); */
   switch (fieldtype) {
   case FIELD_TYPE_TINY:
     _type = DBI_TYPE_INTEGER;
@@ -1539,8 +1560,10 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 	data->d_short = (short) atol(raw); break;
       case DBI_INTEGER_SIZE3:
       case DBI_INTEGER_SIZE4:
+/* 	printf("returning a long via data->d_long\n"); */
 	data->d_long = (int) atol(raw); break;
       case DBI_INTEGER_SIZE8:
+/* 	printf("returning a long long via data->d_longlong\n"); */
 	data->d_longlong = (long long) atoll(raw); break; /* hah, wonder if that'll work */
       default:
 	break;
