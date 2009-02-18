@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.61 2008/11/11 23:53:29 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.62 2009/02/18 22:07:23 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -75,6 +75,7 @@ static const char pgsql_encoding_hash[][16] = {
   "EUC_JP", "EUC-JP",
   "EUC_KR", "EUC-KR",
   "UNICODE", "UTF-8",
+  "UTF8", "UTF-8",
   "LATIN1", "ISO-8859-1",
   "LATIN2", "ISO-8859-2",
   "LATIN3", "ISO-8859-3",
