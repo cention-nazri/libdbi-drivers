@@ -577,3 +577,62 @@ else
 	AC_MSG_RESULT(no)
 fi
 ])
+## Db2
+
+AC_DEFUN([AC_CHECK_DB2],
+[
+AM_CONDITIONAL(HAVE_DB2, false)
+ac_db2="no"
+ac_db2_incdir="no"
+ac_db2_libdir="no"
+
+# exported variables
+DB2_LIBS=""
+DB2_LDFLAGS=""
+DB2_INCLUDE=""
+
+AC_MSG_CHECKING(for IBM DB2 support)
+
+AC_ARG_WITH(db2,
+	[  --with-db2           Include IBM DB2 support.],
+	[  ac_db2="$withval" ])
+AC_ARG_WITH(db2-dir,
+	[  --with-db2-dir       Specifies DB2_HOME.],
+	[  ac_db2_incdir="$withval"/include
+	   ac_db2_libdir="$withval"/lib ])
+AC_ARG_WITH(db2-incdir,
+	[  --with-db2-incdir    Specifies where the IBM DB2 include files are.],
+	[  ac_db2_incdir="$withval" ])
+AC_ARG_WITH(db2-libdir,
+	[  --with-db2-libdir    Specifies where the IBM DB2 libraries are.],
+	[  ac_db2_libdir="$withval" ])
+
+if test "$ac_db2" = "yes"; then
+	if test "$ac_db2_incdir" = "no" || test "$ac_db2_libs" = "no"; then
+		db2_incdirs="$DB2_HOME/rdbms/demo $DB2_HOME/rdbms/public"
+		AC_FIND_FILE(sqlcli1.h, $db2_incdirs, ac_db2_incdir)
+		db2_libdirs="$ORACLE_HOME/lib"
+		AC_FIND_FILE(libdb2.so, $db2_libdirs, ac_db2_libdir)
+		if test "$ac_db2_incdir" = "no"; then
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR([Invalid IBM DB2 directory - include files not found.])
+		fi
+		if test "$ac_db2_libdir" = "no"; then
+			AC_MSG_RESULT(no)
+			AC_MSG_ERROR([Invalid IBM DB2 directory - libraries not found.])
+		fi
+	fi
+	AC_MSG_RESULT([yes: libs in $ac_db2_libdir, headers in $ac_db2_incdir])
+	AM_CONDITIONAL(HAVE_DB2, true)
+	
+	DB2_LIBS=-ldb2
+	DB2_INCLUDE="-I$ac_db2_incdir -I$DB2_HOME/include"
+	DB2_LDFLAGS=-L$ac_db2_libdir
+	
+	AC_SUBST(DB2_LIBS)
+	AC_SUBST(DB2_INCLUDE)
+	AC_SUBST(DB2_LDFLAGS)
+else
+	AC_MSG_RESULT(no)
+fi
+])
