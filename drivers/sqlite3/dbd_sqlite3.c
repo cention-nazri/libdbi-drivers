@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.35 2008/12/16 23:09:06 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.36 2009/03/25 23:21:18 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -186,14 +186,17 @@ int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
 
   /* start with an empty string */
   db_fullpath[0] = '\0';
-	
-  if (dbdir && *dbdir) {
-    strcpy(db_fullpath, dbdir);
+
+  if (strcmp(dbname, ":memory:")) {
+    if (dbdir && *dbdir) {
+      strcpy(db_fullpath, dbdir);
+    }
+    if (db_fullpath[strlen(db_fullpath)-1] != *dirsep) {
+      /* db_fullpath length was checked above */
+      strcat(db_fullpath, dirsep);
+    }
   }
-  if (db_fullpath[strlen(db_fullpath)-1] != *dirsep) {
-    /* db_fullpath length was checked above */
-    strcat(db_fullpath, dirsep);
-  }
+  /* else: open an in-memory database which does not require the path prefix */
   if (dbname && *dbname) {
     /* db_fullpath length was checked above */
     strcat(db_fullpath, dbname);
