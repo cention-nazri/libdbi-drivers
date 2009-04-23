@@ -500,10 +500,12 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
        result = _dbd_result_create(conn, (void *)res, numrows , affectedrows);
        _dbd_result_set_numfields(result, res->osqlda->sqld);
        _get_field_info(result);
-       
-       if (buffer) {
-	       free(buffer);
-       }
+
+       /* obviously we're not supposed to free this buffer here, but
+	  who else is going to do this? */       
+/*        if (buffer) { */
+/* 	       free(buffer); */
+/*        } */
        return result;
 }
 
