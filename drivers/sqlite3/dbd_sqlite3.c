@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.36 2009/03/25 23:21:18 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.37 2009/05/13 20:42:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1549,6 +1549,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
     /* this will be set to the string size later on if the field is indeed a string */
 
     if (raw == NULL) { /* no data available */
+      _set_field_flag( row, curfield, DBI_VALUE_NULL, 1);
       curfield++;
       continue;
     }
