@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.38 2009/05/23 21:53:10 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.39 2009/05/23 21:54:53 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1327,7 +1327,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 		    skip_flag = 0;
 		    break;
 		  }
-		  printf("item-start went to %d\nstart points to %s<<\n", item-start, start);
+
 		  word_lower[item-start+1];
 		  strncpy(word_lower,start,item-start);
 		  word_lower[item-start] = '\0';
