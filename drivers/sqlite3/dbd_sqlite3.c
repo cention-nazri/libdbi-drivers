@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.37 2009/05/13 20:42:29 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.38 2009/05/23 21:53:10 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1191,7 +1191,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
   // 'where' | 'group' | 'having' | 'union' | 'intersect' | 'except' | 'order' | 'limit'
 
   char* endwords[] = {"where","group","having","union","intersect","except","order","limit"};
-  char* nottables[] = {"natural","left","right","full","outer","inner","cross","join","as"};
+  char* nottables[] = {"natural","left","right","full","outer","inner","cross","join","as","on"};
 
   if ( !(item = strstr(statement, " from ")) ) {
     if ( !(item = strstr(statement, " FROM ")) )
@@ -1226,8 +1226,12 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
       }
       else {
 	//printf("actual word\n");
-	while ( *item != ',' && *item != ' ' && *item != ')' && *item != '\0' && *item != ';' ) {
+	while ( *item && *item != ',' && *item != ' ' && *item != ')' && *item != '\0' && *item != ';' ) {
 	  item++;
+	}
+	if ( *item == '\0' ) {
+	  //printf("returning %d",index);
+	  return index;
 	}
 	char word[item-start+1];
 	char word_lower[item-start+1];
@@ -1285,7 +1289,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	    //printf("found table!\n");
 	    // if we get here the word is a table name
 	    tables[index] = strdup(word);
-	    //printf("table index %d = %s\n",index,tables[index]);
+	    printf("table index %d = %s\n",index,tables[index]);
 	    index++;
 	    if ( join_flag == 1) {
 	      //printf("skipping after joined table\n");
@@ -1310,8 +1314,12 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 			opens--;
 		    }
 		  }
-		  while ( *item != ',' && *item != ' ' && *item != '(') {
+		  while ( *item && *item != ',' && *item != ' ' && *item != '(') {
 		    item++;
+		  }
+		  if ( *item == '\0' ) {
+		    //printf("returning %d",index);
+		    return index;
 		  }
 		  if ( *item == ',') {
 		    //printf("stop skip after comma\n");
@@ -1319,6 +1327,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 		    skip_flag = 0;
 		    break;
 		  }
+		  printf("item-start went to %d\nstart points to %s<<\n", item-start, start);
 		  word_lower[item-start+1];
 		  strncpy(word_lower,start,item-start);
 		  word_lower[item-start] = '\0';
