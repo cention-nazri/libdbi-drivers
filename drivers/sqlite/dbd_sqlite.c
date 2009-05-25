@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.49 2009/05/13 20:42:29 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.50 2009/05/25 20:49:07 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -448,7 +448,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
   dbi_conn_t* tempconn;
   dbi_inst instance;
   int retval;
-  char* sq_errmsg;
+  char* sq_errmsg = NULL;
   char* sql_cmd;
   dbi_result_t *rs;
 
@@ -488,13 +488,12 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 /*   fprintf(stderr, "select from sqlite_master has run\n"); */
   if (dbi_result) {
     while (dbi_result_next_row(dbi_result)) {
-      retval = sqlite_exec_printf((sqlite*)(conn->connection), "INSERT INTO libdbi_tablenames VALUES ('%s')", NULL, NULL, &sq_errmsg, dbi_result_get_string(dbi_result, "name"));
+      retval = sqlite_exec_printf((sqlite*)(conn->connection), "INSERT INTO libdbi_tablenames VALUES ('%s')", NULL, NULL, NULL /* no error messages please */, dbi_result_get_string(dbi_result, "name"));
     }
     dbi_result_free(dbi_result);
   }
   else {
     dbi_conn_error(tempconn, (const char**)&sq_errmsg);
-    free(sq_errmsg);
   }
 
   /* sqlite_close((sqlite*)(tempconn->connection)); */

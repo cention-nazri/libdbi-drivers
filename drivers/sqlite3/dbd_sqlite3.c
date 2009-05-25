@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.39 2009/05/23 21:54:53 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.40 2009/05/25 20:49:07 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -491,7 +491,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
   dbi_conn_t* tempconn;
   dbi_inst instance;
   int retval;
-  char* sq_errmsg;
+  char* sq_errmsg = NULL;
   char* sql_cmd;
   dbi_result_t *rs;
 
@@ -534,12 +534,12 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
       asprintf(&sql_cmd, "INSERT INTO libdbi_tablenames VALUES ('%s')", dbi_result_get_string(dbi_result, "name"));
       retval = sqlite3_exec((sqlite3*)(conn->connection), sql_cmd, NULL, NULL, &sq_errmsg);
       free(sql_cmd);
+      sqlite3_free(sq_errmsg);
     }
     dbi_result_free(dbi_result);
   }
   else {
     dbi_conn_error(tempconn, (const char**)&sq_errmsg);
-    free(sq_errmsg);
   }
 
   //  sqlite3_close((sqlite3*)(tempconn->connection));
