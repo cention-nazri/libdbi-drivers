@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.57 2008/08/06 21:55:18 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.58 2009/10/08 20:11:44 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -880,7 +880,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.57 2008/08/06 21:55:18 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.58 2009/10/08 20:11:44 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);
@@ -1814,6 +1814,7 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
     unsigned long the_ulong = 0;
     long long the_longlong = 0;
     unsigned long long the_ulonglong = 0;
+    unsigned long long the_id = 0;
     float the_float = 0;
     double the_double = 0;
     const char* the_driver_string;
@@ -1857,7 +1858,9 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
     int hour_tz = 0;
     int min_tz = 0;
     int sec_tz = 0;
-    int i;
+    int i = 0;
+    unsigned short id_type = 0;
+    unsigned int id_attrib = 0;
     unsigned int the_driver_string_length = 0;
     unsigned int the_quoted_string_length = 0;
     unsigned int the_quoted_string_copy_length = 0;
@@ -1931,7 +1934,17 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
       if (errflag) {
 	printf("the_ulonglong errflag=%s\n", errmsg);
       }
+
+      the_id = dbi_result_get_ulonglong(result, "id");
+      errflag = dbi_conn_error(dbi_result_get_conn(result), &errmsg);
+      if (errflag) {
+	printf("the_ulonglong errflag=%s\n", errmsg);
+      }
     }
+
+    /* check the type and the size of the autoincrement field */
+    id_type = dbi_result_get_field_type(result, "id");
+    id_attrib = dbi_result_get_field_attrib(result, "id", DBI_INTEGER_SIZE1, DBI_INTEGER_SIZE8);
 
     the_float = dbi_result_get_float(result, "the_float");
     errflag = dbi_conn_error(dbi_result_get_conn(result), &errmsg);
@@ -2089,6 +2102,36 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
       printf("the_binary_escaped_string_length errflag=%s\n", errmsg);
     }
 
+    /* first check type and size of autoincrement field */
+    if (id_type != DBI_TYPE_INTEGER) {
+      printf("WARNING: AUTOINCREMENT field \'id\' claims to be something other than an integer\n");
+    }
+
+    switch (id_attrib) {
+    case 1:
+      printf("AUTOINCREMENT field is a 1 byte integer\n");
+      break;
+    case 2:
+      printf("AUTOINCREMENT field is a 2 byte integer\n");
+      break;
+    case 4:
+      printf("AUTOINCREMENT field is a 3 byte integer\n");
+      break;
+    case 8:
+      printf("AUTOINCREMENT field is a 4 byte integer\n");
+      break;
+    case 16:
+      printf("AUTOINCREMENT field is a 8 byte integer\n");
+      break;
+    default:
+      printf("could not identify AUTOINCREMENT field size\n");
+      break;
+    }
+    
+/*     if (!id_attrib) { */
+/*       printf("WARNING: AUTOINCREMENT field \'id\' does not seem to be a 64 bit integer\n"); */
+/*     } */
+
     if(!strcmp(ptr_cinfo->drivername, "msql")) {
       the_date = dbi_result_get_string(result, "the_date");
       errflag = dbi_conn_error(dbi_result_get_conn(result), &errmsg);
@@ -2101,7 +2144,7 @@ int test_retrieve_data(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinfo, 
       if (errflag) {
 	printf("the_time errflag=%s\n", errmsg);
       }
-			
+      
       printf("the_char: in:-127 out:%d<<\nthe_uchar: in:127 out:%u<<\n"
 	     "the_short: in:-32767 out:%hd<<\nthe_ushort: in:32767 out:%hu<<\n"
 	     "the_long: in:-2147483647 out:%ld<<\nthe_ulong: in:2147483647 out:%lu<<\n"
