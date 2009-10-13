@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.100 2009/04/29 18:18:30 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.101 2009/10/13 21:56:18 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -135,6 +135,11 @@ int dbd_finalize(dbi_driver_t *driver) {
 	 * this is called right before dlclose()ing the driver.
 	 * return -1 on error, 0 on success. */
 
+        /* free memory allocated by the library. mysql_server_end() is
+	   deprecated as of MySQL 5.0.3, but the replacement
+	   mysql_library_end() is simply an alias defined in
+	   mysql.h. Leave this as is until it breaks */
+        mysql_server_end();
 	return 0;
 }
 
