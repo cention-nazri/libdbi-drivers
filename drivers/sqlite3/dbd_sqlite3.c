@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.40 2009/05/25 20:49:07 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.41 2009/10/21 21:53:31 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1051,7 +1051,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
     if ( table_count > 0 ) {
 
       for ( counter = 0 ; counter < table_count ; counter++ ) {
-	//printf("searching table %s\n",tables[counter]);
+/* 	printf("searching table %s\n",tables[counter]); */
 	snprintf(sql_command, MAX_IDENT_LENGTH+80, "PRAGMA table_info(%s)", tables[counter]);
 	query_res = sqlite3_get_table((sqlite3*)conn->connection,
 				      sql_command,
@@ -1064,6 +1064,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
 	  /* This table doesn't seem to exist in the database!
 	   * fallback to to string
 	   */
+/* 	  printf("table not found\n"); */
 	  // continue processing
 	}
 	else {
@@ -1083,7 +1084,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
 	/* the field was not found in any of the tables!
 	 * fallback to string
 	 */
-	//printf("field not in any table !\n");
+/* 	printf("field not in any table !\n"); */
 	return FIELD_TYPE_STRING;
       }
     }
@@ -1091,7 +1092,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
       /* no tables in the statement ?!
        * fallback to string
        */
-      //printf("no tables in statement !\n");
+      printf("no tables in statement !\n");
       return FIELD_TYPE_STRING;
     }
   }
@@ -1180,7 +1181,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
 
 int getTables(char** tables, int index, const char* statement, char* curr_table) {
   //printf("getTables\n");
-  //printf("processing %s\n",statement);
+/*   printf("processing %s\n",statement); */
   char* item;
   char* start;
   int join_flag = 0;
@@ -1195,17 +1196,18 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 
   if ( !(item = strstr(statement, " from ")) ) {
     if ( !(item = strstr(statement, " FROM ")) )
+/*       printf("no from clause\n"); */
       return index;
   }
   item += 6;
 
   while ( *item != '\0' ) {
-    //printf("begin parsing\n");
+/*     printf("begin parsing at %s\n", item); */
     if ( *item == ' ' || *item == ',' ) {
       item++;
     }
     else {
-      //printf("word start\n");
+/*       printf("word start at %s\n", item); */
       start = item; // mark the start of the word
       if ( *item == '(' ) {
 	//printf("sub select\n");
@@ -1225,13 +1227,9 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	item ++;
       }
       else {
-	//printf("actual word\n");
-	while ( *item && *item != ',' && *item != ' ' && *item != ')' && *item != '\0' && *item != ';' ) {
+/* 	printf("actual word starting here: %s\n", item); */
+	while ( *item && *item != ',' && *item != ' ' && *item != ')' && *item != ';' ) {
 	  item++;
-	}
-	if ( *item == '\0' ) {
-	  //printf("returning %d",index);
-	  return index;
 	}
 	char word[item-start+1];
 	char word_lower[item-start+1];
@@ -1247,14 +1245,14 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	// if word is an end word we can return
 	for ( i = 0 ; i < (sizeof(endwords)/sizeof *(endwords)) ; i++ ) {
 	  if ( strcmp(endwords[i],word_lower) == 0 ) {
-	    //printf("end word!\n");
+/* 	    printf("end word!\n"); */
 	    return index;
 	  }
 	}
 	// if word is not a table we ignore it and continue
 	for ( i = 0 ; i < (sizeof(nottables)/sizeof *(nottables)) ; i++ ) {
 	  if ( strcmp(nottables[i],word_lower) == 0 ) {
-	    //printf("not a table\n");
+/* 	    printf("not a table: %s\n", word_lower); */
 	    // if we encounter join or as we set
 	    // a flag because we know what to do next
 	    if ( strcmp(nottables[7],word_lower) == 0 ) {
@@ -1270,7 +1268,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	  }
 	}
 	if ( not_word_flag == 1) {
-	  //printf("skipping word\n");
+/* 	  printf("skipping word\n"); */
 	  not_word_flag = 0;
 	}
 	else {
@@ -1279,17 +1277,17 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	    // then curr_table is an alias for the last found table
 	    //printf("++++ AS FLAG ++++ curr_table = %s , word = %s\n",curr_table,word);
 	    if ( strcmp(curr_table,word) == 0 ) {
-	      //printf("Setting curr_table\n",curr_table,word);
+/* 	      printf("Setting curr_table\n",curr_table,word); */
 	      strcpy(curr_table,tables[index - 1]);
             }
 	    as_flag = 0;
 	    //printf("++++ AS FLAG ++++ curr_table set to %s\n",curr_table);
 	  }
 	  else {
-	    //printf("found table!\n");
+/* 	    printf("found table!\n"); */
 	    // if we get here the word is a table name
 	    tables[index] = strdup(word);
-	    printf("table index %d = %s\n",index,tables[index]);
+/* 	    printf("table index %d = %s\n",index,tables[index]); */
 	    index++;
 	    if ( join_flag == 1) {
 	      //printf("skipping after joined table\n");
@@ -1318,7 +1316,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 		    item++;
 		  }
 		  if ( *item == '\0' ) {
-		    //printf("returning %d",index);
+/* 		    printf("returning %d, *item went to NULL1\n",index); */
 		    return index;
 		  }
 		  if ( *item == ',') {
@@ -1349,14 +1347,14 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
 	  }
 	}
 	if ( *item == '\0' ) {
-	  //printf("returning %d",index);
+/* 	  printf("returning %d",index); */
 	  return index;
 	}
 	item++;
       }
     }
   }
-  //printf("returning %d\n",index);
+/*   printf("returning %d\n",index); */
   return index;
 }
 
@@ -1391,7 +1389,7 @@ char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int 
       pk_count++;
     }
   }
-/*   printf("curr_type went to %s<<\n", curr_type); */
+/*   printf("curr_type of %s went to %s<<\n", curr_field_name, curr_type); */
 
   /* sqlite has the bad habit to turn INTEGER PRIMARY KEY columns into
      INTEGER columns when using the table_info pragma. If a column is
