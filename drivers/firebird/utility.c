@@ -341,15 +341,17 @@ int _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowid
 			blob_stat = isc_get_segment( iconn->status_vector, &blob_handle,  &actual_seg_len,  
 						     sizeof(blob_segment), blob_segment  );
 
-			data->d_string = malloc(sizeof(actual_seg_len));
+			data->d_string = malloc((size_t)actual_seg_len);
 			memcpy(data->d_string, blob_segment, actual_seg_len);
 			row->field_sizes[curfield] = actual_seg_len;
 
-			while (blob_stat == 0 || iconn->status_vector[1] == isc_segment) { 
+			while (blob_stat == 0 || iconn->status_vector[1] == isc_segment) {
 				blob_stat = isc_get_segment(iconn->status_vector, &blob_handle, 
 							    &actual_seg_len, 
 							    sizeof(blob_segment), blob_segment); 
-
+				if (!actual_seg_len) {
+					break;
+				}
 				data->d_string = realloc(data->d_string, 
 							 row->field_sizes[curfield] + 
 							 actual_seg_len);
@@ -358,6 +360,11 @@ int _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowid
 				row->field_sizes[curfield] += actual_seg_len;
 			} 
 			isc_close_blob(iconn->status_vector, &blob_handle);
+
+			/* terminate encoded blob string */
+			data->d_string = realloc(data->d_string, (row->field_sizes[curfield])+1);
+			data->d_string[row->field_sizes[curfield]] = '\0';
+
 			row->field_sizes[curfield] = _dbd_decode_binary(data->d_string, data->d_string);
 			break;
 				
