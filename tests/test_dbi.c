@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: test_dbi.c,v 1.58 2009/10/08 20:11:44 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.59 2009/10/25 19:16:45 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -880,7 +880,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
   char interface[16];
   dbi_driver driver;
 
-  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.58 2009/10/08 20:11:44 mhoenicka Exp $\n\n");
+  fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.59 2009/10/25 19:16:45 mhoenicka Exp $\n\n");
   
   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
   fgets(interface, 16, stdin);
@@ -2539,7 +2539,6 @@ int test_retrieve_data_as(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinf
       printf("the_ulong errflag=%s\n", errmsg);
     }
 
-
     if (!ptr_tinfo->have_longlong) {
       printf("the_longlong: test skipped for this driver.\n");
     }
@@ -2805,20 +2804,20 @@ int test_retrieve_data_as(struct CONNINFO* ptr_cinfo, struct TABLEINFO* ptr_tinf
 	       "the_null_string_as_string: out:\'%s\'\n"
 	       "the_datetime_as_string: in:\'2001-12-31 23:59:59\' out:%s\n"
 	       "the_date_as_string: in:\'2001-12-31\' out:%s\n"
-	       "the_time_as_string: in:\'23:59:59\' out:%s\n",
-	       "the_short_as_ll: in:-32768 out:%ld<<\n"
-	       "the_ushort_as_ll: in:32767 out:%ld<<\n"
-	       "the_long_as_ll: in:-2147483648 out:%ld<<\n"
-	       "the_ulong_as_ll: in:2147483647 out:%ld<<\n"
-	       "the_float_as_ll: in:3.4E+37 out:%ld<<\n"
-	       "the_double_as_ll: in:1.7E+307 out:%ld\n"
-	       "the_string_as_ll: in:\'%s\' out:%ld<<\n"
-	       "the_numstring_as_ll: in:\'%s\' out:%ld<<\n"
-	       "the_empty_string_as_ll: out:%ld<<\n"
-	       "the_null_string_as_ll: out:%ld\n"
-	       "the_datetime_as_ll: in:\'2001-12-31 23:59:59\' out:%ld\n"
-	       "the_date_as_ll: in:\'2001-12-31\' out:%ld\n"
-	       "the_time_as_ll: in:\'23:59:59\' out:%ld\n",
+	       "the_time_as_string: in:\'23:59:59\' out:%s\n"
+	       "the_short_as_ll: in:-32768 out:%lld<<\n"
+	       "the_ushort_as_ll: in:32767 out:%lld<<\n"
+	       "the_long_as_ll: in:-2147483648 out:%lld<<\n"
+	       "the_ulong_as_ll: in:2147483647 out:%lld<<\n"
+	       "the_float_as_ll: in:3.4E+37 out:%lld<<\n"
+	       "the_double_as_ll: in:1.7E+307 out:%lld\n"
+	       "the_string_as_ll: in:\'%s\' out:%lld<<\n"
+	       "the_numstring_as_ll: in:\'%s\' out:%lld<<\n"
+	       "the_empty_string_as_ll: out:%lld<<\n"
+	       "the_null_string_as_ll: out:%lld\n"
+	       "the_datetime_as_ll: in:\'2001-12-31 23:59:59\' out:%lld\n"
+	       "the_date_as_ll: in:\'2001-12-31\' out:%lld\n"
+	       "the_time_as_ll: in:\'23:59:59\' out:%lld\n",
 	       the_short_as_string,
 	       the_ushort_as_string,
 	       the_long_as_string,
