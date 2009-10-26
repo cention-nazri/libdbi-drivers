@@ -174,7 +174,7 @@ void _translate_firebird_type(int fieldtype, unsigned short *type, unsigned int 
 		break;
 	case SQL_LONG:
 	        _type = DBI_TYPE_INTEGER;
-	        _attribs |= DBI_INTEGER_SIZE3;
+	        _attribs |= DBI_INTEGER_SIZE4;
 		break;
 	case SQL_INT64:
 	        _type = DBI_TYPE_INTEGER;
