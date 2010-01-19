@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.101 2009/10/13 21:56:18 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.102 2010/01/19 23:35:08 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -675,8 +675,6 @@ void _translate_mysql_type(MYSQL_FIELD *field, unsigned short *type, unsigned in
 			_attribs |= DBI_DATETIME_DATE | DBI_DATETIME_TIME;
 			break;
 			
-		case FIELD_TYPE_VAR_STRING:
-		case FIELD_TYPE_STRING:
 		case FIELD_TYPE_TINY_BLOB:
 		case FIELD_TYPE_MEDIUM_BLOB:
 		case FIELD_TYPE_LONG_BLOB:
@@ -688,6 +686,8 @@ void _translate_mysql_type(MYSQL_FIELD *field, unsigned short *type, unsigned in
 				_type = DBI_TYPE_BINARY;
 				break;
 			}
+		case FIELD_TYPE_VAR_STRING:
+		case FIELD_TYPE_STRING:
 #ifdef FIELD_TYPE_NEWDECIMAL
 		case FIELD_TYPE_NEWDECIMAL: // Precision math DECIMAL or NUMERIC field (MySQL 5.0.3 and up)
 #endif
