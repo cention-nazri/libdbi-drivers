@@ -5,6 +5,7 @@ AM_MAINTAINER_MODE
 AM_INIT_AUTOMAKE(libdbi-drivers, 0.9.0-pre1)
 AM_CONFIG_HEADER(config.h)
 AC_LIBTOOL_WIN32_DLL
+AC_CONFIG_MACRO_DIR([m4])
 
 dnl library versioning currently unnecessary...
 dnl dnl Library versioning
