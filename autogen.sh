@@ -1,6 +1,6 @@
 #!/bin/sh
 # autogen.sh - generates configure using the autotools
-# $Id: autogen.sh,v 1.6 2005/08/27 23:31:51 mhoenicka Exp $
+# $Id: autogen.sh,v 1.7 2010/03/21 16:46:12 mhoenicka Exp $
 : ${LIBTOOLIZE=libtoolize}
 : ${ACLOCAL=aclocal}
 : ${AUTOHEADER=autoheader}
@@ -9,7 +9,8 @@
 
 
 ${LIBTOOLIZE} --force --copy
-${ACLOCAL}
+# the -I m4 hack allows aclocal to find the libtool macros
+${ACLOCAL} -I m4
 ${AUTOHEADER}
 ${AUTOMAKE} --add-missing
 
