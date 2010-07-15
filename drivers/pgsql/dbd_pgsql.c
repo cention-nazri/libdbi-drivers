@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.62 2009/02/18 22:07:23 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.63 2010/07/15 20:03:46 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -127,6 +127,26 @@ const char *pg_encoding_to_char(int encoding_id);
         else                                                         \
             asprintf( &conninfo, fmt, key, value );                  \
 	} while(0)
+
+
+/* base36 decoding to convert the 5 alphanumeric chars of SQLSTATE to a 32bit int */
+int base36decode(char *base36) {
+    int len = strlen(base36);
+    int output = 0;
+    int pos = 0;
+
+    for (; pos < len; pos++) {
+        char c = base36[pos];
+        if ( ((c - '0') >= 0) && ((c - '0') <= 9) ) {
+            c = c - '0';
+        } else {
+            c = c - 'A' + 10;
+        }
+        output = 36 * output + c;
+    }
+
+    return output;
+}
 
 /* real code starts here */
 void dbd_register_driver(const dbi_info_t **_driver_info, const char ***_custom_functions, const char ***_reserved_words) {
@@ -254,8 +274,10 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 }
 
 int dbd_disconnect(dbi_conn_t *conn) {
-	if (conn->connection) PQfinish((PGconn *)conn->connection);
-	return 0;
+  if (conn->connection) {
+    PQfinish((PGconn *)conn->connection);
+  }
+  return 0;
 }
 
 int dbd_fetch_row(dbi_result_t *result, unsigned long long rowidx) {
@@ -502,9 +524,13 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	res = PQexec((PGconn *)conn->connection, statement);
 	if (res) resstatus = PQresultStatus(res);
 	if (!res || ((resstatus != PGRES_COMMAND_OK) && (resstatus != PGRES_TUPLES_OK) && (resstatus != PGRES_COPY_OUT) && (resstatus != PGRES_COPY_IN))) {
-		PQclear(res);
-		return NULL;
+	  char *base36 = PQresultErrorField(res, PG_DIAG_SQLSTATE);
+	  conn->error_number = (! base36) ? 0 : base36decode(base36);
+	  PQclear(res);
+	  return NULL;
 	}
+
+	conn->error_number = 0;
 
 	result = _dbd_result_create(conn, (void *)res, (unsigned long long)PQntuples(res), (unsigned long long)atoll(PQcmdTuples(res)));
 	_dbd_result_set_numfields(result, (unsigned int)PQnfields((PGresult *)result->result_handle));
@@ -539,10 +565,10 @@ int dbd_geterror(dbi_conn_t *conn, int *err_no, char **errstr) {
 	/* put error number into err_no, error string into errstr
 	 * return 0 if error, 1 if err_no filled, 2 if errstr filled, 3 if both err_no and errstr filled */
 	
-	*err_no = 0;
+	*err_no = conn->error_number;
 	*errstr = strdup(PQerrorMessage((PGconn *)conn->connection));
 	
-	return 2;
+	return 3;
 }
 
 unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
