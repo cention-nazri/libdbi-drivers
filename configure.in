@@ -244,6 +244,8 @@ AC_OUTPUT([
 	drivers/ingres/Makefile
 	drivers/db2/Makefile
 	tests/Makefile
+	tests/cgreen/Makefile
+	tests/test_dbi.cfg
 	])
 dnl doc/Makefile
 
