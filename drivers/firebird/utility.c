@@ -265,6 +265,7 @@ int _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowid
 		case DBI_TYPE_STRING: 
 			if(result->field_attribs[curfield] & DBI_STRING_FIXEDSIZE) {
 				data->d_string = strdup(var.sqldata);
+				data->d_string[var.sqllen] = '\0'; /* hack */
 				row->field_sizes[curfield] = (unsigned long long) var.sqllen;
 			} else {
 				vary_t *vary = NULL;
