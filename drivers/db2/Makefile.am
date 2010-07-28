@@ -52,7 +52,7 @@ dbd_db2.pdf: dbd_db2.sgml
 
 dbd_db2/*: dbd_db2.sgml
 	@echo "Converting dbd_db2.sgml to HTML...";
-	mkdir -p dbd_db2 && cd dbd_db2 && openjade -t sgml -d $(top_srcdir)/doc/include/doc-html.dsl ../dbd_db2.sgml
+	mkdir -p dbd_db2 && cd dbd_db2 && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ../dbd_db2.sgml
 
 
 maintainer-clean: clean
