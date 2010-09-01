@@ -98,6 +98,13 @@ AC_ARG_WITH(mysql-libdir,
 	[  --with-mysql-libdir     Specifies where the MySQL libraries are.],
 	[  ac_mysql_libdir="$withval" ])
 
+ac_mysql_threadsafe="NO"
+AC_ARG_ENABLE(mysql-threadsafe,
+	[  --enable-mysql-threadsafe	  use threadsafe version of libmysqlclient.],
+	[  if test "$enable_mysql_threadsafe" = "yes"; then
+	       ac_mysql_threadsafe="YES"
+	   fi])
+
 if test "$ac_mysql" = "yes"; then
    	AC_MSG_RESULT(yes)
 	if test "$ac_mysql_incdir" = "no" || test "$ac_mysql_libdir" = "no"; then
@@ -113,7 +120,11 @@ if test "$ac_mysql" = "yes"; then
 		MYSQL_INCLUDE=-I$ac_mysql_incdir
 	fi
 	if test "$ac_mysql_libdir" = "no"; then
-		MYSQL_LDFLAGS=`mysql_config --libs`
+	   	if test "$ac_mysql_threadsafe" = "YES"; then
+			MYSQL_LDFLAGS=`mysql_config --libs_r`
+		else
+			MYSQL_LDFLAGS=`mysql_config --libs`
+		fi
 	else
 		MYSQL_LDFLAGS=-L$ac_mysql_libdir
 	fi
