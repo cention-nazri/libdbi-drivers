@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.60 2010/07/19 21:49:19 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -429,7 +429,7 @@ static char* assemble_query_string(const char* drivername, int *numfields);
 					if (!test_conn) {                                                    \
 						const char *errmsg;                                              \
 						int errnum = dbi_conn_error(test_conn, &errmsg);                 \
-						fprintf(stderr,"Error %d dbi_conn_new_r: %s\n",                  \
+						fprintf(stderr,"Error %d dbi_conn_new_i: %s\n",                  \
 								errnum, errmsg);                                         \
 								exit(1);                                                 \
 					}                                                                    \
@@ -1762,11 +1762,11 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.60 2010/07/19 21:49:19 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $\n\n");
 
-   fprintf(stderr, "test recallable (r) or legacy (l) libdbi interface? [r] ");
+   fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
-   if (*resp == '\n' || *resp == 'r') {
+   if (*resp == '\n' || *resp == 'i') {
       n_legacy = 0;
       ptr_cinfo->n_legacy = 0;
    }
@@ -2058,7 +2058,7 @@ static void open_database_driver() {
 
    if (!conn) {
       errnum = dbi_conn_error(conn, &errmsg);
-      fprintf(stderr,"Error %d dbi_conn_new_r: %s\n", errnum, errmsg);
+      fprintf(stderr,"Error %d dbi_conn_new_i: %s\n", errnum, errmsg);
       my_dbi_shutdown(dbi_instance);
       exit(1);
    }
@@ -2331,7 +2331,7 @@ int my_dbi_initialize(const char *driverdir, dbi_inst *Inst) {
       return dbi_initialize(driverdir);
    }
    else {
-      return dbi_initialize_r(driverdir, Inst);
+      return dbi_initialize_i(driverdir, Inst);
    }
 }
 
@@ -2340,7 +2340,7 @@ void my_dbi_shutdown(dbi_inst Inst) {
       dbi_shutdown();
    }
    else {
-      dbi_shutdown_r(Inst);
+      dbi_shutdown_i(Inst);
    }
 }
 
@@ -2349,7 +2349,7 @@ dbi_driver my_dbi_driver_list(dbi_driver Current, dbi_inst Inst) {
       return dbi_driver_list(Current);
    }
    else {
-      return dbi_driver_list_r(Current, Inst);
+      return dbi_driver_list_i(Current, Inst);
    }
 }
 
@@ -2358,13 +2358,13 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
       return dbi_conn_new(name);
    }
    else {
-      return dbi_conn_new_r(name, Inst);
+      return dbi_conn_new_i(name, Inst);
    }
 }
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.60 2010/07/19 21:49:19 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -s                run a single test\n"
          "       -C                Generate a XML test report to submit.\n"
