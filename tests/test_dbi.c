@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1762,7 +1762,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2145,12 +2145,34 @@ static void create_database() {
 
       /* now create a database */
       if (cinfo.encoding && *(cinfo.encoding)) {
-         if (!strcmp(cinfo.drivername, "mysql")) {
-            result = dbi_conn_queryf(conn, "CREATE DATABASE %s CHARACTER SET %s", cinfo.dbname, (!strcmp(cinfo.encoding, "UTF-8")) ? "utf8":"latin1");
-         }
-         else if (!strcmp(cinfo.drivername, "pgsql")) {
-            result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s'", cinfo.dbname, (!strcmp(cinfo.encoding, "UTF-8")) ? "UNICODE":"LATIN1");
-         }
+	if (!strcmp(cinfo.drivername, "mysql")) {
+	  result = dbi_conn_queryf(conn, "CREATE DATABASE %s CHARACTER SET %s", cinfo.dbname, (!strcmp(cinfo.encoding, "UTF-8")) ? "utf8":"latin1");
+	}
+	else if (!strcmp(cinfo.drivername, "pgsql")) {
+	  /* the first SQL command used to work until PostgreSQL
+	     8.3. Later versions need a matching locale setting along
+	     with the encoding. Most modern installations use UNICODE
+	     as default encoding, therefore creating such a database
+	     should be safe. However, creating a LATIN1 database needs
+	     extra care. Apparently PostgreSQL is not supposed to work
+	     with databases whose encodings differ from that of the
+	     cluster, as set with initdb */
+	  unsigned int pgserver_version;
+
+	  pgserver_version = dbi_conn_get_engine_version(conn);
+
+	  if (pgserver_version < 80400) {
+	    result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s'", cinfo.dbname, (!strcmp(cinfo.encoding, "UTF-8")) ? "UNICODE":"LATIN1");
+	  }
+	  else {
+	    if (!strcmp(cinfo.encoding, "UTF-8")) {
+	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s'", cinfo.dbname, "UNICODE");
+	    }
+	    else {
+	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s' TEMPLATE template0", cinfo.dbname, "LATIN1");
+	    }
+	  }
+	}
       }
       else {
          if (!strcmp(cinfo.drivername, "mysql")) {
@@ -2364,7 +2386,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.61 2010/09/02 21:47:00 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -s                run a single test\n"
          "       -C                Generate a XML test report to submit.\n"
@@ -2706,8 +2728,18 @@ Ensure test_another_encodding() {
             "dbencode", "latin1");
    }
    else if (!strcmp(cinfo.drivername, "pgsql")) {
-      result = dbi_conn_queryf(another_conn,  "CREATE DATABASE %s WITH ENCODING = '%s'",
-            "dbencode", "LATIN1");
+     unsigned int pgserver_version;
+
+     pgserver_version = dbi_conn_get_engine_version(another_conn);
+
+     if (pgserver_version < 80400) {
+       result = dbi_conn_queryf(another_conn,  "CREATE DATABASE %s WITH ENCODING = '%s'",
+				"dbencode", "LATIN1");
+     }
+     else {
+       result = dbi_conn_queryf(another_conn,  "CREATE DATABASE %s WITH ENCODING = '%s' TEMPLATE template0",
+				"dbencode", "LATIN1");
+     }
    }
    else {
       exit(1);
