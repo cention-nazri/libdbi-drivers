@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -351,7 +351,6 @@ struct FIELDINFO sqlite_fieldinfo[] = {
 
 /* prototypes */
 void init_tinfo(struct TABLEINFO* ptr_tinfo, struct CONNINFO* ptr_cinfo);
-int parse_conninfo(struct CONNINFO* ptr_cinfo);
 
 static void create_schema();
 static void create_schema_five_rows();
@@ -1762,7 +1761,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2386,7 +2385,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.62 2010/09/03 19:04:26 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -s                run a single test\n"
          "       -C                Generate a XML test report to submit.\n"
