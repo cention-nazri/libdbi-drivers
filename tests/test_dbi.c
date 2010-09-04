@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1761,7 +1761,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -1774,7 +1774,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
       ptr_cinfo->n_legacy = 1;
    }
 
-   fprintf(stderr, "log query? [no] ");
+   fprintf(stderr, "log query (y|n)? [n] ");
    fgets(resp, 16, stdin);
    if (*resp == '\n' || *resp == 'n') {
       ptr_cinfo->query_log = 0;
@@ -2385,22 +2385,22 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.63 2010/09/03 21:05:17 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
-         "       -s                run a single test\n"
-         "       -C                Generate a XML test report to submit.\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
+         "       -C                Generate a XML test report to submit.\n"
          "                         for a specific project, environment and build type.\n"
+         "       -H                Specify hosname in dashboard . Ex.: dbi0 \n"
+         "       -h, -?            print this message\n\n"
+         "       -N                Specify OS Name in dashboard. Ex.: Linux\n"
+         "       -P                Specify OS Platform name in dashboard. Ex.: x86_64, i368\n"
+         "       -R                Specify OS Release in dashboard Ex.: 2.6.28-15-server\n"
+         "       -s                run a single test\n"
          "       -S                Name of the site submitting the build. Computer\n"
          "                         contributing builds to the dashboard. A site might\n"
          "                         belong to several projects and submit different build.\n"
          "       -T                Can be Nightly or Experimental or Continuous.\n"
-         "       -N                Specify OS Name in dashboard. Ex.: Linux\n"
-         "       -P                Specify OS Platform name in dashboard. Ex.: x86_64, i368\n"
-         "       -R                Specify OS Release in dashboard Ex.: 2.6.28-15-server\n"
-         "       -V                Specify OS Version. Ex.: Ubuntu SMP\n"
-         "       -H                Specify hosname in dashboard . Ex.: dbi0 \n"
-         "       -h, -?            print this message\n\n");
+	   "       -V                Specify OS Version. Ex.: Ubuntu SMP\n");
    exit(1);
 }
 
@@ -2651,7 +2651,7 @@ int test_custom_function_parameters(struct CONNINFO* ptr_cinfo, dbi_conn conn) {
 
 /****** driver-specific tests ******/
 
-Ensure test_another_encodding() {
+Ensure test_another_encoding() {
 
    dbi_conn another_conn = NULL;
    dbi_result result;
@@ -5469,7 +5469,7 @@ TestSuite *test_dbi_general_test_case() {
    add_test(suite, test_create_another_connection);
    if (!strcmp(cinfo.drivername, "mysql") ||
          !strcmp(cinfo.drivername, "pgsql")) {
-      add_test(suite, test_another_encodding);
+      add_test(suite, test_another_encoding);
    }
    return connection_fixture(suite);
 }
