@@ -85,6 +85,7 @@ ac_mysql_libdir="no"
 MYSQL_LIBS=""
 MYSQL_LDFLAGS=""
 MYSQL_INCLUDE=""
+MYSQL_TEST=""
 
 AC_MSG_CHECKING(for MySQL support)
 
@@ -130,6 +131,7 @@ if test "$ac_mysql" = "yes"; then
 	fi
 
 	AM_CONDITIONAL(HAVE_MYSQL, true)
+	MYSQL_TEST="test_mysql.sh"
 	
 	AC_SUBST(MYSQL_LIBS)
 	AC_SUBST(MYSQL_INCLUDE)
@@ -141,6 +143,7 @@ if test "$ac_mysql" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(MYSQL_TEST)
 ])
 
 ## PGSQL
@@ -156,6 +159,7 @@ ac_pgsql_libdir="no"
 PGSQL_LIBS=""
 PGSQL_LDFLAGS=""
 PGSQL_INCLUDE=""
+PGSQL_TEST=""
 
 AC_MSG_CHECKING(for PostgreSQL support)
 
@@ -189,6 +193,7 @@ if test "$ac_pgsql" = "yes"; then
 	fi
 
 	PGSQL_LIBS=-lpq
+	PGSQL_TEST="test_pgsql.sh"
 
 
 	AM_CONDITIONAL(HAVE_PGSQL, true)
@@ -203,6 +208,7 @@ if test "$ac_pgsql" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(PGSQL_TEST)
 ])
 
 ## SQLITE
@@ -218,6 +224,7 @@ ac_sqlite_libdir="no"
 SQLITE_LIBS=""
 SQLITE_LDFLAGS=""
 SQLITE_INCLUDE=""
+SQLITE_TEST=""
 
 AC_MSG_CHECKING(for SQLite support)
 
@@ -247,6 +254,8 @@ if test "$ac_sqlite" = "yes"; then
 		SQLITE_LDFLAGS=-L$ac_sqlite_libdir
 	fi
 
+	SQLITE_TEST="test_sqlite.sh"
+
 	AM_CONDITIONAL(HAVE_SQLITE, true)
 	
 	AC_SUBST(SQLITE_LIBS)
@@ -255,6 +264,7 @@ if test "$ac_sqlite" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(SQLITE_TEST)
 ])
 
 ## SQLITE3
@@ -270,6 +280,7 @@ ac_sqlite3_libdir="no"
 SQLITE3_LIBS=""
 SQLITE3_LDFLAGS=""
 SQLITE3_INCLUDE=""
+SQLITE3_TEST=""
 
 AC_MSG_CHECKING(for SQLite3 support)
 
@@ -299,6 +310,7 @@ if test "$ac_sqlite3" = "yes"; then
 		SQLITE3_LDFLAGS=-L$ac_sqlite3_libdir
 	fi
 
+	SQLITE3_TEST="test_sqlite3.sh"
 	AM_CONDITIONAL(HAVE_SQLITE3, true)
 	
 	AC_SUBST(SQLITE3_LIBS)
@@ -307,6 +319,7 @@ if test "$ac_sqlite3" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(SQLITE3_TEST)
 ])
 
 
@@ -323,6 +336,7 @@ ac_msql_libdir="no"
 MSQL_LIBS=""
 MSQL_LDFLAGS=""
 MSQL_INCLUDE=""
+MSQL_TEST=""
 
 AC_MSG_CHECKING(for Msql support)
 
@@ -352,6 +366,8 @@ if test "$ac_msql" = "yes"; then
 		MSQL_LDFLAGS=-L$ac_msql_libdir
 	fi
 
+	MSQL_TEST="test_msql.sh"
+
 	AM_CONDITIONAL(HAVE_MSQL, true)
 	
 	AC_SUBST(MSQL_LIBS)
@@ -360,6 +376,7 @@ if test "$ac_msql" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(MSQL_TEST)
 ])
 
 
@@ -376,6 +393,7 @@ ac_oracle_libdir="no"
 ORACLE_LIBS=""
 ORACLE_LDFLAGS=""
 ORACLE_INCLUDE=""
+ORACLE_TEST=""
 
 AC_MSG_CHECKING(for Oracle support)
 
@@ -414,6 +432,7 @@ if test "$ac_oracle" = "yes"; then
 	ORACLE_LIBS=-lclntsh
 	ORACLE_INCLUDE="-I$ac_oracle_incdir -I$ORACLE_HOME/rdbms/public"
 	ORACLE_LDFLAGS=-L$ac_oracle_libdir
+	ORACLE_TEST="test_oracle.sh"
 	
 	AC_SUBST(ORACLE_LIBS)
 	AC_SUBST(ORACLE_INCLUDE)
@@ -421,6 +440,7 @@ if test "$ac_oracle" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(ORACLE_TEST)
 ])
 
 ## Firebird
@@ -436,6 +456,7 @@ ac_firebird_libdir="no"
 FIREBIRD_LIBS=""
 FIREBIRD_LDFLAGS=""
 FIREBIRD_INCLUDE=""
+FIREBIRD_TEST=""
 
 AC_MSG_CHECKING(for Firebird/Interbase support)
 
@@ -465,6 +486,8 @@ if test "$ac_firebird" = "yes"; then
 		FIREBIRD_LDFLAGS=-L$ac_firebird_libdir
 	fi
 
+	FIREBIRD_TEST="test_firebird.sh"
+
 	AM_CONDITIONAL(HAVE_FIREBIRD_INTERBASE, true)
 	
 	AC_SUBST(FIREBIRD_LIBS)
@@ -473,6 +496,7 @@ if test "$ac_firebird" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(FIREBIRD_TEST)
 ])
 
 
@@ -489,6 +513,7 @@ ac_freetds_libdir="no"
 FREETDS_LIBS=""
 FREETDS_LDFLAGS=""
 FREETDS_INCLUDE=""
+FREETDS_TEST=""
 
 AC_MSG_CHECKING(for Freetds support)
 
@@ -518,6 +543,8 @@ if test "$ac_freetds" = "yes"; then
 		FREETDS_LDFLAGS=-L$ac_freetds_libdir
 	fi
 
+	FREETDS_TEST="test_freetds.sh"
+
 	AM_CONDITIONAL(HAVE_FREETDS, true)
 	
 	AC_SUBST(FREETDS_LIBS)
@@ -526,6 +553,7 @@ if test "$ac_freetds" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(FREETDS_TEST)
 ])
 
 
@@ -542,6 +570,7 @@ ac_ingres_libdir="no"
 INGRES_LIBS=""
 INGRES_LDFLAGS=""
 INGRES_INCLUDE=""
+INGRES_TEST=""
 
 AC_MSG_CHECKING(for Ingres support)
 
@@ -580,6 +609,7 @@ if test "$ac_ingres" = "yes"; then
 	INGRES_LIBS="-lingres -lpthread -ldl -lm -lcrypt"
 	INGRES_INCLUDE=-I$ac_ingres_incdir
 	INGRES_LDFLAGS=-L$ac_ingres_libdir
+	INGRES_TEST="test_ingres.sh"
 	
 	AC_SUBST(INGRES_LIBS)
 	AC_SUBST(INGRES_INCLUDE)
@@ -587,7 +617,9 @@ if test "$ac_ingres" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(INGRES_TEST)
 ])
+
 ## Db2
 
 AC_DEFUN([AC_CHECK_DB2],
@@ -601,6 +633,7 @@ ac_db2_libdir="no"
 DB2_LIBS=""
 DB2_LDFLAGS=""
 DB2_INCLUDE=""
+DB2_TEST=""
 
 AC_MSG_CHECKING(for IBM DB2 support)
 
@@ -639,6 +672,7 @@ if test "$ac_db2" = "yes"; then
 	DB2_LIBS=-ldb2
 	DB2_INCLUDE="-I$ac_db2_incdir -I$DB2_HOME/include"
 	DB2_LDFLAGS=-L$ac_db2_libdir
+	DB2_TEST="test_db2.sh"
 	
 	AC_SUBST(DB2_LIBS)
 	AC_SUBST(DB2_INCLUDE)
@@ -646,4 +680,5 @@ if test "$ac_db2" = "yes"; then
 else
 	AC_MSG_RESULT(no)
 fi
+AC_SUBST(DB2_TEST)
 ])
