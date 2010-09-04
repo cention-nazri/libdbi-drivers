@@ -45,4 +45,10 @@ Those who helped one way or another:
 * Emmanuel Courreges <ecourreges@echo.fr>
   - improved error code handling of the pgsql driver
 
-$Id: AUTHORS,v 1.12 2010/07/19 20:17:25 mhoenicka Exp $
+* Clint Byrum <clint@ubuntu.com>
+  - test scripts
+
+* Thomas Goirand <zigo@debian.org>
+  - test scripts
+
+$Id: AUTHORS,v 1.13 2010/09/04 14:22:43 mhoenicka Exp $
