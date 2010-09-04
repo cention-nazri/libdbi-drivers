@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 # test_mysql.sh - runs libdbi test suite for mysql driver using a temporary
-# mysql server environment that doesn't distrubs any running MySQL server.
+# mysql server environment that doesn't disturb any running MySQL server.
 #
 # Copyright (C) 2010 Clint Byrum <clint@ubuntu.com>
 # Copyright (C) 2010 Thomas Goirand <zigo@debian.org>
@@ -23,20 +23,33 @@
 
 set -e
 
-MYTEMP_DIR=`mktemp -d`
+MYTMPDIR=`mktemp -d tmpXXXXXX`
 ME=`whoami`
 
+# the mysqld binary is usually not in PATH. Check the usual suspects
+# and pick the first one that comes up
+# bet this is not going to work on OS X
+MYMYSQLD=`find /usr/bin /usr/local/bin /usr/sbin /usr/local/sbin /usr/libexec /usr/local/libexec -name mysqld|head -1`
+
+# voodo commands to turn temp dir into absolute path
+D=`dirname "$MYTMPDIR"`
+B=`basename "$MYTMPDIR"`
+ABSMYTMPDIR="`cd \"$D\" 2>/dev/null && pwd || echo \"$D\"`/$B"
+
 # --force is needed because buildd's can't resolve their own hostnames to ips
-mysql_install_db --no-defaults --datadir=${MYTEMP_DIR} --force --skip-name-resolve --user=${ME}
-/usr/sbin/mysqld --no-defaults --skip-grant --user=${ME} --socket=${MYTEMP_DIR}/mysql.sock --datadir=${MYTEMP_DIR} --skip-networking &
+mysql_install_db --no-defaults --datadir=${ABSMYTMPDIR} --force --skip-name-resolve --user=${ME}
+$MYMYSQLD --no-defaults --skip-grant --user=${ME} --socket=${ABSMYTMPDIR}/mysql.sock --datadir=${ABSMYTMPDIR} --skip-networking &
+
+# mysqld needs some time to come up to speed. This avoids irritating error messages from the subsequent loop
+sleep 3
 
 # This sets the path of the MySQL socket for any libmysql-client users, which includes
 # the ./tests/test_dbi client
-export MYSQL_UNIX_PORT=${MYTEMP_DIR}/mysql.sock
+export MYSQL_UNIX_PORT=${ABSMYTMPDIR}/mysql.sock
 
 echo -n pinging mysqld.
 attempts=0
-while ! /usr/bin/mysqladmin --socket=${MYTEMP_DIR}/mysql.sock ping ; do
+while ! mysqladmin --socket=${ABSMYTMPDIR}/mysql.sock ping ; do
 	sleep 3
 	attempts=$((attempts+1))
 	if [ ${attempts} -gt 10 ] ; then
@@ -45,16 +58,19 @@ while ! /usr/bin/mysqladmin --socket=${MYTEMP_DIR}/mysql.sock ping ; do
 	fi
 done
 
-( echo ./drivers/mysql/.libs; \
-	echo mysql; \
-	echo root; \
-	echo ""; \
-	echo ""; \
-	echo "libdbitest"; \
+( echo "i"; \
+    echo "n"; \
+    echo ./drivers/mysql/.libs; \
+    echo mysql; \
+    echo root; \
+    echo ""; \
+    echo ""; \
+    echo "libdbitest"; \
+    echo ""; \
 	) | ./tests/test_dbi
 
 ecode=$?
 
-/usr/bin/mysqladmin --socket=${MYTEMP_DIR}/mysql.sock shutdown
-rm -rf ${MYTEMP_DIR}
+mysqladmin --socket=${ABSMYTMPDIR}/mysql.sock shutdown
+rm -rf ${ABSMYTMPDIR}
 exit ${ecode}
