@@ -60,14 +60,14 @@ done
 
 ( echo "i"; \
     echo "n"; \
-    echo ./drivers/mysql/.libs; \
+    echo ../drivers/mysql/.libs; \
     echo mysql; \
     echo root; \
     echo ""; \
     echo ""; \
     echo "libdbitest"; \
     echo ""; \
-	) | ./tests/test_dbi
+	) | ./test_dbi
 
 ecode=$?
 

@@ -76,14 +76,14 @@ createdb -e ${MYUSER}
 psql -d ${MYUSER} -e -c "ALTER USER ${MYUSER} WITH PASSWORD 'abcdefg'"
 ( echo "i"; \
     echo "n"; \
-    echo ./drivers/pgsql/.libs; \
+    echo ../drivers/pgsql/.libs; \
     echo pgsql;
     echo ${MYUSER}; \
     echo ""; \
     echo ${ABSMYTMPDIR}; \
     echo libdbitest; \
     echo ""; \
-	) | ./tests/test_dbi
+	) | ./test_dbi
 #/bin/sh debian/run_test_driver.sh pgsql ${MYUSER} "abcdefg" "127.0.0.2" libdbitest
 ecode=$?
 
