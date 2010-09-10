@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1761,7 +1761,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2352,7 +2352,7 @@ int my_dbi_initialize(const char *driverdir, dbi_inst *Inst) {
       return dbi_initialize(driverdir);
    }
    else {
-      return dbi_initialize_i(driverdir, Inst);
+      return dbi_initialize_r(driverdir, Inst);
    }
 }
 
@@ -2361,7 +2361,7 @@ void my_dbi_shutdown(dbi_inst Inst) {
       dbi_shutdown();
    }
    else {
-      dbi_shutdown_i(Inst);
+      dbi_shutdown_r(Inst);
    }
 }
 
@@ -2370,7 +2370,7 @@ dbi_driver my_dbi_driver_list(dbi_driver Current, dbi_inst Inst) {
       return dbi_driver_list(Current);
    }
    else {
-      return dbi_driver_list_i(Current, Inst);
+      return dbi_driver_list_r(Current, Inst);
    }
 }
 
@@ -2379,13 +2379,13 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
       return dbi_conn_new(name);
    }
    else {
-      return dbi_conn_new_i(name, Inst);
+      return dbi_conn_new_r(name, Inst);
    }
 }
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.64 2010/09/04 13:49:32 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
