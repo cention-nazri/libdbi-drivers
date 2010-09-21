@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.42 2010/09/02 21:47:00 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.43 2010/09/21 20:56:07 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -499,7 +499,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
      separate connection to that other database, retrieve the table names,
      and feed them to a temporary table in our main connection */
   instance = dbi_driver_get_instance(dbi_conn_get_driver(conn));
-  tempconn = dbi_conn_new_i("sqlite3", instance);
+  tempconn = dbi_conn_new_r("sqlite3", instance);
 
   /* we explicitly cast to (char*) as we discard the "const" thing here */
   dbi_conn_set_option(tempconn, "dbname", (char*)db);
