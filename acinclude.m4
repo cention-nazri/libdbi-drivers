@@ -122,12 +122,16 @@ if test "$ac_mysql" = "yes"; then
 	fi
 	if test "$ac_mysql_libdir" = "no"; then
 	   	if test "$ac_mysql_threadsafe" = "YES"; then
-			MYSQL_LDFLAGS=`mysql_config --libs_r`
+			MYSQL_LIBS=`mysql_config --libs_r`
 		else
-			MYSQL_LDFLAGS=`mysql_config --libs`
+			MYSQL_LIBS=`mysql_config --libs`
 		fi
 	else
-		MYSQL_LDFLAGS=-L$ac_mysql_libdir
+	   	if test "$ac_mysql_threadsafe" = "YES"; then
+			MYSQL_LIBS="-L$ac_mysql_libdir -lmysqlclient_r"
+		else
+			MYSQL_LIBS="-L$ac_mysql_libdir -lmysqlclient"
+		fi
 	fi
 
 	AM_CONDITIONAL(HAVE_MYSQL, true)
