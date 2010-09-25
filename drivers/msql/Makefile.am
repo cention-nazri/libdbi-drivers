@@ -2,18 +2,18 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
+
 if HAVE_MSQL
 
 if BUILDDOCS
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmldir = $(docdir)/dbd_msql
+htdocdir = $(docdir)/dbd_msql
 doc_data = dbd_msql.pdf
-html_DATA = dbd_msql/* 
+htdoc_DATA = dbd_msql/* 
 else
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 endif
 
 msql_ltlibs = libdbdmsql.la
@@ -22,10 +22,9 @@ msql_sources = dbd_msql.c
 
 else
 
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 
 msql_ltlibs =
 msql_ldflags =

@@ -1,16 +1,16 @@
 AUTOMAKE_OPTIONS = foreign
 
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
+
 if HAVE_FREETDS
 if BUILDDOCS
 # don't use docdir, doc_DATA. This way we keep the HTML in separate subdirs
 # for each driver
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmldir = $(docdir)dbd_freetds
+htdocdir = $(docdir)dbd_freetds
 #doc_DATA = dbd_freetds.pdf
-#html_DATA =  dbd_freetds/* 
+#htdoc_DATA =  dbd_freetds/* 
 else
-docdir =
-htmldir =
+htdocdir =
 endif
 
 freetds_ltlibs = libdbdfreetds.la
@@ -19,10 +19,9 @@ freetds_sources = dbd_freetds.c
 
 else
 
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 
 freetds_ltlibs =
 freetds_ldflags =
@@ -38,7 +37,7 @@ libdbdfreetds_la_LDFLAGS = $(freetds_ldflags) @FREETDS_LDFLAGS@ @FREETDS_LIBS@ @
 libdbdfreetds_la_SOURCES = $(freetds_sources)
 libdbdfreetds_la_DEPENDENCIES = dbd_freetds.h
 
-#EXTRA_DIST = dbd_freetds.c dbd_freetds.h AUTHORS TODO README dbd_freetds.pdf $(html_DATA)
+#EXTRA_DIST = dbd_freetds.c dbd_freetds.h AUTHORS TODO README dbd_freetds.pdf $(htdoc_DATA)
 EXTRA_DIST = dbd_freetds.c dbd_freetds.h
 
 # jadetex spews out tons of useless crap. shut it up:

@@ -1,17 +1,17 @@
 AUTOMAKE_OPTIONS = foreign
 
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
+
 if HAVE_DB2
 
 if BUILDDOCS
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmlsubdir = $(docdir)/dbd_db2
+htdocdir = $(docdir)/dbd_db2
 doc_DATA = dbd_db2.pdf
-html_DATA = dbd_db2/* 
+htdoc_DATA = dbd_db2/* 
 else
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 endif
 
 db2_ltlibs = libdbddb2.la
@@ -20,10 +20,9 @@ db2_sources = dbd_db2.c
 
 else
 
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 
 db2_ltlibs =
 db2_ldflags =
@@ -65,7 +64,7 @@ maintainer-clean: clean
 # manually install the docs
 #install-data-local: 
 #if HAVE_DB2
-#	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(doc_dir) $(DESTDIR)$(doc_dir)/$(html_subdir)
+#	$(top_srcdir)/mkinstalldirs $(DESTDIR)$(doc_dir) $(DESTDIR)$(doc_dir)/$(htdoc_subdir)
 #	@for f in $(noinst_DATA); do \
 #		$(INSTALL_DATA) $(srcdir)/$$f $(DESTDIR)$(doc_dir)/$$f; \
 #	done

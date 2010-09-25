@@ -1,17 +1,17 @@
 AUTOMAKE_OPTIONS = foreign
 
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
+
 if HAVE_INGRES
 
 if BUILDDOCS
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmldir = $(docdir)/dbd_ingres
+htdocdir = $(docdir)/dbd_ingres
 doc_DATA = dbd_ingres.pdf
-html_DATA = dbd_ingres/* 
+htdoc_DATA = dbd_ingres/* 
 else
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 endif
 
 ingres_ltlibs = libdbdingres.la
@@ -20,10 +20,9 @@ ingres_sources = dbd_ingres.c months.gperf.c
 
 else
 
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 
 ingres_ltlibs =
 ingres_ldflags =

@@ -1,19 +1,21 @@
+## Process this file with automake to produce Makefile.in
+
 AUTOMAKE_OPTIONS = foreign
+
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
 if HAVE_MYSQL
 
 if BUILDDOCS
 # don't use docdir, doc_DATA. This way we keep the HTML in separate subdirs
 # for each driver
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmldir = $(docdir)/dbd_mysql
+htdocdir = $(docdir)/dbd_mysql
 doc_DATA = dbd_mysql.pdf
-html_DATA = dbd_mysql/* 
+htdoc_DATA = dbd_mysql/* 
 else
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 endif
 
 mysql_ltlibs = libdbdmysql.la
@@ -22,10 +24,9 @@ mysql_sources = dbd_mysql.c
 
 else
 
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 
 mysql_ltlibs =
 mysql_ldflags =
@@ -41,7 +42,7 @@ libdbdmysql_la_LDFLAGS = $(mysql_ldflags) @MYSQL_LDFLAGS@ @MYSQL_LIBS@ @LIBADD_L
 libdbdmysql_la_SOURCES = $(mysql_sources)
 libdbdmysql_la_DEPENDENCIES = dbd_mysql.h
 
-EXTRA_DIST = dbd_mysql.c dbd_mysql.h AUTHORS TODO README dbd_mysql.sgml dbd_mysql.pdf $(html_DATA)
+EXTRA_DIST = dbd_mysql.c dbd_mysql.h AUTHORS TODO README dbd_mysql.sgml dbd_mysql.pdf $(htdoc_DATA)
 
 # jadetex spews out tons of useless crap. shut it up:
 dbd_mysql.pdf: dbd_mysql.sgml

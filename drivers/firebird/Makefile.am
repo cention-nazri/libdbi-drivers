@@ -2,20 +2,20 @@
 
 AUTOMAKE_OPTIONS = foreign
 
+docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
+
 if HAVE_FIREBIRD_INTERBASE
 
 if BUILDDOCS
 # don't use docdir, doc_DATA. This way we keep the HTML in separate subdirs
 # for each driver
-docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
-htmldir = $(docdir)/dbd_firebird
+htdocdir = $(docdir)/dbd_firebird
 doc_DATA = dbd_firebird.pdf
-html_DATA = dbd_firebird/* 
+htdoc_DATA = dbd_firebird/* 
 else
-docdir =
-htmldir =
+htdocdir =
 doc_DATA =
-html_DATA =
+htdoc_DATA =
 endif
 
 firebird_ltlibs = libdbdfirebird.la
@@ -40,7 +40,7 @@ libdbdfirebird_la_DEPENDENCIES = dbd_firebird.h utility.h firebird_charsets.h
 
 AM_CPPFLAGS=-DDBDIR=\"@dbi_dbdir@/firebird\"
 
-EXTRA_DIST = dbd_firebird.c utility.c dbd_firebird.h utility.h firebird_charsets.h dbd_firebird.sgml dbd_firebird.pdf $(html_data)
+EXTRA_DIST = dbd_firebird.c utility.c dbd_firebird.h utility.h firebird_charsets.h dbd_firebird.sgml dbd_firebird.pdf $(htdoc_data)
 
 # jadetex spews out tons of useless crap. shut it up:
 dbd_firebird.pdf: dbd_firebird.sgml
