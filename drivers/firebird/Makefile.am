@@ -59,6 +59,6 @@ dbd_firebird/*: dbd_firebird.sgml
 maintainer-clean: clean
 	rm -f dbd_firebird.pdf dbd_firebird/*
 
-install-data-local:
+install-exec-local:
 	$(mkinstalldirs) $(DESTDIR)@dbi_dbdir@/firebird
 	chmod 1777 $(DESTDIR)@dbi_dbdir@/firebird

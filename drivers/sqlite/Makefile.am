@@ -61,6 +61,6 @@ dbd_sqlite/*: dbd_sqlite.sgml
 maintainer-clean: clean
 	rm -f dbd_sqlite.pdf dbd_sqlite/*
 
-install-data-local:
+install-exec-local:
 	$(mkinstalldirs) $(DESTDIR)@dbi_dbdir@/sqlite	
 	chmod 1777 $(DESTDIR)@dbi_dbdir@/sqlite
