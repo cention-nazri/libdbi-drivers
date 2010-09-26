@@ -1,5 +1,18 @@
-Basic Installation
-==================
+Installation
+============
+
+In a nutshell:
+1. To install everything, run:
+   ./configure
+   make
+   make install
+
+2. To install just the prebuilt documentation, run:
+   make install-data
+
+3. To install just the drivers, run:
+   make install-exec
+
 
    These are generic installation instructions.
 
