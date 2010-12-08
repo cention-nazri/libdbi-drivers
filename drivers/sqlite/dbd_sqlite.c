@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.52 2010/09/21 20:56:07 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.53 2010/12/08 22:57:41 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -464,6 +464,7 @@ dbi_result_t *dbd_list_tables(dbi_conn_t *conn, const char *db, const char *patt
 
   if (dbi_conn_connect(tempconn) < 0) {
     _dbd_internal_error_handler(conn, NULL, DBI_ERROR_NOCONN);
+    dbi_conn_close(tempconn);
     return NULL;
   }
   
