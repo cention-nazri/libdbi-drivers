@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.103 2011/02/19 12:59:57 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.104 2011/02/19 19:57:29 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -51,7 +51,7 @@ long long strtoll(const char *nptr, char **endptr, int base);
 #include <dbi/dbi-dev.h>
 #include <dbi/dbd.h>
 
-#include <mysql/mysql.h>
+#include <mysql.h>
 #include "dbd_mysql.h"
 
 static const dbi_info_t driver_info = {
