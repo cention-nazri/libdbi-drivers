@@ -490,6 +490,13 @@ if test "$ac_firebird" = "yes"; then
 		FIREBIRD_LDFLAGS=-L$ac_firebird_libdir
 	fi
 
+	AC_CHECK_PROGS(FIREBIRD_ISQL,[isql-fb isql])
+	if test "x$FIREBIRD_ISQL != x"; then
+	   	FIREBIRD_ISQL_FLAG="-DFIREBIRD_ISQL=\\\"$FIREBIRD_ISQL\\\""
+	else
+		FIREBIRD_ISQL_FLAG=""
+	fi
+
 	FIREBIRD_TEST="test_firebird.sh"
 
 	AM_CONDITIONAL(HAVE_FIREBIRD_INTERBASE, true)
@@ -497,6 +504,7 @@ if test "$ac_firebird" = "yes"; then
 	AC_SUBST(FIREBIRD_LIBS)
 	AC_SUBST(FIREBIRD_INCLUDE)
 	AC_SUBST(FIREBIRD_LDFLAGS)
+	AC_SUBST(FIREBIRD_ISQL_FLAG)
 else
 	AC_MSG_RESULT(no)
 fi

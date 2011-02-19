@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.67 2011/02/19 23:32:41 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1761,7 +1761,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.67 2011/02/19 23:32:41 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2077,12 +2077,6 @@ static void create_database() {
    char database_path[1024];
 
    char command[1024];
-   /* Debian hack: the interactive client is called isql-fb here */
-   /* believe it or not. Debian, always touted for its stability and
-	     no-surprises upgrades even between major versions decided
-	     somewhere between 3.0 and 4.0 to change a dash to an underscore
-	     to confuse us */
-   int boolean = access("/etc/debian-version", F_OK) & access("/etc/debian_version", F_OK);
 
    if (!strcmp(cinfo.drivername, "firebird")) {
       snprintf(database_path, 1024, "%s/%s", cinfo.dbdir, cinfo.dbname);
@@ -2093,11 +2087,11 @@ static void create_database() {
          }
 
          snprintf(command, 1024,
-               "echo \"CREATE DATABASE \'%s/%s\';\""
+               "echo \"CREATE DATABASE \'localhost:%s/%s\';\""
                "| %s -e -pas %s "
                "-u %s -sql_dialect 3", cinfo.dbdir,
                cinfo.dbname,
-               ( boolean ? "isql" : "isql-fb"),
+               FIREBIRD_ISQL,
                cinfo.password, cinfo.username);
       }
       else { /* remote */
@@ -2106,7 +2100,7 @@ static void create_database() {
                "| %s -e -pas %s "
                "-u %s -sql_dialect 3", cinfo.hostname, cinfo.dbdir,
                cinfo.dbname,
-               ( boolean ? "isql" : "isql-fb"),
+               FIREBIRD_ISQL,
                cinfo.password, cinfo.username);
       }
       if (system(command)) {
@@ -2385,7 +2379,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.67 2011/02/19 23:32:41 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
