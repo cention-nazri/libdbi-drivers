@@ -225,7 +225,7 @@ dnl ==============================
 dnl Checks for header files
 dnl ==============================
 
-AC_CHECK_HEADERS(string.h strings.h)
+AC_CHECK_HEADERS([string.h strings.h])
 
 AC_OUTPUT([
 	libdbi.spec
