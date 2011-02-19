@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1761,7 +1761,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2165,10 +2165,10 @@ static void create_database() {
 	  }
 	  else {
 	    if (!strcmp(cinfo.encoding, "UTF-8")) {
-	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s'", cinfo.dbname, "UNICODE");
+	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s' LC_COLLATE='en_US.UTF8' LC_CTYPE='en_US.UTF8'", cinfo.dbname, "UTF8");
 	    }
 	    else {
-	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s' TEMPLATE template0", cinfo.dbname, "LATIN1");
+	      result = dbi_conn_queryf(conn, "CREATE DATABASE %s WITH ENCODING = '%s'  LC_COLLATE='de_DE.ISO8859-1' LC_CTYPE='de_DE.ISO8859-1' TEMPLATE template0", cinfo.dbname, "LATIN1");
 	    }
 	  }
 	}
@@ -2385,7 +2385,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.65 2010/09/10 19:12:49 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.66 2011/02/19 21:40:49 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
