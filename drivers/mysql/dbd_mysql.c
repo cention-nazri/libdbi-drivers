@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.102 2010/01/19 23:35:08 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.103 2011/02/19 12:59:57 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -147,13 +147,21 @@ int dbd_connect(dbi_conn_t *conn) {
 	MYSQL *mycon;
 	char* sql_cmd;
 	unsigned long client_flags = 0;
+	long n_port = 0;
 
 	const char *host = dbi_conn_get_option(conn, "host");
 	const char *username = dbi_conn_get_option(conn, "username");
 	const char *password = dbi_conn_get_option(conn, "password");
 	const char *dbname = dbi_conn_get_option(conn, "dbname");
 	const char *encoding = dbi_conn_get_option(conn, "encoding");
-	int port = dbi_conn_get_option_numeric(conn, "port");
+	const char *port = dbi_conn_get_option(conn, "port");
+	if (port) {
+	  n_port = strtol(port, NULL, 10);
+	}
+	else {
+	  n_port = (long)dbi_conn_get_option_numeric(conn, "port");
+	}
+
 	int timeout = dbi_conn_get_option_numeric(conn, "timeout");
 
 	/* mysql specific options */
@@ -183,7 +191,7 @@ int dbd_connect(dbi_conn_t *conn) {
 	  mysql_options(mycon, MYSQL_OPT_CONNECT_TIMEOUT, (const char*) &timeout);
 	}
 
-	if (!mysql_real_connect(mycon, host, username, password, dbname, port, unix_socket, client_flags)) {
+	if (!mysql_real_connect(mycon, host, username, password, dbname, (unsigned int)n_port, unix_socket, client_flags)) {
 /* 	  printf("mysql_real_connect failed with host=%s\nusername=%s\npassword=%s\ndbname=%s\nport=%s\n", username,password,dbname,port); */
 		conn->connection = (void *)mycon; // still need this set so _error_handler can grab information
 		_dbd_internal_error_handler(conn, NULL, DBI_ERROR_DBD);
@@ -195,33 +203,23 @@ int dbd_connect(dbi_conn_t *conn) {
 		conn->connection = (void *)mycon;
 		if (dbname) conn->current_db = strdup(dbname);
 	}
-/*  	printf("dbname went to %s\n", dbname); */
+
 	if (encoding && *encoding) {
 	  /* set connection encoding */
 	  if (!strcmp(encoding, "auto")) {
 	    encoding = dbd_get_encoding(conn);
 	    if (encoding) {
 	      asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-/*  	      printf("SET NAMES '%s'\n", dbd_encoding_from_iana(encoding)); */
 	      dbd_query(conn, sql_cmd);
 	      free(sql_cmd);
 	    }
-/* 	    else { */
-/* 	      printf("could not retrieve encoding\n"); */
-/* 	    } */
-	    /* else: do nothing, use default */
 	  }
 	  else {
 	    asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-/*   	    printf("SET NAMES '%s'", dbd_encoding_from_iana(encoding)); */
 	    dbd_query(conn, sql_cmd);
 	    free(sql_cmd);
 	  }
-/*  	  printf("set encoding to %s<<\n", dbd_encoding_from_iana(encoding)); */
 	}
-/* 	else { */
-/* 	  printf("leave encoding alone\n"); */
-/* 	} */
 
 	return 0;
 }
