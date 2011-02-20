@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.44 2010/12/08 22:57:42 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.45 2011/02/20 12:50:34 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -81,14 +81,14 @@ static const char sqlite3_encoding_UTF16[] = "UTF-16";
 /* int (*my_sqlite3_open)(const char *,sqlite3 **); */
 
 /* forward declarations */
-int _real_dbd_connect(dbi_conn_t *conn, const char* database);
-void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs);
-void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
-int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement);
-int getTables(char** tables, int index, const char* statement, char* curr_table);
-char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows);
+static int _real_dbd_connect(dbi_conn_t *conn, const char* database);
+static void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs);
+static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
+static int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement);
+static int getTables(char** tables, int index, const char* statement, char* curr_table);
+static char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows);
 static size_t sqlite3_escape_string(char *to, const char *from, size_t length);
-int wild_case_compare(const char *str,const char *str_end,
+static int wild_case_compare(const char *str,const char *str_end,
 		      const char *wildstr,const char *wildend,
 		      char escape);
 static const char* _conn_get_dbdir(dbi_conn_t *conn);
@@ -125,7 +125,7 @@ int dbd_connect(dbi_conn_t *conn) {
   return _real_dbd_connect(conn, "");
 }
 
-int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
+static int _real_dbd_connect(dbi_conn_t *conn, const char* database) {
   /* connect using the database passed as an argument. If passed NULL
      or an empty string, this function tries to use the database set
      with the "dbname" option */
@@ -708,7 +708,7 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, s
   return NULL;
 }
 
-int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement) {
+static int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement) {
 
   /*
     field is the name of the field which we want to know the type of
@@ -1180,7 +1180,7 @@ int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement
   return type;
 }
 
-int getTables(char** tables, int index, const char* statement, char* curr_table) {
+static int getTables(char** tables, int index, const char* statement, char* curr_table) {
   //printf("getTables\n");
 /*   printf("processing %s\n",statement); */
   char* item;
@@ -1359,7 +1359,7 @@ int getTables(char** tables, int index, const char* statement, char* curr_table)
   return index;
 }
 
-char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows) {
+static char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows) {
   /*
     ptr_table is a ptr to a string array as returned by the
     sqlite3_get_table() function called with the table_info pragma.
@@ -1462,7 +1462,7 @@ int dbd_ping(dbi_conn_t *conn) {
 
 /* CORE SQLITE3 DATA FETCHING STUFF */
 
-void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs) {
+static void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *type, unsigned int *attribs) {
   unsigned int _type = 0;
   unsigned int _attribs = 0;
 /*   printf("fieldtype:%d<<\n", fieldtype); */
@@ -1539,7 +1539,7 @@ void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned short *ty
 }
 
 
-void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx) {
+static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx) {
   char **result_table = result->result_handle;
   
   unsigned int curfield = 0;
@@ -1624,7 +1624,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 #define wild_one (char)'_'
 #define INC_PTR(A,B) A++
 
-int wild_case_compare(const char *str,const char *str_end,
+static int wild_case_compare(const char *str,const char *str_end,
 		      const char *wildstr,const char *wildend,
 		      char escape) {
   int result= -1;				// Not found, using wildcards
