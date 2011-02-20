@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.45 2011/02/20 12:50:34 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.46 2011/02/20 13:51:48 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -771,10 +771,11 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
   //printf("curr_table before getTables = %s\n",curr_table);
   table_count = getTables(tables,0,statement_copy,curr_table);
   //printf("curr_table after getTables = %s\n",curr_table);
+  //printf("%s\n",statement_copy);
   //printf("*********TABLELIST************\n");
-  //		for ( counter = 0 ; counter < table_count ; counter++) {
-  //			//printf("%s\n",tables[counter]);
-  //		}
+  //for ( counter = 0 ; counter < table_count ; counter++) {
+  //   printf("[%i] %s\n",counter,tables[counter]);
+  //}
 
   // resolve our curr_field to a real column
   char* token;
@@ -872,7 +873,7 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
 		  }
 		}
 	      }
-	    }
+	    } // if item == itemstore
 
 	    else {
 	      // we have a function here
@@ -928,7 +929,6 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
 	    return FIELD_TYPE_STRING;
 	  }
 	  if ( function_flag == 1 ) {
-	    free(statement_copy);
 	    // itemstore has at least the functionname( in it
 	    strcpy(curr_field,itemstore);
 	    strcpy(curr_field_lower, curr_field);
@@ -937,7 +937,8 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
 	      *item = (char)tolower((int)*item);
 	      item++;
 	    }
-	    //printf("Field is a function - %s\n",curr_field_lower);
+            //printf("Field is a function - %s\n",curr_field_lower);
+	    free(statement_copy);
 	    if ( strstr(curr_field_lower,"avg(") ||
 		 strstr(curr_field_lower,"sum(") ||
 		 strstr(curr_field_lower,"total(") ||
@@ -1180,6 +1181,27 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
   return type;
 }
 
+/* Similar to C99 strstr() except ensures that there is
+ * white space around needle. */
+char *strstr_ws(const char *haystack, const char *needle){
+   const char *c = NULL;
+   int len;
+
+   len = strlen(needle);
+
+   c = haystack;
+
+   while( (c = strstr(c,needle)) != NULL){
+      if(c == haystack) return NULL;
+      if( ( *(c-1)  == ' ' || *(c-1) == '\t' || *(c-1) == '\n')
+         &&
+          ( c[len] == ' '  || c[len] == '\t' || c[len] == '\n'))
+           return (char*) c;
+   }
+
+   return NULL;
+}
+
 static int getTables(char** tables, int index, const char* statement, char* curr_table) {
   //printf("getTables\n");
 /*   printf("processing %s\n",statement); */
@@ -1195,16 +1217,16 @@ static int getTables(char** tables, int index, const char* statement, char* curr
   char* endwords[] = {"where","group","having","union","intersect","except","order","limit"};
   char* nottables[] = {"natural","left","right","full","outer","inner","cross","join","as","on"};
 
-  if ( !(item = strstr(statement, " from ")) ) {
-    if ( !(item = strstr(statement, " FROM ")) )
+  if ( !(item = strstr_ws(statement, "from")) ) {
+    if ( !(item = strstr_ws(statement, "FROM")) )
 /*       printf("no from clause\n"); */
       return index;
   }
-  item += 6;
+  item += strlen("from");
 
   while ( *item != '\0' ) {
 /*     printf("begin parsing at %s\n", item); */
-    if ( *item == ' ' || *item == ',' ) {
+    if ( *item == ' '|| *item == '\t' || *item == ',' ) {
       item++;
     }
     else {
@@ -1229,7 +1251,8 @@ static int getTables(char** tables, int index, const char* statement, char* curr
       }
       else {
 /* 	printf("actual word starting here: %s\n", item); */
-	while ( *item && *item != ',' && *item != ' ' && *item != ')' && *item != ';' ) {
+	while ( *item && *item != ',' && *item != ' ' && *item != '\t'
+                                      && *item != ')' && *item != ';' ) {
 	  item++;
 	}
 	char word[item-start+1];
@@ -1256,11 +1279,11 @@ static int getTables(char** tables, int index, const char* statement, char* curr
 /* 	    printf("not a table: %s\n", word_lower); */
 	    // if we encounter join or as we set
 	    // a flag because we know what to do next
-	    if ( strcmp(nottables[7],word_lower) == 0 ) {
+	    if ( strcmp("join",word_lower) == 0 ) {
 	      //printf("join found\n");
 	      join_flag = 1;
 	    }
-	    if ( strcmp(nottables[8],word_lower) == 0 ) {
+	    if ( strcmp("as",word_lower) == 0 ) {
 	      //printf("as found\n");
 	      as_flag = 1;
 	    }
@@ -1296,7 +1319,7 @@ static int getTables(char** tables, int index, const char* statement, char* curr
 	      join_flag = 0;
 	      int skip_flag = 1;
 	      while ( skip_flag == 1 ) {
-		if ( *item == ' ') {
+		if ( *item == ' '|| *item == '\t' ) {
 		  item++;
 		}
 		else {
@@ -1313,7 +1336,8 @@ static int getTables(char** tables, int index, const char* statement, char* curr
 			opens--;
 		    }
 		  }
-		  while ( *item && *item != ',' && *item != ' ' && *item != '(') {
+		  while ( *item && *item != ','  && *item != ' '
+                                && *item != '\t' && *item != '(') {
 		    item++;
 		  }
 		  if ( *item == '\0' ) {
@@ -1335,26 +1359,32 @@ static int getTables(char** tables, int index, const char* statement, char* curr
 		    word_lower[i] = tolower(word_lower[i]);
 		    i++;
 		  }
-		  if ( strcmp(nottables[7],word_lower) == 0 ) {
+		  if ( strcmp("join",word_lower) == 0 ) {
 		    //printf("stop skip after join found\n");
 		    // we have found the next join, stop skipping
 		    join_flag = 1;
 		    skip_flag = 0;
 		    break;
 		  }
+                  for ( i = 0 ; i < (sizeof(endwords)/sizeof *(endwords)) ; i++ ) {
+                     if ( strcmp(endwords[i],word_lower) == 0 ) {
+                        /* printf("end word!\n"); */
+                        return index;
+                    }
+                  }
 		}
 	      }
-	    }
-	  }
-	}
+	    } // if join_flag
+	  } // if as_flag else
+	} // if not_word_flag else
 	if ( *item == '\0' ) {
 /* 	  printf("returning %d",index); */
 	  return index;
 	}
-	item++;
-      }
-    }
-  }
+        item++;
+      } // if *item == '(' else
+    } // if *item == ' '|| *item == '\t' || *item == ',' else
+  } // while
 /*   printf("returning %d\n",index); */
   return index;
 }
