@@ -196,6 +196,8 @@ AC_ARG_ENABLE(libdbi,
 
 if test "$ac_libdbi" = "YES"; then
    LIBADD_LIBDBI="-no-undefined -ldbi"
+   LIBDBI_TEST="test_libdbi.sh"
+   AC_SUBST(LIBDBI_TEST)
 
 else
    LIBADD_LIBDBI="-no-undefined"
@@ -240,6 +242,9 @@ if test "$ac_libdbi" = "YES"; then
 	
    AC_SUBST(LIBADD_LIBDBI)
 
+   LIBDBI_LIBDIR="$ac_dbi_libdir"
+   AC_SUBST(LIBDBI_LIBDIR)
+
 fi
 
 dnl ==============================
@@ -267,6 +272,7 @@ AC_OUTPUT([
 	tests/Makefile
 	tests/cgreen/Makefile
 	tests/test_dbi.cfg
+    tests/plugin_settings.sh
 	])
 dnl doc/Makefile
 
