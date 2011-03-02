@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.63 2010/07/15 20:03:46 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.64 2011/03/02 21:14:38 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -189,6 +189,7 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 	const char *pgopt;
 	const char *optval;
 	int         optval_num;
+	int have_port = 0;
 
 	/* PQconnectdb accepts additional options as a string of
 	   "key=value" pairs. Assemble that string from the option
@@ -221,6 +222,10 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 	    continue;
 	  }
 
+	  if (!strcmp(pgopt, "port")) {
+	    have_port++;
+	  }
+
 	  optval     = dbi_conn_get_option( conn, optname );
 	  optval_num = dbi_conn_get_option_numeric( conn, optname );
 
@@ -242,6 +247,11 @@ int _dbd_real_connect(dbi_conn_t *conn, const char *db) {
 	if( dbname )
 		CONNINFO_APPEND_ESCAPED( conninfo, "%s='%s'", "dbname", dbname );
 
+	/* if no port was specified, fill in the default PostgreSQL port */
+	if (!have_port) {
+	    CONNINFO_APPEND( conninfo, "%s='%d'", "port", 5432 );
+	}
+	  
 	/* send an empty string instead of NULL if there are no options */
 	pgconn = PQconnectdb(conninfo ? conninfo : "");
 	if (conninfo) free(conninfo);

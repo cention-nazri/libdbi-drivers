@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.104 2011/02/19 19:57:29 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.105 2011/03/02 21:14:38 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -160,6 +160,12 @@ int dbd_connect(dbi_conn_t *conn) {
 	}
 	else {
 	  n_port = (long)dbi_conn_get_option_numeric(conn, "port");
+	}
+
+	/* if no port was specified, use MySQL's default port to let
+	   things run gracefully */
+	if (n_port == 0) {
+	  n_port = 3306;
 	}
 
 	int timeout = dbi_conn_get_option_numeric(conn, "timeout");
