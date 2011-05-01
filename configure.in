@@ -254,7 +254,7 @@ dnl ==============================
 AC_CHECK_HEADERS([string.h strings.h])
 
 AC_OUTPUT([
-	libdbi.spec
+	libdbi-drivers.spec
 	Makefile
 	doc/Makefile
 	doc/include/Makefile
