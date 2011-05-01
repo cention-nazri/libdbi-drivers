@@ -51,4 +51,7 @@ Those who helped one way or another:
 * Thomas Goirand <zigo@debian.org>
   - test scripts
 
-$Id: AUTHORS,v 1.13 2010/09/04 14:22:43 mhoenicka Exp $
+* Jason S. Beck <jason.s.beck@gmail.com>
+  - improved spec file
+
+$Id: AUTHORS,v 1.14 2011/05/01 10:55:51 mhoenicka Exp $
