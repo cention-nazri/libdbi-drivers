@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.105 2011/03/02 21:14:38 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.106 2011/09/21 20:31:59 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -145,6 +145,7 @@ int dbd_finalize(dbi_driver_t *driver) {
 
 int dbd_connect(dbi_conn_t *conn) {
 	MYSQL *mycon;
+	dbi_result_t *result = NULL;
 	char* sql_cmd;
 	unsigned long client_flags = 0;
 	long n_port = 0;
@@ -216,14 +217,16 @@ int dbd_connect(dbi_conn_t *conn) {
 	    encoding = dbd_get_encoding(conn);
 	    if (encoding) {
 	      asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	      dbd_query(conn, sql_cmd);
+	      result = dbd_query(conn, sql_cmd);
 	      free(sql_cmd);
+	      dbi_result_free(result);
 	    }
 	  }
 	  else {
 	    asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	    dbd_query(conn, sql_cmd);
+	    result = dbd_query(conn, sql_cmd);
 	    free(sql_cmd);
+	    dbi_result_free(result);
 	  }
 	}
 
