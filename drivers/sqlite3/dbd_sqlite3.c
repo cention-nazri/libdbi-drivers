@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.46 2011/02/20 13:51:48 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.47 2011/09/21 22:28:31 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -86,6 +86,7 @@ static void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned sh
 static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
 static int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement);
 static int getTables(char** tables, int index, const char* statement, char* curr_table);
+static void freeTables(char** tables, int table_count);
 static char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows);
 static size_t sqlite3_escape_string(char *to, const char *from, size_t length);
 static int wild_case_compare(const char *str,const char *str_end,
@@ -988,6 +989,7 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
 	      return FIELD_TYPE_STRING;
 	    }
 	    // if we get here we have a function we don't know
+	    free(statement_copy);
 	    return FIELD_TYPE_STRING;
 	  }
 	  item = strchr(itemstore,'.');
@@ -1004,6 +1006,7 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
     token = strtok_r(NULL, " ,;", &saveptr);
   }
   //printf("table = %s\ncolumn = %s\n",curr_table,curr_field);
+  free(statement_copy);
 
   /* now we have to look for the field type in the curr_table
    * If curr_table is empty, we have to search through the table list
@@ -1098,6 +1101,8 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
       return FIELD_TYPE_STRING;
     }
   }
+
+  freeTables(tables, table_count);
 
   /* convert type to uppercase, reuse item */
   item = curr_type;
@@ -1387,6 +1392,16 @@ static int getTables(char** tables, int index, const char* statement, char* curr
   } // while
 /*   printf("returning %d\n",index); */
   return index;
+}
+
+static void freeTables(char** tables, int table_count) {
+  int counter;
+
+  for ( counter = 0 ; counter < table_count ; counter++ ) {
+    if (*(tables[counter])) {
+      free(tables[counter]);
+    }
+  }
 }
 
 static char* get_field_type(char*** ptr_result_table, const char* curr_field_name, int numrows) {
