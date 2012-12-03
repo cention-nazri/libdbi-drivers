@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.64 2011/03/02 21:14:38 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.65 2012/12/03 00:16:09 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -162,7 +162,18 @@ int dbd_initialize(dbi_driver_t *driver) {
 	 * return -1 on error, 0 on success. if -1 is returned, the driver will not
 	 * be added to the list of available drivers. */
 	
+        /* this indicates the driver can be safely unloaded when libdbi is
+	   shut down. Change the value to '0' (zero) if the driver, or a
+	   library it is linked against, installs exit handlers via
+	   atexit() */
         _dbd_register_driver_cap(driver, "safe_dlclose", 1);
+
+	/* this indicates the database engine supports transactions */
+        _dbd_register_driver_cap(driver, "transaction_support", 1);
+
+	/* this indicates the database engine supports savepoints */
+        _dbd_register_driver_cap(driver, "savepoint_support", 1);
+
 	return 0;
 }
 
@@ -551,6 +562,90 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 
 dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, size_t st_length) {
 	return NULL;
+}
+
+int dbd_transaction_begin(dbi_conn_t *conn) {
+  if (dbd_query(conn, "SET TRANSACTION") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_commit(dbi_conn_t *conn) {
+  if (dbd_query(conn, "COMMIT") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_rollback(dbi_conn_t *conn) {
+  if (dbd_query(conn, "ROLLBACK") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_rollback_to_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "ROLLBACK TO SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_release_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "RELEASE SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
 }
 
 const char *dbd_select_db(dbi_conn_t *conn, const char *db) {

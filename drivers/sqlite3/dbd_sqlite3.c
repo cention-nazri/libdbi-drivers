@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.47 2011/09/21 22:28:31 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.48 2012/12/03 00:16:09 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -109,7 +109,18 @@ int dbd_initialize(dbi_driver_t *driver) {
    * return -1 on error, 0 on success. if -1 is returned, the driver will not
    * be added to the list of available drivers. */
 
+  /* this indicates the driver can be safely unloaded when libdbi is
+     shut down. Change the value to '0' (zero) if the driver, or a
+     library it is linked against, installs exit handlers via
+     atexit() */
   _dbd_register_driver_cap(driver, "safe_dlclose", 1);
+
+  /* this indicates the database engine supports transactions */
+  _dbd_register_driver_cap(driver, "transaction_support", 1);
+  
+  /* this indicates the database engine supports savepoints */
+  _dbd_register_driver_cap(driver, "savepoint_support", 1);
+
   return 0;
 }
 
@@ -707,6 +718,90 @@ dbi_result_t *dbd_query_old(dbi_conn_t *conn, const char *statement) {
 dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, size_t st_length) {
   /* todo: implement using sqlite3_prepare and friends */
   return NULL;
+}
+
+int dbd_transaction_begin(dbi_conn_t *conn) {
+  if (dbd_query(conn, "BEGIN") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_commit(dbi_conn_t *conn) {
+  if (dbd_query(conn, "COMMIT") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_rollback(dbi_conn_t *conn) {
+  if (dbd_query(conn, "ROLLBACK") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_rollback_to_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "ROLLBACK TO SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_release_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "RELEASE SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
 }
 
 static int find_result_field_types(char* field, dbi_conn_t *conn, const char* statement) {

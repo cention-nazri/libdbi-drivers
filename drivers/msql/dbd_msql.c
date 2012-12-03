@@ -81,7 +81,18 @@ void dbd_register_driver(const dbi_info_t **_driver_info, const char ***_custom_
 
 int dbd_initialize(dbi_driver_t *driver) 
 {
+        /* this indicates the driver can be safely unloaded when libdbi is
+	   shut down. Change the value to '0' (zero) if the driver, or a
+	   library it is linked against, installs exit handlers via
+	   atexit() */
         _dbd_register_driver_cap(driver, "safe_dlclose", 1);
+
+	/* this indicates the database engine does not support transactions */
+        _dbd_register_driver_cap(driver, "transaction_support", 0);
+
+	/* this indicates the database engine does not support savepoints */
+        _dbd_register_driver_cap(driver, "savepoint_support", 0);
+
         return 0;
 }
 
@@ -275,6 +286,36 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
 	return result;
 }
 
+
+int dbd_transaction_begin(dbi_conn_t *conn) {
+  /* not supported */
+  return 0;
+}
+
+int dbd_transaction_commit(dbi_conn_t *conn) {
+  /* not supported */
+        return 0;
+}
+
+int dbd_transaction_rollback(dbi_conn_t *conn) {
+  /* not supported */
+        return 0;
+}
+
+int dbd_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  /* SAVEPOINT */
+        return 0;
+}
+
+int dbd_rollback_to_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  /* ROLLBACK TO SAVEPOINT */
+        return 0;
+}
+
+int dbd_release_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  /* RELEASE SAVEPOINT */
+        return 0;
+}
 
 const char *dbd_select_db(dbi_conn_t *conn, const char *db) 
 {

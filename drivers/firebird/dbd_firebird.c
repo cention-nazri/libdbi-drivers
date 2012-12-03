@@ -88,7 +88,18 @@ void dbd_register_driver(const dbi_info_t **_driver_info, const char ***_custom_
 
 int dbd_initialize(dbi_driver_t *driver) 
 {
-	_dbd_register_driver_cap(driver, "safe_dlclose", 0);
+        /* this indicates the driver cannot be safely unloaded when
+	   libdbi is shut down. Change the value to '1' if the driver,
+	   or a library it is linked against, is finally fixed to not
+	   install exit handlers via atexit() */
+        _dbd_register_driver_cap(driver, "safe_dlclose", 0);
+
+	/* this indicates the database engine supports transactions */
+        _dbd_register_driver_cap(driver, "transaction_support", 1);
+
+	/* this indicates the database engine supports savepoints */
+        _dbd_register_driver_cap(driver, "savepoint_support", 1);
+
 	return 0;
 }
 
@@ -509,6 +520,89 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
        return result;
 }
 
+int dbd_transaction_begin(dbi_conn_t *conn) {
+  if (dbd_query(conn, "SET TRANSACTION") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_commit(dbi_conn_t *conn) {
+  if (dbd_query(conn, "COMMIT") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_transaction_rollback(dbi_conn_t *conn) {
+  if (dbd_query(conn, "ROLLBACK") == NULL) {
+    return 1;
+  }
+  else {
+    return 0;
+  }
+}
+
+int dbd_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_rollback_to_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "ROLLBACK TO SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
+
+int dbd_release_savepoint(dbi_conn_t *conn, const char *savepoint) {
+  char* query;
+
+  if (!savepoint) {
+    return 1;
+  }
+
+  asprintf(&query, "RELEASE SAVEPOINT %s", savepoint);
+
+  if (dbd_query(conn, query) == NULL) {
+    free(query);
+    return 1;
+  }
+  else {
+    free(query);
+    return 0;
+  }
+}
 
 const char *dbd_select_db(dbi_conn_t *conn, const char *db) 
 {
