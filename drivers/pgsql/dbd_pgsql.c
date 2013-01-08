@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.65 2012/12/03 00:16:09 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.66 2013/01/08 23:55:54 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -321,7 +321,7 @@ int dbd_free_query(dbi_result_t *result) {
 	return 0;
 }
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) {
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
 	/* libpq doesn't have to do anything, the row index is specified when
 	 * fetching fields */
 	return 1;
