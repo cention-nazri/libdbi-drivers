@@ -314,9 +314,10 @@ int dbd_free_query(dbi_result_t * result)
     return 0;
 }
 
-int dbd_goto_row(dbi_result_t * result, unsigned long long row)
+int dbd_goto_row(dbi_result_t * result, unsigned long long rowidx, unsigned long long currowidx)
 {
-    return 1;
+  /* no-op */
+  return 1;
 }
 
 int dbd_get_socket(dbi_conn_t * conn)

@@ -151,10 +151,13 @@ int dbd_free_query(dbi_result_t *result)
 }
 
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) 
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) 
 {
-        msqlDataSeek((m_result *)result->result_handle, rowidx);
-	return 1;
+  if (rowidx != currowidx+1) {
+    msqlDataSeek((m_result *)result->result_handle, rowidx);
+  }
+  /* else: nothing to do, next fetch will fetch the desired row */
+  return 1;
 }
 
 

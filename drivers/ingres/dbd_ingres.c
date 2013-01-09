@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  * 
- * $Id: dbd_ingres.c,v 1.27 2012/12/03 00:16:08 mhoenicka Exp $
+ * $Id: dbd_ingres.c,v 1.28 2013/01/09 21:30:19 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -877,8 +877,9 @@ int dbd_free_query(dbi_result_t *result) {
 	return 0;
 }
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) {
-	return 1;
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
+  /* no-op */
+  return 1;
 }
 
 

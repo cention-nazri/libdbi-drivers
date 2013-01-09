@@ -22,7 +22,7 @@
  * Copyright (C) 2002-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite.c,v 1.54 2012/12/03 00:16:09 mhoenicka Exp $
+ * $Id: dbd_sqlite.c,v 1.55 2013/01/09 21:30:20 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -274,7 +274,7 @@ int dbd_free_query(dbi_result_t *result) {
   return 0;
 }
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) {
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
   result->currowidx = rowidx;
   return 1;
 }

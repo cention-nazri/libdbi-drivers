@@ -166,8 +166,9 @@ int dbd_free_query(dbi_result_t *result)
 }
 
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) 
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) 
 {	
+	/* no-op */
 	return 1;
 }
 

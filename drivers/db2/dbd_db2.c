@@ -23,7 +23,7 @@
  *
  * Based on works from Christian M. Stamgren, Oracle's drivers author.
  *
- * $Id: dbd_db2.c,v 1.2 2012/12/03 00:16:07 mhoenicka Exp $
+ * $Id: dbd_db2.c,v 1.3 2013/01/09 21:30:19 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -264,8 +264,8 @@ int dbd_get_socket(dbi_conn_t *conn){
 
 
 /* Internal Database Query Functions */
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx) {
-  /* move internal row index to rowidx (may be a no-op) */
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
+  /* no-op */
   return 1;
 }
 
