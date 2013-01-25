@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.68 2011/11/15 16:51:52 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -463,6 +463,7 @@ TestSuite *connection_fixture(TestSuite *suite);
 TestSuite *test_libdbi();
 TestSuite *test_database_infrastructure();
 TestSuite *test_managing_queries();
+TestSuite *test_transactions();
 TestSuite *test_dbi_retrieving_fields_data_name();
 TestSuite *test_dbi_retrieving_fields_data_idx();
 TestSuite *test_dbi_retrieving_fields_meta_data();
@@ -1766,7 +1767,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.68 2011/11/15 16:51:52 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2384,7 +2385,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.68 2011/11/15 16:51:52 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
@@ -3068,6 +3069,109 @@ Ensure test_dbi_conn_select_db() {
       assert_not_equal(dbi_conn_select_db(conn, cinfo.initial_dbname), -1);
       dbi_conn_select_db(conn, cinfo.dbname);
    }
+}
+
+/* transactions */
+Ensure test_dbi_conn_transaction_commit() {
+   const char *errmsg;
+   dbi_result result;
+   int int_result;
+   int errnum;
+
+   /* check initial value */
+
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, -2147483648);
+   }
+
+   dbi_result_free(result);
+
+   /* start transaction */
+   int_result = dbi_conn_transaction_begin(conn);
+   assert_equal(int_result, 0);
+
+   /* update value */
+   QUERY_ASSERT_RESULT(result, "UPDATE test_datatypes SET the_long=0");
+
+
+   /* rollback transaction */
+   int_result = dbi_conn_transaction_commit(conn);
+   assert_equal(int_result, 0);
+
+
+   /* check value again */
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, 0);
+   }
+
+   dbi_result_free(result);
+
+}
+
+Ensure test_dbi_conn_transaction_rollback() {
+   const char *errmsg;
+   dbi_result result;
+   int int_result;
+   int errnum;
+
+   /* check initial value */
+
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, -2147483648);
+   }
+
+   dbi_result_free(result);
+
+   /* start transaction */
+   int_result = dbi_conn_transaction_begin(conn);
+   assert_equal(int_result, 0);
+
+   /* update value */
+   QUERY_ASSERT_RESULT(result, "UPDATE test_datatypes SET the_long=0");
+
+
+   /* rollback transaction */
+   int_result = dbi_conn_transaction_rollback(conn);
+   assert_equal(int_result, 0);
+
+
+   /* check value again */
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, -2147483648);
+   }
+
+   dbi_result_free(result);
+
+}
+
+Ensure test_dbi_conn_rollback_to_savepoint() {
+}
+
+Ensure test_dbi_conn_release_savepoint() {
 }
 
 // TODO: make tests to specific functions
@@ -5403,6 +5507,7 @@ TestSuite *test_libdbi() {
 
    add_suite(suite, test_database_infrastructure());
    add_suite(suite, test_managing_results());
+   add_suite(suite, test_transactions());
 
    add_suite(suite, test_managing_queries());
    add_suite(suite, test_dbi_retrieving_fields_meta_data());
@@ -5487,6 +5592,17 @@ TestSuite *test_managing_queries() {
    add_test(suite, test_dbi_conn_escape_string);
    add_test(suite, test_dbi_conn_escape_string_copy);
    add_test(suite, test_dbi_conn_escape_binary_copy);
+   connection_fixture(suite);
+}
+
+TestSuite *test_transactions() {
+   TestSuite *suite = create_named_test_suite("Managing Transactions");
+   setup(suite, create_schema);
+   teardown(suite, drop_schema);
+   add_test(suite, test_dbi_conn_transaction_commit);
+   add_test(suite, test_dbi_conn_transaction_rollback);
+   add_test(suite, test_dbi_conn_rollback_to_savepoint);
+   add_test(suite, test_dbi_conn_release_savepoint);
    connection_fixture(suite);
 }
 
