@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -76,13 +76,13 @@ struct CONNINFO {
 };
 
 struct TABLEINFO {
-   int have_double;
-   int have_longlong;
-   int have_ulonglong;
-   int have_datetime;
-   int have_datetime_tz;
-   int have_time_tz;
-   int number_rows;
+  int have_double;
+  int have_longlong;
+  int have_ulonglong;
+  int have_datetime;
+  int have_datetime_tz;
+  int have_time_tz;
+  int number_rows;
 };
 
 struct CONNINFO cinfo;
@@ -1464,7 +1464,8 @@ int init_schema_tables(struct CONNINFO* ptr_cinfo) {
             "the_time TIME,"
             "the_time_tz TIME,"
             "id INT AUTO_INCREMENT,"
-            "PRIMARY KEY (id))");
+            "PRIMARY KEY (id)) "
+	       "ENGINE=InnoDB");
 
       snprintf(ptr_cinfo->query, QUERY_LEN, "INSERT INTO test_datatypes ("
             "the_char,"
@@ -1767,7 +1768,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2385,7 +2386,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.69 2013/01/25 00:54:00 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
@@ -3078,6 +3079,11 @@ Ensure test_dbi_conn_transaction_commit() {
    int int_result;
    int errnum;
 
+   if (!dbi_conn_cap_get(conn, "transaction_support")) {
+     /* test not applicable */
+     return;
+   }
+
    /* check initial value */
 
    QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
@@ -3100,7 +3106,7 @@ Ensure test_dbi_conn_transaction_commit() {
    QUERY_ASSERT_RESULT(result, "UPDATE test_datatypes SET the_long=0");
 
 
-   /* rollback transaction */
+   /* commit transaction */
    int_result = dbi_conn_transaction_commit(conn);
    assert_equal(int_result, 0);
 
@@ -3125,6 +3131,11 @@ Ensure test_dbi_conn_transaction_rollback() {
    dbi_result result;
    int int_result;
    int errnum;
+
+   if (!dbi_conn_cap_get(conn, "transaction_support")) {
+     /* test not applicable */
+     return;
+   }
 
    /* check initial value */
 
@@ -3169,9 +3180,95 @@ Ensure test_dbi_conn_transaction_rollback() {
 }
 
 Ensure test_dbi_conn_rollback_to_savepoint() {
+   const char *errmsg;
+   dbi_result result;
+   int int_result;
+   int errnum;
+
+   if (!dbi_conn_cap_get(conn, "savepoint_support")) {
+     /* test not applicable */
+     return;
+   }
+
+   /* check initial value */
+
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, -2147483648);
+   }
+
+   dbi_result_free(result);
+
+   /* start transaction */
+   int_result = dbi_conn_transaction_begin(conn);
+   assert_equal(int_result, 0);
+
+   /* set savepoint */
+   int_result = dbi_conn_savepoint(conn, "my_savepoint");
+   assert_equal(int_result, 0);
+
+   /* update value */
+   QUERY_ASSERT_RESULT(result, "UPDATE test_datatypes SET the_long=0");
+
+   /* rollback to savepoint */
+   int_result = dbi_conn_rollback_to_savepoint(conn, "my_savepoint");
+   assert_equal(int_result, 0);
+
+   /* commit transaction */
+   int_result = dbi_conn_transaction_commit(conn);
+   assert_equal(int_result, 0);
+
+   /* check value again */
+   QUERY_ASSERT_RESULT(result, "SELECT the_long FROM test_datatypes");
+
+   while (dbi_result_next_row(result)) {
+      errmsg = NULL;
+      int the_long = 0;
+
+      the_long = dbi_result_get_int_idx(result, 1);
+      assert_equal(the_long, -2147483648);
+   }
+
+   dbi_result_free(result);
+
 }
 
 Ensure test_dbi_conn_release_savepoint() {
+   const char *errmsg;
+   dbi_result result;
+   int int_result;
+   int errnum;
+
+   if (!dbi_conn_cap_get(conn, "savepoint_support")) {
+     /* test not applicable */
+     return;
+   }
+
+   /* start transaction */
+   int_result = dbi_conn_transaction_begin(conn);
+   assert_equal(int_result, 0);
+
+   /* set savepoint */
+   int_result = dbi_conn_savepoint(conn, "my_savepoint");
+   assert_equal(int_result, 0);
+
+   /* release savepoint */
+   int_result = dbi_conn_release_savepoint(conn, "my_savepoint");
+   assert_equal(int_result, 0);
+
+   /* rollback to savepoint */
+   int_result = dbi_conn_rollback_to_savepoint(conn, "my_savepoint");
+   assert_equal(int_result, 1);
+
+   /* commit transaction */
+   int_result = dbi_conn_transaction_commit(conn);
+   assert_equal(int_result, 0);
+
 }
 
 // TODO: make tests to specific functions
