@@ -1,7 +1,7 @@
 <!DOCTYPE Book PUBLIC "-//OASIS//DTD DocBook V4.1//EN" [
 <!ENTITY freedoc-license SYSTEM "../../doc/include/copying-fdl.sgml">
 ]>
-<!-- $Id: dbd_mysql.sgml,v 1.6 2008/05/16 15:09:42 mhoenicka Exp $ -->
+<!-- $Id: dbd_mysql.sgml,v 1.7 2013/01/27 01:28:18 mhoenicka Exp $ -->
 <book>
   <bookinfo>
     <title>mysql driver manual</title>
@@ -25,6 +25,10 @@
       </para>
     </legalnotice>
     <revhistory>
+      <revision>
+	<revnumber>0.5</revnumber>
+	<date>2012-01-27</date>
+      </revision>
       <revision>
 	<revnumber>0.4</revnumber>
 	<date>2005-07-15</date>
@@ -226,6 +230,9 @@
 	</listitem>
 	<listitem>
 	  <para>The DECIMAL type is treated as a string, as it has arbitrary precision.</para>
+	</listitem>
+	<listitem>
+	  <para>The driver per se supports transactions and savepoints and reports this when asked through the dbi_conn_cap_get() function. However, for transactions and savepoints to actually work, several conditions have to be met. First, the database server needs to support transactional table types. Recent versions do have transactional storage engines by default, but they may be switched off during compilation or by runtime configuration. Second, the tables used with transaction or savepoint queries must be of a transactional type. Non-transactional MyISAM tables have been replaced by transactional InnoDB tables as default table type no earlier than in MySQL version 5.5.5. If you intend to use transactions and savepoints, make sure to select an appropriate engine type like InnoDB explicitly in each CREATE TABLE statement.</para>
 	</listitem>
       </itemizedlist>
     </sect1>
