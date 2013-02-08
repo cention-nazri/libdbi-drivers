@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.68 2013/02/08 00:56:52 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.69 2013/02/08 01:01:31 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -101,6 +101,8 @@ void _translate_postgresql_type(unsigned int oid, unsigned short *type, unsigned
 void _get_field_info(dbi_result_t *result);
 void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowidx);
 int _dbd_real_connect(dbi_conn_t *conn, const char *db);
+char *_unescape_hex_binary(char* raw, size_t in_len, size_t* out_len);
+int _digit_to_number(const char c);
 
 /* this function is available through the PostgreSQL client library, but it
    is not declared in any of their headers. I hope this won't break anything */
@@ -468,7 +470,7 @@ size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char* orig, size_t from
   unsigned char *quoted_temp = NULL;
   size_t to_length;
 
-  temp = PQescapeBytea(orig, from_length, &to_length);
+  temp = PQescapeByteaConn((PGconn *)conn->connection, orig, from_length, &to_length);
 
   if (!temp) {
     return 0;
@@ -849,21 +851,34 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				data->d_string = strdup(raw);
 				row->field_sizes[curfield] = strsize;
 				break;
-			case DBI_TYPE_BINARY:	
-			  temp = PQunescapeBytea((const unsigned char *)raw, &unquoted_length);
-			  if ((data->d_string = malloc(unquoted_length)) == NULL) {
+			case DBI_TYPE_BINARY:
+			  strsize = (size_t)PQgetlength((PGresult *)result->result_handle, rowidx, curfield);
+			  if (strsize > 2
+			      && raw[0] == '\\'
+			      && raw[1] == 'x') {
+			    /* hex format */
+				/* row->field_sizes[curfield] = strsize; */
+				/* data->d_string = malloc(strsize); */
+				/* memcpy(data->d_string, raw, strsize); */
+			    temp = PQunescapeBytea((const unsigned char *)_unescape_hex_binary(raw, strsize, &unquoted_length), &(row->field_sizes[curfield]));
+			    if ((data->d_string = malloc(row->field_sizes[curfield])) == NULL) {
+			      PQfreemem(temp);
+			      break;
+			    }
+			    memmove(data->d_string, temp, row->field_sizes[curfield]);
 			    PQfreemem(temp);
-			    break;
 			  }
-			  memmove(data->d_string, temp, unquoted_length);
-			  PQfreemem(temp);
-			  row->field_sizes[curfield] = unquoted_length;
-			  /* todo: is raw ever unescaped binary data? */
-/*        			        strsize = PQgetlength((PGresult *)result->result_handle, rowidx, curfield); */
-/* 				row->field_sizes[curfield] = strsize; */
-/* 				data->d_string = malloc(strsize); */
-/* 				memcpy(data->d_string, raw, strsize); */
-				break;
+			  else {
+			    temp = PQunescapeBytea((const unsigned char *)raw, &unquoted_length);
+			    if ((data->d_string = malloc(unquoted_length)) == NULL) {
+			      PQfreemem(temp);
+			      break;
+			    }
+			    memmove(data->d_string, temp, unquoted_length);
+			    PQfreemem(temp);
+			    row->field_sizes[curfield] = unquoted_length;
+			  }
+			  break;
 				
 			case DBI_TYPE_DATETIME:
 				sizeattrib = result->field_attribs[curfield] & (DBI_DATETIME_DATE|DBI_DATETIME_TIME);
@@ -878,3 +893,81 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 	}
 }
 
+/* this function reverts the changes done by PQescapeByteaConn to a
+   binary string. libpq does not provide such a function.  Returns the
+   result as a malloc'ed string which must be freed by the caller. The
+   output string is in the BYTEA escape format with single backslashes
+   and single single quotes. It must be post-processed by
+   PQunescapeBytea() to obtain true binary data
+*/
+char *_unescape_hex_binary(char* raw, size_t in_len, size_t* out_len) {
+  size_t i;
+  int in_pair = 0;
+  int last_nibble = 0;
+  char *outstring;
+  char *end_of_outstring;
+  int have_backslash = 0;
+  int have_singlequote = 0;
+  char tempchar;
+
+  /* algorithm borrowed and modified from:
+     http://pqxx.org/development/libpqxx/browser/trunk/src/binarystring.cxx
+  */
+
+  if ((outstring = malloc(((in_len-2)/2)+1)) == NULL) {
+    return NULL;
+  }
+  end_of_outstring = outstring;
+
+  for (i=2; i<in_len; ++i) {
+    const unsigned char c = raw[i];
+    if (isspace(c)) {
+      if (in_pair) {
+	/* "Escaped binary data is malformed." */
+      }
+    }
+    else if (!isxdigit(c)) {
+      /* "Escaped binary data contains invalid characters." */
+    }
+    else {
+      const int nibble = (isdigit(c) ? _digit_to_number(c) : (10 + tolower(c) - 'a'));
+      if (in_pair) {
+	tempchar = (char)((last_nibble<<4) | nibble);
+	if (tempchar == '\\' && have_backslash) {
+	  /* skip second consecutive backslash */
+	  have_backslash = 0;
+	}
+	else if (tempchar == '\'' && have_singlequote) {
+	  /* skip second consecutive single quote */
+	  have_singlequote = 0;
+	}
+	else {
+	  if (tempchar == '\\') {
+	    have_backslash = 1;
+	  }
+	  else if (tempchar == '\'') {
+	    have_singlequote = 1;
+	  }
+	  else {
+	    have_backslash = 0;
+	    have_singlequote = 0;
+	  }
+	  *end_of_outstring = tempchar;
+	  end_of_outstring++;
+	}
+      }
+      else {
+	last_nibble = nibble;
+      }
+      in_pair = !in_pair;
+    }
+  }
+  *end_of_outstring = '\0';
+  *out_len = end_of_outstring-outstring;
+  return outstring;
+}
+
+/* converts an ASCII character code to an integer */
+int _digit_to_number(const char c) {
+  return (int)c - (int)'0';
+}
