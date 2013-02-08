@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.66 2013/01/08 23:55:54 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.67 2013/02/08 00:54:35 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -565,7 +565,7 @@ dbi_result_t *dbd_query_null(dbi_conn_t *conn, const unsigned char *statement, s
 }
 
 int dbd_transaction_begin(dbi_conn_t *conn) {
-  if (dbd_query(conn, "SET TRANSACTION") == NULL) {
+  if (dbd_query(conn, "BEGIN TRANSACTION") == NULL) {
     return 1;
   }
   else {
