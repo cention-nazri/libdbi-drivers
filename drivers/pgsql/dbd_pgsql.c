@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, David A. Parker <david@neongoat.com>.
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_pgsql.c,v 1.67 2013/02/08 00:54:35 mhoenicka Exp $
+ * $Id: dbd_pgsql.c,v 1.68 2013/02/08 00:56:52 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -416,48 +416,7 @@ const char* dbd_encoding_from_iana(const char *iana_encoding) {
 }
 
 char *dbd_get_engine_version(dbi_conn_t *conn, char *versionstring) {
-  dbi_result_t *dbi_result;
-  const char *versioninfo = NULL;
-
-  /* initialize return string */
-  *versionstring = '\0';
-
-  dbi_result = dbd_query(conn, "SELECT VERSION()");
-
-  /* this query will return something like:
-     PostgreSQL 8.0.1 on i386-portbld-freebsd5.4, compiled by GCC cc (GCC) 3.4.2 [FreeBSD] 20040728
-  */
-  if (dbi_result) {
-    if (dbi_result_next_row(dbi_result)) {
-      char *dot = NULL;
-      char *start = NULL;
-      char *stop = NULL;
-      versioninfo = dbi_result_get_string_idx(dbi_result, 1);
-
-      /* try to locate the version number. Look for the first dot, go
-	 back where the number before the dot starts, then walk
-	 forward to the last dot or number */
-      dot = strchr(versioninfo, (int)'.');
-      if (dot) {
-	start = dot-1;
-	while (start>versioninfo && isdigit((int)(*(start-1)))) {
-	  start--;
-	}
-
-	stop = start;
-	while (*(stop+1) && (isdigit((int)(*(stop+1))) || *(stop+1)=='.')) {
-	  stop++;
-	}
-
-	if (stop-start < VERSIONSTRING_LENGTH) {
-	  strncpy(versionstring, start, stop-start+1);
-	  versionstring[stop-start+1] = '\0';
-	}
-      }
-    }
-    dbi_result_free(dbi_result);
-  }
-
+  snprintf(versionstring, VERSIONSTRING_LENGTH, "%d", PQserverVersion((PGconn *)conn->connection));
   return versionstring;
 }
 
