@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1670,8 +1670,8 @@ int init_schema_tables(struct CONNINFO* ptr_cinfo) {
             "'%s',"
             "'',"
             "NULL,"
-            "'AB\\\\000C''D',"
-            "'AB\\\\000C''D',"
+            "'AB\\\\000C''''D',"
+            "'AB\\\\000C''''D',"
             "'2001-12-31-23.59.59',"
             "'2001-12-31-23.59.59',"
             "'2001-12-31',"
@@ -1768,7 +1768,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2110,6 +2110,7 @@ static void create_database() {
                FIREBIRD_ISQL,
                cinfo.password, cinfo.username);
       }
+
       if (system(command)) {
          fprintf(stderr, "Could not create initial database\n");
          goto error;
@@ -2244,11 +2245,9 @@ static void drop_database() {
       /* firebird does not support DROP DATABASE in regular SQL
 	       but offers it as an isql extension. In order to get rid
 	       of the test database, connect to it and drop it by
-	       sending a string to isql. As for the wacky debian test,
-	       see the create_database() function above */
+	       sending a string to isql */
       char database_path[1024];
       char command[1024];
-      int boolean = access("/etc/debian-version", F_OK) & access("/etc/debian_version", F_OK);
 
       snprintf(database_path, 1024, "%s/%s", cinfo.dbdir, cinfo.dbname);
 
@@ -2258,7 +2257,7 @@ static void drop_database() {
                "| %s -e -pas %s "
                "-u %s -sql_dialect 3", cinfo.dbdir,
                cinfo.dbname,
-               ( boolean ? "isql" : "isql-fb"),
+               FIREBIRD_ISQL,
                cinfo.password, cinfo.username);
       }
       else { /* remote */
@@ -2267,7 +2266,7 @@ static void drop_database() {
                "| %s -e -pas %s "
                "-u %s -sql_dialect 3", cinfo.hostname, cinfo.dbdir,
                cinfo.dbname,
-               ( boolean ? "isql" : "isql-fb"),
+               FIREBIRD_ISQL,
                cinfo.password, cinfo.username);
       }
       if (system(command)) {
@@ -2386,7 +2385,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.70 2013/01/27 01:09:29 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
@@ -2737,7 +2736,7 @@ Ensure test_another_encoding() {
 				"dbencode", "LATIN1");
      }
      else {
-       result = dbi_conn_queryf(another_conn,  "CREATE DATABASE %s WITH ENCODING = '%s' TEMPLATE template0",
+       result = dbi_conn_queryf(another_conn,  "CREATE DATABASE %s WITH ENCODING = '%s'  LC_COLLATE='de_DE.ISO8859-1' LC_CTYPE='de_DE.ISO8859-1' TEMPLATE template0",
 				"dbencode", "LATIN1");
      }
    }
@@ -2957,19 +2956,44 @@ Ensure test_dbi_conn_quote_binary_copy() {
       assert_equal(68, quoted_binary[8]);
       assert_equal(39, quoted_binary[9]);
    } else if(!strcmp(cinfo.drivername, "pgsql")) {
-      assert_equal(39, quoted_binary[0]);
-      assert_equal(65, quoted_binary[1]);
-      assert_equal(66, quoted_binary[2]);
-      assert_equal(92, quoted_binary[3]);
-      assert_equal(92, quoted_binary[4]);
-      assert_equal(48, quoted_binary[5]);
-      assert_equal(48, quoted_binary[6]);
-      assert_equal(48, quoted_binary[7]);
-      assert_equal(67, quoted_binary[8]);
-      assert_equal(39, quoted_binary[9]);
-      assert_equal(39, quoted_binary[10]);
-      assert_equal(68, quoted_binary[11]);
-      assert_equal(39, quoted_binary[12]);
+     unsigned int pgserver_version;
+
+     pgserver_version = dbi_conn_get_engine_version(conn);
+
+     if (pgserver_version < 90000) {
+       /* server uses old binary format by default */
+       assert_equal(39, quoted_binary[0]);
+       assert_equal(65, quoted_binary[1]);
+       assert_equal(66, quoted_binary[2]);
+       assert_equal(92, quoted_binary[3]);
+       assert_equal(92, quoted_binary[4]);
+       assert_equal(48, quoted_binary[5]);
+       assert_equal(48, quoted_binary[6]);
+       assert_equal(48, quoted_binary[7]);
+       assert_equal(67, quoted_binary[8]);
+       assert_equal(39, quoted_binary[9]);
+       assert_equal(39, quoted_binary[10]);
+       assert_equal(68, quoted_binary[11]);
+       assert_equal(39, quoted_binary[12]);     }
+     else {
+       /* server uses hex format by default */
+       assert_equal(39, quoted_binary[0]);
+       assert_equal(92, quoted_binary[1]);
+       assert_equal(120, quoted_binary[2]);
+       assert_equal(52, quoted_binary[3]);
+       assert_equal(49, quoted_binary[4]);
+       assert_equal(52, quoted_binary[5]);
+       assert_equal(50, quoted_binary[6]);
+       assert_equal(48, quoted_binary[7]);
+       assert_equal(48, quoted_binary[8]);
+       assert_equal(52, quoted_binary[9]);
+       assert_equal(51, quoted_binary[10]);
+       assert_equal(50, quoted_binary[11]);
+       assert_equal(55, quoted_binary[12]);
+       assert_equal(52, quoted_binary[13]);
+       assert_equal(52, quoted_binary[14]);
+       assert_equal(39, quoted_binary[15]);
+     }
    } else if(!strcmp(cinfo.drivername, "sqlite") || !strcmp(cinfo.drivername, "sqlite3") ||
          !strcmp(cinfo.drivername, "firebird")) {
       assert_equal(39, quoted_binary[0]);
@@ -3001,17 +3025,40 @@ Ensure test_dbi_conn_escape_binary_copy() {
       assert_equal(39, escaped_binary[6]);
       assert_equal(68, escaped_binary[7]);
    } else if(!strcmp(cinfo.drivername, "pgsql")) {
-      assert_equal(65, escaped_binary[0]);
-      assert_equal(66, escaped_binary[1]);
-      assert_equal(92, escaped_binary[2]);
-      assert_equal(92, escaped_binary[3]);
-      assert_equal(48, escaped_binary[4]);
-      assert_equal(48, escaped_binary[5]);
-      assert_equal(48, escaped_binary[6]);
-      assert_equal(67, escaped_binary[7]);
-      assert_equal(39, escaped_binary[8]);
-      assert_equal(39, escaped_binary[9]);
-      assert_equal(68, escaped_binary[10]);
+     unsigned int pgserver_version;
+
+     pgserver_version = dbi_conn_get_engine_version(conn);
+
+     if (pgserver_version < 90000) {
+       /* server uses old binary format by default */
+       assert_equal(65, escaped_binary[0]);
+       assert_equal(66, escaped_binary[1]);
+       assert_equal(92, escaped_binary[2]);
+       assert_equal(92, escaped_binary[3]);
+       assert_equal(48, escaped_binary[4]);
+       assert_equal(48, escaped_binary[5]);
+       assert_equal(48, escaped_binary[6]);
+       assert_equal(67, escaped_binary[7]);
+       assert_equal(39, escaped_binary[8]);
+       assert_equal(39, escaped_binary[9]);
+       assert_equal(68, escaped_binary[10]);     }
+     else {
+       /* server uses hex format by default */
+       assert_equal(92, escaped_binary[0]);
+       assert_equal(120, escaped_binary[1]);
+       assert_equal(52, escaped_binary[2]);
+       assert_equal(49, escaped_binary[3]);
+       assert_equal(52, escaped_binary[4]);
+       assert_equal(50, escaped_binary[5]);
+       assert_equal(48, escaped_binary[6]);
+       assert_equal(48, escaped_binary[7]);
+       assert_equal(52, escaped_binary[8]);
+       assert_equal(51, escaped_binary[9]);
+       assert_equal(50, escaped_binary[10]);
+       assert_equal(55, escaped_binary[11]);
+       assert_equal(52, escaped_binary[12]);
+       assert_equal(52, escaped_binary[13]);
+     }
    } else if(!strcmp(cinfo.drivername, "sqlite") || !strcmp(cinfo.drivername, "sqlite3") ||
          !strcmp(cinfo.drivername, "firebird")) {
       assert_equal(1,  escaped_binary[0]);
