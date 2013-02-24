@@ -19,7 +19,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $
+ * $Id: test_dbi.c,v 1.72 2013/02/24 15:06:57 mhoenicka Exp $
  */
 
 #include <stdio.h>
@@ -1145,22 +1145,77 @@ void drop_schema() {
       exit(1);
    }
 
-   for ( i = 0; strlen(cinfo.dropsubschema[i]) != 0 ; i++ ) {
-      if ((result = dbi_conn_query(conn, cinfo.dropsubschema[i])) == NULL) {
+   if (!strcmp(cinfo.drivername, "firebird")) {
+     /* firebird does not support DROP TABLE in regular SQL
+	but offers it as an isql extension */
+     char command[1024];
+
+     for ( i = 0; strlen(cinfo.dropsubschema[i]) != 0 ; i++ ) {
+       if (!*(cinfo.hostname)) {
+         snprintf(command, 1024,
+		  "echo \"CONNECT \'%s/%s\';%s;\""
+		  "| %s -e -pas %s "
+		  "-u %s -sql_dialect 3", cinfo.dbdir,
+		  cinfo.dbname,
+		  cinfo.dropsubschema[i],
+		  FIREBIRD_ISQL,
+		  cinfo.password, cinfo.username);
+       }
+       else { /* remote */
+         snprintf(command, 1024,
+		  "echo \"CONNECT \'%s:%s/%s\';%s;\""
+		  "| %s -e -pas %s "
+		  "-u %s -sql_dialect 3", cinfo.hostname, cinfo.dbdir,
+		  cinfo.dbname,
+		  cinfo.dropsubschema[i],
+		  FIREBIRD_ISQL,
+		  cinfo.password, cinfo.username);
+       }
+       if (system(command)) {
+         fprintf(stderr,"\tAAH! Can't drop subschema %s<< connected to database %s! Error message: %s\n", cinfo.dropsubschema[i], cinfo.dbname, errmsg);
+       }
+     } /* end for */
+
+     if (!*(cinfo.hostname)) {
+       snprintf(command, 1024,
+		"echo \"CONNECT \'%s/%s\';DROP TABLE test_datatypes;\""
+		"| %s -e -pas %s "
+		"-u %s -sql_dialect 3", cinfo.dbdir,
+		cinfo.dbname,
+		FIREBIRD_ISQL,
+		cinfo.password, cinfo.username);
+     }
+     else { /* remote */
+       snprintf(command, 1024,
+		"echo \"CONNECT \'%s:%s/%s\';DROP TABLE test_datatypes;\""
+		"| %s -e -pas %s "
+		"-u %s -sql_dialect 3", cinfo.hostname, cinfo.dbdir,
+		cinfo.dbname,
+		FIREBIRD_ISQL,
+		cinfo.password, cinfo.username);
+     }
+     if (system(command)) {
+       fprintf(stderr,"\tAAH! Can't drop table test_datatypes<< connected to database %s! Error message: %s\n", cinfo.dbname, errmsg);
+     }
+   }
+   else { /* not firebird */
+     for ( i = 0; strlen(cinfo.dropsubschema[i]) != 0 ; i++ ) {
+       if ((result = dbi_conn_query(conn, cinfo.dropsubschema[i])) == NULL) {
          errnum = dbi_conn_error(conn, &errmsg);
          printf("\tCan't drop sub schema data (%d)! %s\n", i, errmsg);
          my_dbi_shutdown(dbi_instance);
          exit(1);
-      }
-      dbi_result_free(result);
-   }
+       }
+       dbi_result_free(result);
+     }
 
-   if ((result = dbi_conn_query(conn, "DROP TABLE test_datatypes")) == NULL) {
-      errnum = dbi_conn_error(conn, &errmsg);
-      printf("\tCan't drop table test_datatypes Error '%d' message: %s\n", errnum, errmsg);
-   }
+     if ((result = dbi_conn_query(conn, "DROP TABLE test_datatypes")) == NULL) {
+       errnum = dbi_conn_error(conn, &errmsg);
+       printf("\tCan't drop table test_datatypes Error '%d' message: %s\n", errnum, errmsg);
+     }
 
-   dbi_result_free(result);
+     dbi_result_free(result);
+   }
 
 }
 
@@ -1768,7 +1823,7 @@ int ask_for_conninfo(struct CONNINFO* ptr_cinfo) {
    int numdrivers;
    char resp[16];
 
-   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $\n\n");
+   fprintf(stderr, "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.72 2013/02/24 15:06:57 mhoenicka Exp $\n\n");
 
    fprintf(stderr, "test instance-based (i) or legacy (l) libdbi interface? [i] ");
    fgets(resp, 16, stdin);
@@ -2246,10 +2301,7 @@ static void drop_database() {
 	       but offers it as an isql extension. In order to get rid
 	       of the test database, connect to it and drop it by
 	       sending a string to isql */
-      char database_path[1024];
       char command[1024];
-
-      snprintf(database_path, 1024, "%s/%s", cinfo.dbdir, cinfo.dbname);
 
       if (!*(cinfo.hostname)) {
          snprintf(command, 1024,
@@ -2385,7 +2437,7 @@ dbi_conn my_dbi_conn_new(const char *name, dbi_inst Inst) {
 
 static void usage() {
    fprintf(stderr,
-         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.71 2013/02/23 23:27:50 mhoenicka Exp $\n\n"
+         "\nlibdbi-drivers test program: $Id: test_dbi.c,v 1.72 2013/02/24 15:06:57 mhoenicka Exp $\n\n"
          "Usage: test_dbi [options]\n"
          "       -B                Name of the build. Single submission to the dashboard\n"
          "       -C                Generate a XML test report to submit.\n"
