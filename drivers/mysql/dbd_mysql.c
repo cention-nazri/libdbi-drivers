@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.108 2013/01/08 23:55:54 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.109 2013/02/27 23:16:20 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -271,7 +271,6 @@ int dbd_free_query(dbi_result_t *result) {
 }
 
 int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
-	// XXX TODO: kosherize this, handle efficient queries.
   if (rowidx != currowidx+1) {
 	mysql_data_seek((MYSQL_RES *)result->result_handle, rowidx);
 	/* the return type of this function is indeed void, so it is
