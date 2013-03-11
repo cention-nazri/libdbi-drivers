@@ -1,7 +1,7 @@
 
 libdbi-drivers - drivers for libdbi, a database abstraction
 layer implemented in C
-Copyright (C) 2001-2007, Markus Hoenicka
+Copyright (C) 2001-2013, Markus Hoenicka
 http://libdbi-drivers.sourceforge.net
 
 
@@ -39,14 +39,16 @@ If you are building the OSX port, see README.osx.
 AVAILABLE DRIVERS:
 ------------------
 
+* DB2 (experimental)
 * Firebird/Interbase (experimental)
+* FreeTDS (experimental)
+* Ingres (experimental)
 * mSQL (experimental)
 * MySQL
 * Oracle (experimental)
 * PostgreSQL
 * SQLite
 * SQLite3
-* Ingres 2006 (experimental)
 
 
 SUPPORTED PLATFORMS:
@@ -56,8 +58,8 @@ libdbi-drivers has been written with cross-platform availability in
 mind. To date, chances are it is going to run with:
 
 Linux: Debian, RedHat, Slackware, Gentoo
-Windows: 98, NT4, 2000, XP
-FreeBSD: 4.3 through 5.4
+Windows: all versions supported by Cygwin
+FreeBSD: 4.3 through 9.1
 SunOS: 2.8
 Solaris: 7
 AIX: 4.2, 4.3 and 5.1
@@ -95,5 +97,5 @@ CONTACT INFO:
 http://libdbi-drivers.sourceforge.net
 Markus Hoenicka <mhoenicka@users.sourceforge.net>
 David Parker <david@neongoat.com>
-$Id: README,v 1.11 2007/12/07 00:30:41 mhoenicka Exp $
+$Id: README,v 1.12 2013/03/11 23:49:41 mhoenicka Exp $
 

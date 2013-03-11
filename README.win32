@@ -2,7 +2,7 @@
 libdbi-drivers - drivers for libdbi, the Database
 Independent Abstraction Layer for C
 
-Copyright (C) 2001-2005, Markus Hoenicka
+Copyright (C) 2001-2013, Markus Hoenicka
 http://libdbi-drivers.sourceforge.net
 
 
@@ -14,7 +14,7 @@ package, available at http://www.cygwin.com/. libdbi must be properly
 installed before attempting to build libdbi-drivers, and you need the
 appropriate client libraries of the database engines. The only
 database engine packaged with Cygwin is PostgreSQL. However, at least
-SQLite 2.8.x and MySQL 4.x (client only) build out of the box.
+SQLite, SQLite3 and MySQL build out of the box.
 
 To build a particular driver, run these commands, where:
 
@@ -65,5 +65,5 @@ MODIFICATIONS AND REDISTRIBUTION (GPL):
 See the file COPYING or http://www.gnu.org for more details.
 
 
-$Id: README.win32,v 1.6 2005/08/08 22:40:21 mhoenicka Exp $
+$Id: README.win32,v 1.7 2013/03/11 23:49:41 mhoenicka Exp $
 
