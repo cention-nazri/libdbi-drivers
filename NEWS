@@ -2,7 +2,7 @@ libdbi-drivers NEWS file
 ========================
 
 ______________________________________
-1.0 (the "Lightning Blue Eyes" release)
+0.9.0 (the "Lightning Blue Eyes" release)
 
 - some of the drivers now export client library functions to the
   programmer via the dbi_driver_specific_function() interface
@@ -11,6 +11,22 @@ ______________________________________
 
 - a segfault in the oracle driver caused by INSERT statements was
   fixed
+
+- the pgsql driver now supports features specific to PostgreSQL 9 and later
+
+- drivers now support transactions and savepoints if the underlying
+  database engines do
+
+- additional libdbi hint about position in a result set allows tremendous
+  speedup of sequential reads from MySQL result sets
+
+- various memory leaks were plugged
+
+- database specific test scripts allow tests without affecting existing
+  database clusters
+
+- completely rewritten test kit increases coverage and improves error
+  reporting
 
 
 __________________________________________
@@ -122,4 +138,4 @@ _____________________________________
 - sqlite driver now attempts to support all MySQL and PosgreSQL data
   types
 
-$Id: NEWS,v 1.7 2008/08/03 10:06:38 mhoenicka Exp $
+$Id: NEWS,v 1.8 2013/03/12 00:26:05 mhoenicka Exp $
