@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.49 2013/01/08 23:55:54 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.50 2013/07/18 00:11:32 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1591,11 +1591,14 @@ unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
 }
 
 int dbd_ping(dbi_conn_t *conn) {
+  dbi_result dbi_result;
 
-  if (dbd_query(conn, "SELECT 1") == NULL) {
+  dbi_result = dbd_query(conn, "SELECT 1");
+  if (dbi_result == NULL) {
     return 0;
   }
   else {
+    dbi_result_free(dbi_result);
     return 1;
   }
 }
