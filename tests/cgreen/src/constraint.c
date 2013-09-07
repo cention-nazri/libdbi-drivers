@@ -164,8 +164,8 @@ static void test_want_double(Constraint *constraint, const char *function, intpt
 }
 
 static int compare_using_matcher(Constraint *constraint, intptr_t actual) {
-	int (*matches)(const void*) = constraint->expected;
-    return matches(actual);
+	int (*matches)(const void*) = (void *)(intptr_t)constraint->expected;
+    return matches((void *)actual);
 }
 
 static void test_with_matcher(Constraint *constraint, const char *function, const char* matcher_name, intptr_t matcher_function, const char *test_file, int test_line, TestReporter *reporter) {
