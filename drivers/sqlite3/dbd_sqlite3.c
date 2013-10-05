@@ -22,7 +22,7 @@
  * Copyright (C) 2005-2007, Markus Hoenicka <mhoenicka@users.sourceforge.net>
  * http://libdbi-drivers.sourceforge.net
  * 
- * $Id: dbd_sqlite3.c,v 1.50 2013/07/18 00:11:32 mhoenicka Exp $
+ * $Id: dbd_sqlite3.c,v 1.51 2013/10/05 22:40:37 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -1054,10 +1054,7 @@ static int find_result_field_types(char* field, dbi_conn_t *conn, const char* st
 	      return FIELD_TYPE_LONGLONG;
 	    }
 	    if ( strstr(curr_field_lower,"randomblob(") ||
-		 strstr(curr_field_lower,"zeroblob(") ||
-		 strstr(curr_field_lower,"total(") ||
-		 strstr(curr_field_lower,"abs(") ||
-		 strstr(curr_field_lower,"round(") ) {
+		 strstr(curr_field_lower,"zeroblob(") ) {
 	      return FIELD_TYPE_BLOB;
 	    }
 	    if ( strstr(curr_field_lower,"date(") ||
