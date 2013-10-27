@@ -21,7 +21,7 @@
  * Copyright (C) 2001-2002, Mark Tobenkin <mark@brentwoodradio.com>
  * http://libdbi.sourceforge.net
  * 
- * $Id: dbd_mysql.c,v 1.109 2013/02/27 23:16:20 mhoenicka Exp $
+ * $Id: dbd_mysql.c,v 1.110 2013/10/27 22:40:36 mhoenicka Exp $
  */
 
 #ifdef HAVE_CONFIG_H
@@ -246,7 +246,13 @@ int dbd_connect(dbi_conn_t *conn) {
 }
 
 int dbd_disconnect(dbi_conn_t *conn) {
-	if (conn->connection) mysql_close((MYSQL *)conn->connection);
+	if (conn->connection) {
+		mysql_close((MYSQL *)conn->connection);
+		/* added to resolve memory leak in threadsafe mysqlclient library: assume each thread has it's own connection */
+		if(mysql_thread_safe()) {
+			mysql_thread_end();
+		}
+	}
 	return 0;
 }
 
