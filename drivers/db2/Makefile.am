@@ -28,7 +28,7 @@ db2_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @DB2_INCLUDE@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @DB2_INCLUDE@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(db2_ltlibs)

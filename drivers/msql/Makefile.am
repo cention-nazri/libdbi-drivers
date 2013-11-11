@@ -28,7 +28,7 @@ msql_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @MSQL_INCLUDE@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @MSQL_INCLUDE@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(msql_ltlibs)

@@ -28,7 +28,7 @@ sqlite_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @SQLITE_INCLUDE@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @SQLITE_INCLUDE@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(sqlite_ltlibs)
@@ -36,7 +36,7 @@ libdbdsqlite_la_LDFLAGS = $(sqlite_ldflags) @SQLITE_LDFLAGS@ @SQLITE_LIBS@ @LIBA
 libdbdsqlite_la_SOURCES = $(sqlite_sources)
 libdbdsqlite_la_DEPENDENCIES = dbd_sqlite.h
 
-AM_CPPFLAGS=-DDBDIR=\"@dbi_dbdir@/sqlite\"
+AM_CPPFLAGS += -DDBDIR=\"@dbi_dbdir@/sqlite\"
 
 EXTRA_DIST = dbd_sqlite.c dbd_sqlite.h AUTHORS TODO README dbd_sqlite.sgml dbd_sqlite.pdf dbd_sqlite/*
 

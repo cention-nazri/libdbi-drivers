@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libcgreen.a
 
-INCLUDES = -I${srcdir}/include
+AM_CPPFLAGS = -I${srcdir}/include
 
 libcgreen_a_SOURCES =  src/unit.c src/messaging.c src/breadcrumb.c src/reporter.c src/assertions.c src/vector.c src/mocks.c src/constraint.c src/parameters.c src/text_reporter.c src/cdash_reporter.c 
 

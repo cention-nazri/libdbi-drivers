@@ -28,7 +28,7 @@ ingres_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @INGRES_INCLUDE@ @LIBADD_LIBDBI@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @INGRES_INCLUDE@ @LIBADD_LIBDBI@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(ingres_ltlibs)

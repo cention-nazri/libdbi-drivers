@@ -27,7 +27,7 @@ freetds_sources =
 
 endif
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @FREETDS_INCLUDE@
+AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @FREETDS_INCLUDE@
 
 libdir = $(driverdir)
 lib_LTLIBRARIES = $(freetds_ltlibs)
