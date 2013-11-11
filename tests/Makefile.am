@@ -1,7 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
-AUTOMAKE_OPTIONS = foreign
-
 SUBDIRS = cgreen
 
 TESTS = @MYSQL_TEST@ @PGSQL_TEST@ @SQLITE_TEST@ @SQLITE3_TEST@ @MSQL_TEST@ @ORACLE_TEST@ @FIREBIRD_TEST@ @FREETDS_TEST@ @INGRES_TEST@ @DB2_TEST@ @LIBDBI_TEST@

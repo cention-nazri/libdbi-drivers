@@ -1,7 +1,3 @@
-## Process this with automake to create Makefile.in
-
-AUTOMAKE_OPTIONS = foreign
-
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
 if HAVE_FIREBIRD_INTERBASE

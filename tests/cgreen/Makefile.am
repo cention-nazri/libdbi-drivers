@@ -1,7 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
-AUTOMAKE_OPTIONS = foreign
-
 noinst_LIBRARIES = libcgreen.a
 
 INCLUDES = -I${srcdir}/include

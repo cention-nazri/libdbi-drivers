@@ -1,7 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
-AUTOMAKE_OPTIONS = foreign dist-zip
-
 ACLOCAL_AMFLAGS = -I m4
 
 SUBDIRS = drivers tests @docs_subdirs@

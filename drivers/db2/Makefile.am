@@ -1,5 +1,3 @@
-AUTOMAKE_OPTIONS = foreign
-
 docdir = $(datadir)/doc/$(PACKAGE)-$(VERSION)
 
 if HAVE_DB2
