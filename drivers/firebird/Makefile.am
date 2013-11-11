@@ -45,7 +45,7 @@ EXTRA_DIST = dbd_firebird.c utility.c dbd_firebird.h utility.h firebird_charsets
 # jadetex spews out tons of useless crap. shut it up:
 dbd_firebird.pdf: dbd_firebird.sgml
 	@echo "Converting dbd_firebird.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl dbd_firebird.sgml
+	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
 	pdftex "&pdfjadetex" dbd_firebird.tex
 	pdftex "&pdfjadetex" dbd_firebird.tex
@@ -53,7 +53,7 @@ dbd_firebird.pdf: dbd_firebird.sgml
 
 dbd_firebird/*: dbd_firebird.sgml
 	@echo "Converting dbd_firebird.sgml to HTML...";
-	mkdir -p dbd_firebird && cd dbd_firebird && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ../dbd_firebird.sgml
+	mkdir -p dbd_firebird && cd dbd_firebird && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_firebird.sgml
 
 
 maintainer-clean: clean

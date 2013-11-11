@@ -49,7 +49,7 @@ EXTRA_DIST = dbd_ingres.c dbd_ingres.h months.gperf AUTHORS TODO README dbd_ingr
 # jadetex spews out tons of useless crap. shut it up:
 dbd_ingres.pdf: dbd_ingres.sgml
 	@echo "Converting dbd_ingres.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl dbd_ingres.sgml
+	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
 	pdftex "&pdfjadetex" dbd_ingres.tex
 	pdftex "&pdfjadetex" dbd_ingres.tex
@@ -57,7 +57,7 @@ dbd_ingres.pdf: dbd_ingres.sgml
 
 dbd_ingres/*: dbd_ingres.sgml
 	@echo "Converting dbd_ingres.sgml to HTML...";
-	mkdir -p dbd_ingres && cd dbd_ingres && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ../dbd_ingres.sgml
+	mkdir -p dbd_ingres && cd dbd_ingres && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_ingres.sgml
 
 
 maintainer-clean: clean

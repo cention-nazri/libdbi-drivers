@@ -43,7 +43,7 @@ EXTRA_DIST = dbd_db2.c dbd_db2.h AUTHORS TODO README dbd_db2.sgml dbd_db2.pdf db
 
 dbd_db2.pdf: dbd_db2.sgml
 	@echo "Converting dbd_db2.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl dbd_db2.sgml
+	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
 	pdftex "&pdfjadetex" dbd_db2.tex
 	pdftex "&pdfjadetex" dbd_db2.tex
@@ -51,7 +51,7 @@ dbd_db2.pdf: dbd_db2.sgml
 
 dbd_db2/*: dbd_db2.sgml
 	@echo "Converting dbd_db2.sgml to HTML...";
-	mkdir -p dbd_db2 && cd dbd_db2 && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ../dbd_db2.sgml
+	mkdir -p dbd_db2 && cd dbd_db2 && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_db2.sgml
 
 
 maintainer-clean: clean

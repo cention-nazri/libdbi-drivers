@@ -47,7 +47,7 @@ EXTRA_DIST = dbd_sqlite3.c dbd_sqlite3.h AUTHORS TODO README dbd_sqlite3.sgml db
 # jadetex spews out tons of useless crap. shut it up:
 dbd_sqlite3.pdf: dbd_sqlite3.sgml
 	@echo "Converting dbd_sqlite3.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl dbd_sqlite3.sgml
+	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
 	pdftex "&pdfjadetex" dbd_sqlite3.tex
 	pdftex "&pdfjadetex" dbd_sqlite3.tex
@@ -55,7 +55,7 @@ dbd_sqlite3.pdf: dbd_sqlite3.sgml
 
 dbd_sqlite3/*: dbd_sqlite3.sgml
 	@echo "Converting dbd_sqlite3.sgml to HTML...";
-	mkdir -p dbd_sqlite3 && cd dbd_sqlite3 && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ../dbd_sqlite3.sgml
+	mkdir -p dbd_sqlite3 && cd dbd_sqlite3 && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_sqlite3.sgml
 
 
 maintainer-clean: clean

@@ -4,7 +4,7 @@ AUTOMAKE_OPTIONS = foreign
 
 noinst_LIBRARIES = libcgreen.a
 
-INCLUDES = -Iinclude
+INCLUDES = -I${srcdir}/include
 
 libcgreen_a_SOURCES =  src/unit.c src/messaging.c src/breadcrumb.c src/reporter.c src/assertions.c src/vector.c src/mocks.c src/constraint.c src/parameters.c src/text_reporter.c src/cdash_reporter.c 
 
