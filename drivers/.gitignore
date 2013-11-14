@@ -1,0 +1,10 @@
+/*/dbd_*.tex
+/db2/dbd_db2/
+/firebird/dbd_firebird/
+/ingres/dbd_ingres/
+/msql/dbd_msql/
+/mysql/dbd_mysql/
+/oracle/dbd_oracle/
+/pgsql/dbd_pgsql/
+/sqlite/dbd_sqlite/
+/sqlite3/dbd_sqlite3/
