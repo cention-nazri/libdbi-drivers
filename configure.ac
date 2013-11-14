@@ -1,4 +1,5 @@
 AC_INIT([libdbi-drivers], [0.9.0])
+AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([drivers/sqlite/dbd_sqlite.c])
 AM_MAINTAINER_MODE
 
