@@ -411,7 +411,7 @@ dbi_result_t *dbd_list_dbs(dbi_conn_t *conn, const char *pattern) {
     return NULL;
   }
 
-  entry = (struct dirent *) malloc (entry_size);
+  entry = malloc(entry_size);
   if (entry == NULL) {
     return NULL;
   }

@@ -48,7 +48,7 @@ static void die(const char *message, ...);
 static void do_nothing();
 
 TestSuite *create_named_test_suite(const char *name) {
-    TestSuite *suite = (TestSuite *)malloc(sizeof(TestSuite));
+    TestSuite *suite = malloc(sizeof(TestSuite));
 	suite->name = name;
     suite->tests = NULL;
     suite->setup = &do_nothing;
@@ -75,7 +75,7 @@ void destroy_test_suite(TestSuite *suiteToDestroy) {
 
 void add_test_(TestSuite *suite, char *name, CgreenTest *test) {
     suite->size++;
-    suite->tests = (UnitTest *)realloc(suite->tests, sizeof(UnitTest) * suite->size);
+    suite->tests = realloc(suite->tests, sizeof(UnitTest) * suite->size);
     suite->tests[suite->size - 1].type = test_function;
     suite->tests[suite->size - 1].name = name;
     suite->tests[suite->size - 1].sPtr.test = test;
@@ -95,7 +95,7 @@ void add_tests_(TestSuite *suite, const char *names, ...) {
 
 void add_suite_(TestSuite *owner, char *name, TestSuite *suite) {
     owner->size++;
-    owner->tests = (UnitTest *)realloc(owner->tests, sizeof(UnitTest) * owner->size);
+    owner->tests = realloc(owner->tests, sizeof(UnitTest) * owner->size);
     owner->tests[owner->size - 1].type = test_suite;
     owner->tests[owner->size - 1].name = name;
     owner->tests[owner->size - 1].sPtr.suite = suite;

@@ -3,12 +3,13 @@
 #include <cgreen/messaging.h>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 static char *output;
 static void clear_output()
 {
-    output = (char*)malloc(1);
+    output = malloc(1);
     *output = '\0';
 }
 

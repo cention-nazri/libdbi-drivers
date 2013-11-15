@@ -690,7 +690,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 		OCIAttrGet((dvoid*) param, (ub4) OCI_DTYPE_PARAM,
 			   (dvoid*) &length,(ub4 *) 0, (ub4) OCI_ATTR_DATA_SIZE,
 			   (OCIError *) Oconn->err  );
-		cols[curfield] = (char *)malloc(length+1);
+		cols[curfield] = malloc(length + 1);
 
 		if (result->field_types[curfield] == DBI_TYPE_DATETIME){
 
@@ -866,7 +866,7 @@ size_t dbd_quote_binary (dbi_conn_t *conn, const unsigned char *orig, size_t fro
   unsigned char *temp;
   size_t len;
 
-  if ((temp = (unsigned char*)malloc(from_length*2)) == NULL) {
+  if ((temp = malloc(from_length * 2)) == NULL) {
     return 0;
   }
 

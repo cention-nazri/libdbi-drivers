@@ -16,9 +16,9 @@ char *slurp(const char *file_name, int gulp) {
 }
 
 static char *read_all(FILE *file, int gulp) {
-	char *content = (char *)malloc(1);
+	char *content = malloc(1);
 	int sblock = (gulp + 1) * sizeof(char);
-	char *block = (char *)malloc(sblock);
+	char *block = malloc(sblock);
 	int len, add = 0;
 
 	*content = '\0';
@@ -30,7 +30,7 @@ static char *read_all(FILE *file, int gulp) {
 		len  = strlen(block);
 		add += len;
 
-		content = (char *)realloc(content, add + 1);
+		content = realloc(content, add + 1);
 		if (content == NULL) {
 			exit(1);
 		}

@@ -7,6 +7,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <dbi/dbi.h>
@@ -36,7 +37,7 @@ int _dbd_real_connect(dbi_conn_t *conn, char *enc)
 
         isc_db_handle db = 0L; /* database handle */
         isc_tr_handle trans = 0L; /* transaction handle */
-	ibase_conn_t *iconn = (ibase_conn_t * ) malloc(sizeof(ibase_conn_t));
+	ibase_conn_t *iconn = malloc(sizeof(ibase_conn_t));
 	ISC_STATUS status_vector[ISC_STATUS_LENGTH];
 
 	const char *dbname =  dbi_conn_get_option(conn, "dbname");
