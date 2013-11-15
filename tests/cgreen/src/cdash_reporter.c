@@ -58,7 +58,7 @@ TestReporter *create_cdash_reporter(CDashInfo *cdash) {
 	if (!reporter)
 		return NULL;
 
-    memo = (CdashMemo *) malloc(sizeof(CdashMemo));
+    memo = malloc(sizeof(CdashMemo));
     if (!memo)
     	return NULL;
 

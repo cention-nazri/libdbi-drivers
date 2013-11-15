@@ -15,11 +15,11 @@ static int move_to_front(MemoryPool *pool, void *pointer);
 static void move_up_one(void **blocks, long amount);
 
 MemoryPool *create_memory_pool() {
-    MemoryPool *pool = (MemoryPool *)malloc(sizeof(MemoryPool));
+    MemoryPool *pool = malloc(sizeof(MemoryPool));
     if (pool == NULL) {
         return NULL;
     }
-    pool->blocks = (void **)malloc(MEMORY_INCREMENT * sizeof(void *));
+    pool->blocks = malloc(MEMORY_INCREMENT * sizeof(void *));
     if (pool->blocks == NULL) {
         free(pool);
         return NULL;

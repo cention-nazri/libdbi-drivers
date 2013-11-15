@@ -378,7 +378,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
 	       return NULL;
        }
        
-       sqlda = (XSQLDA *) malloc(XSQLDA_LENGTH(1));
+       sqlda = malloc(XSQLDA_LENGTH(1));
        sqlda->sqln = 1;
        sqlda->version = 1;
 
@@ -455,7 +455,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
 
 	       /* Need more room. */
 	       if (sqlda->sqln < num_cols) {
-		       sqlda = (XSQLDA *) realloc(sqlda, XSQLDA_LENGTH(num_cols));
+		       sqlda = realloc(sqlda, XSQLDA_LENGTH(num_cols));
 		       sqlda->sqln = num_cols;
 		       sqlda->version = 1;
 		       
@@ -504,7 +504,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement)
 	       }       
        }
 
-       res = (ibase_stmt_t *)malloc(sizeof(ibase_stmt_t));
+       res = malloc(sizeof(ibase_stmt_t));
        res->stmt = stmt;
        res->osqlda = sqlda;
        res->rowcount = 1;

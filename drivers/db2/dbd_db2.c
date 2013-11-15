@@ -214,7 +214,7 @@ int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
 
   Db2conn *Dconn = conn->connection;
 
-  message = (char *) malloc(SQL_MAX_MESSAGE_LENGTH);
+  message = malloc(SQL_MAX_MESSAGE_LENGTH);
   if (!message) {
     *errstr = strdup("Unable to allocate memory");
     _error_handler(conn, DBI_ERROR_NOMEM);
@@ -236,7 +236,7 @@ int dbd_geterror(dbi_conn_t *conn, int *errno, char **errstr) {
         (SQLSMALLINT *) &length
         );
 
-    errbuf = (char *) malloc(sizeof(char *) * (SQL_SQLSTATE_SIZE + strlen(message) + 1));
+    errbuf = malloc(sizeof(char *) * (SQL_SQLSTATE_SIZE + strlen(message) + 1));
     if (!errbuf) {
       *errstr = strdup("Unable to allocate memory");
       free(message);
@@ -919,7 +919,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
           break;
         case DBI_INTEGER_SIZE8:
           // SQL_BIGINT is a string!
-          ptr = (SQLPOINTER) malloc(200);
+          ptr = malloc(200);
           CALL_SQL_GET_DATA(ptr, SQL_C_CHAR, 200);
           RETVAL
           data->d_longlong = atoll((const char *)ptr);
@@ -946,7 +946,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
         }
         break;
         case DBI_TYPE_STRING:
-          ptr = (SQLPOINTER) malloc(100);
+          ptr = malloc(100);
           CALL_SQL_GET_DATA(ptr, SQL_C_CHAR, 100);
           RETVAL
           data->d_string = strdup((char *)ptr);
@@ -954,7 +954,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
           row->field_sizes[curfield] = 100;
           break;
         case DBI_TYPE_BINARY:
-          ptr = (SQLPOINTER) malloc(100);
+          ptr = malloc(100);
           CALL_SQL_GET_DATA(ptr, SQL_C_CHAR, 100);
           RETVAL
           data->d_string = strdup((char *)ptr);

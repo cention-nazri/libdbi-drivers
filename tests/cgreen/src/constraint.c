@@ -81,7 +81,7 @@ static void test_non_null(Constraint *constraint, const char *function, intptr_t
 }
 
 Constraint *want_double_(const char *parameter, intptr_t expected) {
-    Constraint *constraint = (Constraint *)malloc(sizeof(Constraint));
+    Constraint *constraint = malloc(sizeof(Constraint));
     constraint->parameter = parameter;
     constraint->destroy = &destroy_double_constraint;
     constraint->compare = &compare_want_double;
@@ -91,7 +91,7 @@ Constraint *want_double_(const char *parameter, intptr_t expected) {
 }
 
 intptr_t box_double(double d) {
-    BoxedDouble *box = (BoxedDouble *) malloc(sizeof(BoxedDouble));
+    BoxedDouble *box = malloc(sizeof(BoxedDouble));
     box->d = d;
     return (intptr_t)box;
 }
@@ -181,7 +181,7 @@ static void test_with_matcher(Constraint *constraint, const char *function, cons
 }
 
 static Constraint *create_constraint(const char *parameter) {
-    Constraint *constraint = (Constraint *)malloc(sizeof(Constraint));
+    Constraint *constraint = malloc(sizeof(Constraint));
     constraint->parameter = parameter;
     constraint->destroy = &destroy_empty_constraint;
     return constraint;

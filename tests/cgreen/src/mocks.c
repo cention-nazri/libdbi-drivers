@@ -81,7 +81,7 @@ void always_expect_(const char *function, const char *test_file, int test_line, 
 
 void expect_never_(const char *function, const char *test_file, int test_line) {
     ensure_unwanted_calls_list_exists();
-    UnwantedCall *unwanted = (UnwantedCall *)malloc(sizeof(UnwantedCall));
+    UnwantedCall *unwanted = malloc(sizeof(UnwantedCall));
     unwanted->test_file = test_file;
     unwanted->test_line = test_line;
     unwanted->function = function;
@@ -132,7 +132,7 @@ intptr_t stubbed_result(const char *function) {
 
 static RecordedResult *create_recorded_result(const char *function, intptr_t result) {
     ensure_result_queue_exists();
-    RecordedResult *record = (RecordedResult *)malloc(sizeof(RecordedResult));
+    RecordedResult *record = malloc(sizeof(RecordedResult));
     record->function = function;
     record->result = result;
     cgreen_vector_add(result_queue, record);
@@ -147,7 +147,7 @@ static void ensure_result_queue_exists() {
 
 static RecordedExpectation *create_recorded_expectation(const char *function, const char *test_file, int test_line, va_list constraints) {
     ensure_expectation_queue_exists();
-    RecordedExpectation *expectation = (RecordedExpectation *)malloc(sizeof(RecordedExpectation));
+    RecordedExpectation *expectation = malloc(sizeof(RecordedExpectation));
     expectation->function = function;
     expectation->test_file = test_file;
     expectation->test_line = test_line;

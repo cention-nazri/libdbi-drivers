@@ -1071,7 +1071,7 @@ dbi_row_t *_dbd_freetds_buffers_binding(dbi_conn_t * conn, dbi_result_t * result
 	     * allocate additional memory
 	     * 1 extra byte for \0
 	     */
-	    addr = row->field_values[idx].d_string = (char *) malloc(row->field_sizes[idx] + 1);
+	    addr = row->field_values[idx].d_string = malloc(row->field_sizes[idx] + 1);
 	    break;
 	default:
 	    /* Prepare union to data copy */
