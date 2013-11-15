@@ -30,8 +30,7 @@ endif
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @INGRES_INCLUDE@ @LIBADD_LIBDBI@
 
-libdir = $(driverdir)
-lib_LTLIBRARIES = $(ingres_ltlibs)
+driver_LTLIBRARIES = $(ingres_ltlibs)
 libdbdingres_la_LDFLAGS = $(ingres_ldflags) @INGRES_LDFLAGS@
 libdbdingres_la_LIBADD = @INGRES_LIBS@
 libdbdingres_la_SOURCES = $(ingres_sources)

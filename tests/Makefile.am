@@ -11,7 +11,7 @@ libtest_dbi_plugin_la_SOURCES = test_dbi_plugin.c
 libtest_dbi_plugin_la_LIBADD = @LIBADD_LIBDBI@
 libtest_dbi_plugin_la_LDFLAGS = -module -rpath /nowhere
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include -I$(top_srcdir)/tests/cgreen/include -I@includedir@
-CFLAGS = -DDBI_DRIVER_DIR=\"@driverdir@\" @FIREBIRD_ISQL_FLAG@ -g
+CFLAGS = -DDBI_DRIVER_DIR=\"${driverdir}\" @FIREBIRD_ISQL_FLAG@ -g
 AM_CPPFLAGS += -DDBDIR=\"@dbi_dbdir@\" @DBI_INCLUDE@
 
 EXTRA_DIST = test_mysql.sh test_pgsql.sh test_sqlite.sh test_sqlite3.sh test_msql.sh test_oracle.sh test_firebird.sh test_freetds.sh test_ingres.sh test_db2.sh test_libdbi.sh
