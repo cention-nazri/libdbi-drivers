@@ -30,8 +30,7 @@ endif
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @ORACLE_INCLUDE@
 
-libdir = $(driverdir)
-lib_LTLIBRARIES = $(oracle_ltlibs)
+driver_LTLIBRARIES = $(oracle_ltlibs)
 libdbdoracle_la_LDFLAGS = $(oracle_ldflags) @ORACLE_LDFLAGS@ @ORACLE_LIBS@ @LIBADD_LIBDBI@
 libdbdoracle_la_SOURCES = $(oracle_sources)
 libdbdoracle_la_DEPENDENCIES = dbd_oracle.h

@@ -30,8 +30,7 @@ endif
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @SQLITE_INCLUDE@
 
-libdir = $(driverdir)
-lib_LTLIBRARIES = $(sqlite_ltlibs)
+driver_LTLIBRARIES = $(sqlite_ltlibs)
 libdbdsqlite_la_LDFLAGS = $(sqlite_ldflags) @SQLITE_LDFLAGS@ @SQLITE_LIBS@ @LIBADD_LIBDBI@
 libdbdsqlite_la_SOURCES = $(sqlite_sources)
 libdbdsqlite_la_DEPENDENCIES = dbd_sqlite.h

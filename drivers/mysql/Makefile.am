@@ -32,8 +32,7 @@ endif
 
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @MYSQL_INCLUDE@
 
-libdir = $(driverdir)
-lib_LTLIBRARIES = $(mysql_ltlibs)
+driver_LTLIBRARIES = $(mysql_ltlibs)
 libdbdmysql_la_LDFLAGS = $(mysql_ldflags) @MYSQL_LDFLAGS@ @MYSQL_LIBS@ @LIBADD_LIBDBI@
 libdbdmysql_la_SOURCES = $(mysql_sources)
 libdbdmysql_la_DEPENDENCIES = dbd_mysql.h
