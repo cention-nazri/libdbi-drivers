@@ -3,7 +3,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([drivers/sqlite/dbd_sqlite.c])
 AM_MAINTAINER_MODE
 
-AM_INIT_AUTOMAKE([foreign dist-zip subdir-objects])
+AM_INIT_AUTOMAKE([foreign dist-zip subdir-objects serial-tests])
 AM_CONFIG_HEADER(config.h)
 AC_LIBTOOL_WIN32_DLL
 AC_CONFIG_MACRO_DIR([m4])
