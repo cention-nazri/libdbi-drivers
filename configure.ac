@@ -176,6 +176,8 @@ AC_ARG_ENABLE(docs,
 
 if test "$ac_docs" = "YES"; then
       docs_subdirs="doc"
+      AC_PATH_PROGS(myjade, openjade jade, none)
+      AC_PATH_PROG(mypdftex, pdftex, none)
 else
    docs_subdirs=""
 fi

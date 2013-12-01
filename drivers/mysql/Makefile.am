@@ -42,15 +42,15 @@ EXTRA_DIST = dbd_mysql.c dbd_mysql.h AUTHORS TODO README dbd_mysql.sgml dbd_mysq
 # jadetex spews out tons of useless crap. shut it up:
 dbd_mysql.pdf: dbd_mysql.sgml
 	@echo "Converting dbd_mysql.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
+	$(myjade) -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
-	pdftex "&pdfjadetex" dbd_mysql.tex
-	pdftex "&pdfjadetex" dbd_mysql.tex
-	pdftex "&pdfjadetex" dbd_mysql.tex
+	$(mypdftex) "&pdfjadetex" dbd_mysql.tex
+	$(mypdftex) "&pdfjadetex" dbd_mysql.tex
+	$(mypdftex) "&pdfjadetex" dbd_mysql.tex
 
 dbd_mysql/*: dbd_mysql.sgml
 	@echo "Converting dbd_mysql.sgml to HTML...";
-	mkdir -p dbd_mysql && cd dbd_mysql && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_mysql.sgml
+	mkdir -p dbd_mysql && cd dbd_mysql && $(myjade) -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_mysql.sgml
 
 
 maintainer-clean: clean

@@ -39,15 +39,15 @@ EXTRA_DIST = dbd_msql.c dbd_msql.h dbd_msql.sgml dbd_msql.pdf dbd_msql/*
 
 dbd_msql.pdf: dbd_msql.sgml
 	@echo "Converting dbd_msql.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
+	$(myjade) -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
-	pdftex "&pdfjadetex" dbd_msql.tex
-	pdftex "&pdfjadetex" dbd_msql.tex
-	pdftex "&pdfjadetex" dbd_msql.tex
+	$(mypdftex) "&pdfjadetex" dbd_msql.tex
+	$(mypdftex) "&pdfjadetex" dbd_msql.tex
+	$(mypdftex) "&pdfjadetex" dbd_msql.tex
 
 dbd_msql/*: dbd_msql.sgml
 	@echo "Converting dbd_msql.sgml to HTML...";
-	mkdir -p dbd_msql && cd dbd_msql && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_msql.sgml
+	mkdir -p dbd_msql && cd dbd_msql && $(myjade) -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_msql.sgml
 
 maintainer-clean: clean
 	rm -f dbd_msql.pdf dbd_msql/*

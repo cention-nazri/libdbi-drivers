@@ -40,15 +40,15 @@ EXTRA_DIST = dbd_oracle.c dbd_oracle.h oracle_charsets.h AUTHORS TODO README dbd
 # jadetex spews out tons of useless crap. shut it up:
 dbd_oracle.pdf: dbd_oracle.sgml
 	@echo "Converting dbd_oracle.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
+	$(myjade) -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
-	pdftex "&pdfjadetex" dbd_oracle.tex
-	pdftex "&pdfjadetex" dbd_oracle.tex
-	pdftex "&pdfjadetex" dbd_oracle.tex
+	$(mypdftex) "&pdfjadetex" dbd_oracle.tex
+	$(mypdftex) "&pdfjadetex" dbd_oracle.tex
+	$(mypdftex) "&pdfjadetex" dbd_oracle.tex
 
 dbd_oracle/*: dbd_oracle.sgml
 	@echo "Converting dbd_oracle.sgml to HTML...";
-	mkdir -p dbd_oracle && cd dbd_oracle && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_oracle.sgml
+	mkdir -p dbd_oracle && cd dbd_oracle && $(myjade) -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_oracle.sgml
 
 
 maintainer-clean: clean
