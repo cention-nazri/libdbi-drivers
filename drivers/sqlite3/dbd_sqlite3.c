@@ -60,6 +60,15 @@ long long strtoll(const char *nptr, char **endptr, int base);
 #include <sqlite3.h>
 #include "dbd_sqlite3.h"
 
+#ifdef _WIN32
+	/*
+	 * Do the same as in libdbi. MSDN says: readdir, strtok have
+	 * thread-local storage. Therefore, let's cheat.
+	 */
+#	define readdir_r(a, b, c) readdir(a)
+#	define strtok_r(a, b, c) strtok((a), (b))
+#endif
+
 static const dbi_info_t driver_info = {
   "sqlite3",
   "SQLite3 database support (using libsqlite3)",
