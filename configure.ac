@@ -3,7 +3,7 @@ AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([drivers/sqlite/dbd_sqlite.c])
 AM_MAINTAINER_MODE
 
-AM_INIT_AUTOMAKE([foreign dist-zip subdir-objects])
+AM_INIT_AUTOMAKE([foreign dist-zip subdir-objects serial-tests])
 AM_CONFIG_HEADER(config.h)
 AC_LIBTOOL_WIN32_DLL
 AC_CONFIG_MACRO_DIR([m4])
@@ -32,7 +32,7 @@ dnl ====================================
 AC_PROG_CC
 AC_PROG_LD
 AC_PROG_INSTALL
-LT_INIT
+LT_INIT([dlopen])
 dnl AM_PROG_LIBTOOL
 AC_PROG_CPP
 
@@ -132,6 +132,26 @@ AC_CHECK_FREETDS
 AC_CHECK_INGRES
 AC_CHECK_DB2
 
+dnl functions to load dynamic libraries
+use_ltdl=no
+AC_ARG_WITH(ltdl,
+	[  --with-ltdl	          Use libtool's libltdl to load runtime modules [no]],
+	[  use_ltdl=$withval ])
+	
+if test "x$use_ltdl" = xyes; then
+AC_CHECK_HEADERS([ltdl.h], [AC_CHECK_LIB([ltdl],[lt_dlopen],[LIBADD_DL=-lltdl])])
+else
+AC_CHECK_HEADERS([mach-o/dyld.h],[AC_CHECK_FUNCS([NSLinkModule], [
+       LIBADD_DL=""
+       dlsym_prefix=_
+       ])],
+[
+AC_CHECK_HEADERS([dlfcn.h])
+AC_CHECK_FUNCS([dlopen],[LIBADD_DL=],
+		[AC_CHECK_LIB([dl],[dlopen],[LIBADD_DL=-ldl],[])])])
+fi
+AC_SUBST(LIBADD_DL)
+
 dnl ==============================
 dnl Check for functions
 dnl ==============================
@@ -176,6 +196,8 @@ AC_ARG_ENABLE(docs,
 
 if test "$ac_docs" = "YES"; then
       docs_subdirs="doc"
+      AC_PATH_PROGS(myjade, openjade jade, none)
+      AC_PATH_PROG(mypdftex, pdftex, none)
 else
    docs_subdirs=""
 fi

@@ -40,15 +40,15 @@ EXTRA_DIST = dbd_freetds.c dbd_freetds.h
 # jadetex spews out tons of useless crap. shut it up:
 #dbd_freetds.pdf: dbd_freetds.sgml
 #	@echo "Converting dbd_freetds.sgml to PDF...";
-#	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
+#	$(myjade) -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
-#	pdftex "&pdfjadetex" dbd_freetds.tex
-#	pdftex "&pdfjadetex" dbd_freetds.tex
-#	pdftex "&pdfjadetex" dbd_freetds.tex
+#	$(mypdftex) "&pdfjadetex" dbd_freetds.tex
+#	$(mypdftex) "&pdfjadetex" dbd_freetds.tex
+#	$(mypdftex) "&pdfjadetex" dbd_freetds.tex
 
 #dbd_freetds/*: dbd_freetds.sgml
 #	@echo "Converting dbd_freetds.sgml to HTML...";
-#	mkdir -p dbd_mysql && cd dbd_freetds && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_freetds.sgml
+#	mkdir -p dbd_mysql && cd dbd_freetds && $(myjade) -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_freetds.sgml
 
 
 

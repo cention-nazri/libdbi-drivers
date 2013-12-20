@@ -40,15 +40,15 @@ EXTRA_DIST = dbd_pgsql.c dbd_pgsql.h AUTHORS TODO README dbd_pgsql.sgml dbd_pgsq
 # jadetex spews out tons of useless crap. shut it up:
 dbd_pgsql.pdf: dbd_pgsql.sgml
 	@echo "Converting dbd_pgsql.sgml to PDF...";
-	openjade -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
+	$(myjade) -t tex -V tex-backend -d $(top_srcdir)/doc/include/doc-print.dsl $<
 # run jadetex three times to get the references right
-	pdftex "&pdfjadetex" dbd_pgsql.tex
-	pdftex "&pdfjadetex" dbd_pgsql.tex
-	pdftex "&pdfjadetex" dbd_pgsql.tex
+	$(mypdftex) "&pdfjadetex" dbd_pgsql.tex
+	$(mypdftex) "&pdfjadetex" dbd_pgsql.tex
+	$(mypdftex) "&pdfjadetex" dbd_pgsql.tex
 
 dbd_pgsql/*: dbd_pgsql.sgml
 	@echo "Converting dbd_pgsql.sgml to HTML...";
-	mkdir -p dbd_pgsql && cd dbd_pgsql && openjade -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_pgsql.sgml
+	mkdir -p dbd_pgsql && cd dbd_pgsql && $(myjade) -t sgml -d $(top_srcdir)/../doc/include/doc-html.dsl ${abs_srcdir}/dbd_pgsql.sgml
 
 
 maintainer-clean: clean
