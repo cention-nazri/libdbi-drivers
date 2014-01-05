@@ -992,7 +992,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
             default:
               break;
           }
-          data->d_datetime = _dbd_parse_datetime(ptr_date, attribs);
+          _dbd_parse_datetimex(ptr_date, attribs, &data->d_datetimex);
           free((char *) ptr_date);
           break;
         default:

@@ -1751,7 +1751,7 @@ static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long lo
       break;
     case DBI_TYPE_DATETIME:
       sizeattrib = _isolate_attrib(result->field_attribs[curfield], DBI_DATETIME_DATE, DBI_DATETIME_TIME);
-      data->d_datetime = _dbd_parse_datetime(raw, sizeattrib);
+      _dbd_parse_datetimex(raw, sizeattrib, &data->d_datetimex);
       break;
       
     default:

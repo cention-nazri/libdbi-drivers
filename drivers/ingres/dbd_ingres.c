@@ -485,21 +485,22 @@ size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char* orig,
 
 /* ---------- result handling ---------- */
 
-static time_t ingres_date(char *raw){
-	struct tm unixtime;
+static int ingres_date(const char *raw, dbi_datetimex *dtx)
+{
+	struct tm *unixtime = &dtx->tm;
 	char *p = raw, *q, sep;
 
 	PRINT_DEBUG(NULL,"parsing date: '%s'\n",raw);
 	
-	unixtime.tm_sec = unixtime.tm_min = unixtime.tm_hour = 0;
-	unixtime.tm_isdst = -1;
+	unixtime->tm_sec = unixtime->tm_min = unixtime->tm_hour = 0;
+	unixtime->tm_isdst = -1;
 	
 	// parse Ingres default (US) date format: dd-mmm-yyyy [hh:mm:ss]
 	//for(p = raw; *p && !isdigit(*p); ++p)
 	//	;
 	if(isdigit(*p)){
 		// process day
-		unixtime.tm_mday = atoi(p);
+		unixtime->tm_mday = atoi(p);
 		while(*p && isdigit(*p))
 			++p;
 		if(!*p){ _verbose_handler(NULL,"date ended after day??",raw); return 0; }
@@ -507,7 +508,7 @@ static time_t ingres_date(char *raw){
 
 		// process month
 		if(isdigit(*p)){
-			unixtime.tm_mon = atoi(p)-1; /* months are 0 through 11 */
+			unixtime->tm_mon = atoi(p)-1; /* months are 0 through 11 */
 			while(*p && *p != sep)
 				++p;
 		}else{
@@ -516,17 +517,17 @@ static time_t ingres_date(char *raw){
 				++p;
 			if(*p){
 				*p = 0;
-				unixtime.tm_mon = in_word_set(q,3)->index; // should work for long month names too
+				unixtime->tm_mon = in_word_set(q,3)->index; // should work for long month names too
 				++p;
 			}
 		}
 		if(!*p){ _verbose_handler(NULL,"date ended after month??",raw); return 0; }
 		
 		// process year
-		unixtime.tm_year = atoi(p)-1900;
+		unixtime->tm_year = atoi(p)-1900;
 
 		PRINT_DEBUG(NULL,"ingres_date: parsed date day=%d mon=%d yr=%d\n",
-					unixtime.tm_mday, unixtime.tm_mon, unixtime.tm_year);
+					unixtime->tm_mday, unixtime->tm_mon, unixtime->tm_year);
 
 		while(isdigit(*p))
 			++p;
@@ -537,32 +538,31 @@ static time_t ingres_date(char *raw){
 		// Ingres does not generate a time by itself, it's always preceded by a date.
 		if(isdigit(*p)){ // time is present
 			// process hours
-			unixtime.tm_hour = atoi(p);
+			unixtime->tm_hour = atoi(p);
 			while(isdigit(*p))
 				++p;
 			if(!*p){ _verbose_handler(NULL,"time ended after hour??",raw); return 0; }
 			++p; // skip separator
 
 			// process minutes
-			unixtime.tm_min = atoi(p);
+			unixtime->tm_min = atoi(p);
 			while(isdigit(*p))
 				++p;
 			if(!*p){ _verbose_handler(NULL,"time ended after minute??",raw); return 0; }
 			++p; // skip separator
 
 			// process seconds
-			unixtime.tm_sec = atoi(p); 
+			unixtime->tm_sec = atoi(p);
 			
 			PRINT_DEBUG(NULL,"ingres_date: parsed time %02d:%02d:%02d\n",
-						unixtime.tm_hour, unixtime.tm_min, unixtime.tm_sec);
+						unixtime->tm_hour, unixtime->tm_min, unixtime->tm_sec);
 	
 			/* check for a timezone suffix */
 			//while(isdigit(*p) || *p == ' ')
 			//	++p;
 		}else if(*p)
 			_verbose_handler(NULL,"bad time: '%s'",p);
-
-		return timegm(&unixtime);
+		dtx->utc_offset = 0;
 	}else
 		_verbose_handler(NULL,"bad date: '%s'",raw);
 	return 0;
@@ -660,7 +660,7 @@ static int ingres_field(dbi_result_t *result, dbi_row_t *row, dbi_data_t *data,
 		len = convParm.cv_dstValue.dv_length;
 		if(pdesc->ds_dataType == IIAPI_DTE_TYPE){
 			val[len] = 0;
-			data->d_datetime = ingres_date(val);
+			ingres_date(val, &data->d_datetimex);
 			PRINT_DEBUG(result->conn,"  [%d] date string %d bytes\n", idx,len);
 			break;
 		}else if(pdesc->ds_dataType == IIAPI_DEC_TYPE || pdesc->ds_dataType == IIAPI_MNY_TYPE){

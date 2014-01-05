@@ -333,7 +333,7 @@ int _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowid
 					times.tm_mon+1,
 					times.tm_mday);
 			}
-			data->d_datetime = _dbd_parse_datetime(date_s, sizeattrib);		
+			_dbd_parse_datetimex(date_s, sizeattrib, &data->d_datetimex);
 			break;
 		
 		case DBI_TYPE_BINARY:

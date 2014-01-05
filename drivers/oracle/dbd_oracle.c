@@ -68,7 +68,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 unsigned long long _oracle_query_to_longlong(dbi_conn_t *conn, const char *sql_cmd);
 void _checkerr(OCIError * errhp, sword status);
 static size_t oracle_escape_string(char *to, const char *from, size_t length);
-time_t _oradate_to_time_t (char *obuff);
+int _oradate_to_dtx(const char *obuff, dbi_datetimex dtx);
 
 
 void dbd_register_driver(const dbi_info_t **_driver_info, const char ***_custom_functions, 
@@ -777,7 +777,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 			memcpy(data->d_string, cols[curfield],row->field_sizes[curfield]);
 			break;
 		 case DBI_TYPE_DATETIME:
-			data->d_datetime = _oradate_to_time_t (cols[curfield]);
+			_oradate_to_tm(cols[curfield], &data->d_datetimex);
 			break;
 		}
 		if (cols[curfield]) free(cols[curfield]);
@@ -923,13 +923,10 @@ static size_t oracle_escape_string(char *to, const char *from, size_t length)
   return (size_t) (to-to_start);
 }
 
-
-
-time_t _oradate_to_time_t (char *obuff)
+int _oradate_to_tm(const char *obuff, dbi_datetimex *dtx)
 {
-  struct  tm tmt;
+  struct tm *tmt = &dtx->tm;
 /*  char    stime[101], *cp = NULL; */
-  time_t  loct = 0L;
 
 /*    memset(stime, 0, sizeof(stime)); */
    
@@ -943,15 +940,12 @@ time_t _oradate_to_time_t (char *obuff)
 
 /*    cp = strptime(stime, "%Y%m%d%H%M%S", &tmt); */
 
-  memset(&tmt, 0, sizeof(tmt));
-  tmt.tm_sec = obuff[6]-1;
-  tmt.tm_min = obuff[5]-1;
-  tmt.tm_hour = obuff[4]-1;
-  tmt.tm_mday = obuff[3];
-  tmt.tm_mon = obuff[2];
-  tmt.tm_year = (obuff[0]-100)*100 + (obuff[1]-100);
-
-  loct = mktime(&tmt);
-   
-  return(loct);
+  memset(tmt, 0, sizeof(*tmt));
+  tmt->tm_sec = obuff[6]-1;
+  tmt->tm_min = obuff[5]-1;
+  tmt->tm_hour = obuff[4]-1;
+  tmt->tm_mday = obuff[3];
+  tmt->tm_mon = obuff[2];
+  tmt->tm_year = (obuff[0]-100)*100 + (obuff[1]-100);
+  return 0;
 }

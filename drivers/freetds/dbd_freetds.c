@@ -1031,8 +1031,7 @@ dbi_row_t *_dbd_freetds_buffers_binding(dbi_conn_t * conn, dbi_result_t * result
 			CS_SUCCEED) {
 			// fprintf(stderr, "cs_convert() succeeded when failure was expected\n");
 		    }
-		    ((dbi_data_t *) addr)->d_datetime =
-			_dbd_parse_datetime(datastring, DBI_DATETIME_TIME | DBI_DATETIME_DATE);
+		    _dbd_parse_datetimex(datastring, DBI_DATETIME_TIME | DBI_DATETIME_DATE, &((dbi_data_t *)addr)->d_datetimex);
 		}
 		break;
 		/* decode binary string */
