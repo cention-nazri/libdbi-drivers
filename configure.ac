@@ -178,7 +178,6 @@ AC_SUBST([driverdir])
 AC_DEFINE_UNQUOTED(DRIVER_EXT, "$shlib_ext", [ Specifies the filename extension of loadable modules ])
 
 AC_CHECK_FUNCS(strtoll)
-AC_REPLACE_FUNCS(atoll)
 dnl i think we'll eventually get an error here...
 AC_CHECK_FUNCS(vasprintf)
 AC_REPLACE_FUNCS(asprintf)

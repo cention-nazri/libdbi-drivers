@@ -30,10 +30,6 @@
 
 #define _GNU_SOURCE /* we need asprintf */
 
-#ifndef HAVE_ATOLL
-long long atoll(const char *str);
-#endif
-
 #ifndef HAVE_STRTOLL
 long long strtoll(const char *nptr, char **endptr, int base);
 #endif
@@ -514,7 +510,7 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 
 	conn->error_number = 0;
 
-	result = _dbd_result_create(conn, (void *)res, (unsigned long long)PQntuples(res), (unsigned long long)atoll(PQcmdTuples(res)));
+	result = _dbd_result_create(conn, (void *)res, (unsigned long long)PQntuples(res), (unsigned long long)strtoll(PQcmdTuples(res),NULL,10));
 	_dbd_result_set_numfields(result, (unsigned int)PQnfields((PGresult *)result->result_handle));
 	_get_field_info(result);
 
@@ -651,7 +647,7 @@ unsigned long long dbd_get_seq_last(dbi_conn_t *conn, const char *sequence) {
 	if (result) {
 		rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
 		if (rawdata) {
-			seq_last = (unsigned long long)atoll(rawdata);
+		  seq_last = (unsigned long long)strtoll(rawdata,NULL,10);
 		}
 		dbi_result_free((dbi_result)result);
 	}
@@ -673,7 +669,7 @@ unsigned long long dbd_get_seq_next(dbi_conn_t *conn, const char *sequence) {
 	if (result) {	
 		rawdata = PQgetvalue((PGresult *)result->result_handle, 0, 0);
 		if (rawdata) {
-			seq_next = (unsigned long long)atoll(rawdata);
+		  seq_next = (unsigned long long)strtoll(rawdata,NULL,10);
 		}
 		dbi_result_free((dbi_result)result);
 	}
@@ -831,7 +827,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 					case DBI_INTEGER_SIZE4:
 						data->d_long = (int) atol(raw); break;
 					case DBI_INTEGER_SIZE8:
-						data->d_longlong = (long long) atoll(raw); break; /* hah, wonder if that'll work */
+					  data->d_longlong = (long long) strtoll(raw,NULL,10); break; /* hah, wonder if that'll work */
 					default:
 						break;
 				}

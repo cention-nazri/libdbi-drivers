@@ -32,10 +32,6 @@
 
 #define _GNU_SOURCE /* we need asprintf */
 
-#ifndef HAVE_ATOLL
-long long atoll(const char *str);
-#endif
-
 #ifndef HAVE_STRTOLL
 long long strtoll(const char *nptr, char **endptr, int base);
 #endif
@@ -922,7 +918,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
           ptr = malloc(200);
           CALL_SQL_GET_DATA(ptr, SQL_C_CHAR, 200);
           RETVAL
-          data->d_longlong = atoll((const char *)ptr);
+	    data->d_longlong = (long long) strtoll((const char *)ptr,NULL,10);
           free((SQLPOINTER)ptr);
           break;
         default:

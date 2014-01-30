@@ -736,7 +736,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 			case DBI_INTEGER_SIZE4:
 			case DBI_INTEGER_SIZE8:
 			default:
-				data->d_longlong = (long long) atoll(cols[curfield]);  
+			  data->d_longlong = (long long) strtoll(cols[curfield],NULL,10);  
 				break;
 			}
 

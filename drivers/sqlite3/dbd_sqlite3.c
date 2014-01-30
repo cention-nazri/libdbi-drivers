@@ -34,10 +34,6 @@
 /* this is defined by the Makefile and passed via -D */
 /* #define DBDIR /usr/local/var/lib/libdbi/sqlite3 */
 
-#ifndef HAVE_ATOLL
-long long atoll(const char *str);
-#endif
-
 #ifndef HAVE_STRTOLL
 long long strtoll(const char *nptr, char **endptr, int base);
 #endif
@@ -1725,7 +1721,7 @@ static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long lo
 	data->d_long = (int) atol(raw); break;
       case DBI_INTEGER_SIZE8:
 /* 	printf("returning a long long via data->d_longlong\n"); */
-	data->d_longlong = (long long) atoll(raw); break; /* hah, wonder if that'll work */
+	data->d_longlong = (long long) strtoll(raw,NULL,10); break; /* hah, wonder if that'll work */
       default:
 	break;
       }
