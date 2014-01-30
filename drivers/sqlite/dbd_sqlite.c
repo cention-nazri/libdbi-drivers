@@ -1253,12 +1253,12 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned int rowidx) {
       sizeattrib = _isolate_attrib(result->field_attribs[curfield], DBI_INTEGER_SIZE1, DBI_INTEGER_SIZE8);
       switch (sizeattrib) {
       case DBI_INTEGER_SIZE1:
-	data->d_char = (char) atol(raw); break;
+	data->d_char = (char) strtol(raw,NULL,10); break;
       case DBI_INTEGER_SIZE2:
-	data->d_short = (short) atol(raw); break;
+	data->d_short = (short) strtol(raw,NULL,10); break;
       case DBI_INTEGER_SIZE3:
       case DBI_INTEGER_SIZE4:
-	data->d_long = (int) atol(raw); break;
+	data->d_long = (int) strtol(raw,NULL,10); break;
       case DBI_INTEGER_SIZE8:
 	data->d_longlong = (long long) atoll(raw); break; /* hah, wonder if that'll work */
       default:
