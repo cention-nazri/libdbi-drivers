@@ -39,69 +39,54 @@ AC_PROG_CPP
 dnl ====================================
 dnl Set some general compile options
 dnl ====================================
-
-dnl the configure script < 1.0 used to set compile options here. We
-dnl removed these optimizations and suggest that package maintainers
-dnl set up things appropriately for their particular platform. In
-dnl order to give some ideas, these optimizations were used
-dnl previously:
-
-dnl if test -z "$GCC"; then
-dnl        case $host in
-dnl        *-*-irix*)
-dnl                if test -z "$CC"; then
-dnl                        CC=cc
-dnl                fi
-dnl                DEBUG="-g -signed"
-dnl                CFLAGS="-O2 -w -signed $CFLAGS"
-dnl                PROFILE="-p -g3 -O2 -signed" ;;
-dnl        sparc-sun-solaris*)
-dnl                DEBUG="-v -g"
-dnl                CFLAGS="-xO4 -fast -w -fsimple -native -xcg92 $CFLAGS"
-dnl                PROFILE="-v -xpg -g -xO4 -fast -native -fsimple -xcg92 -Dsuncc" ;;
-dnl	*-*-freebsd*)
-dnl                DEBUG="-g"
-dnl                CFLAGS="-O -I/usr/local/include $CFLAGS"
-dnl                CPPFLAGS="-I/usr/local/include $CPPFLAGS"
-dnl		LDFLAGS="-L/usr/local/lib $LDFLAGS"
-dnl                PROFILE="-g -p" ;;
-dnl        *)
-dnl                DEBUG="-g"
-dnl                CFLAGS="-O $CFLAGS"
-dnl                PROFILE="-g -p" ;;
-dnl        esac
-dnl else
-
-dnl        case $host in
-dnl        *-*-linux*)
-dnl                DEBUG="-g -Wall -D_REENTRANT -D__NO_MATH_INLINES -fsigned-char"
-dnl                CFLAGS="-O20 -ffast-math -D_REENTRANT -fsigned-char $CFLAGS"
-dnl                PROFILE="-pg -g -O20 -ffast-math -D_REENTRANT -fsigned-char";;
-dnl        sparc-sun-*)
-dnl                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char -mv8"
-dnl                CFLAGS="-O20 -ffast-math -D__NO_MATH_INLINES -fsigned-char -mv8 $CFLAGS"
-dnl                PROFILE="-pg -g -O20 -D__NO_MATH_INLINES -fsigned-char -mv8" ;;
-dnl	*-*-freebsd*)
-dnl                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char"
-dnl                CFLAGS="-O20 -D__NO_MATH_INLINES -fsigned-char -I/usr/local/include $CFLAGS"
-dnl                CPPFLAGS="-I/usr/local/include $CPPFLAGS"
-dnl		LDFLAGS="-L/usr/local/lib $LDFLAGS"
-dnl                PROFILE="-O20 -g -pg -D__NO_MATH_INLINES -fsigned-char" ;;
-dnl        *)
-dnl                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char"
-dnl                CFLAGS="-O20 -D__NO_MATH_INLINES -fsigned-char $CFLAGS"
-dnl                PROFILE="-O20 -g -pg -D__NO_MATH_INLINES -fsigned-char" ;;
-dnl        esac
-dnl fi
-
-if [ test -z "$GCC" ]; then
-   DEBUG="-g $CFLAGS"
-   PROFILE="-g -p $CFLAGS"
+if test -z "$GCC"; then
+        case $host in
+        *-*-irix*)
+                if test -z "$CC"; then
+                        CC=cc
+                fi
+                DEBUG="-g -signed"
+                CFLAGS="-O2 -w -signed $CFLAGS"
+                PROFILE="-p -g3 -O2 -signed" ;;
+        sparc-sun-solaris*)
+                DEBUG="-v -g"
+                CFLAGS="-xO4 -fast -w -fsimple -native -xcg92 $CFLAGS"
+                PROFILE="-v -xpg -g -xO4 -fast -native -fsimple -xcg92 -Dsuncc" ;;
+	*-*-freebsd*)
+                DEBUG="-g"
+                CFLAGS="-O -I/usr/local/include $CFLAGS"
+                CPPFLAGS="-I/usr/local/include $CPPFLAGS"
+		LDFLAGS="-L/usr/local/lib $LDFLAGS"
+                PROFILE="-g -p" ;;
+        *)
+                DEBUG="-g"
+                CFLAGS="-O $CFLAGS"
+                PROFILE="-g -p" ;;
+        esac
 else
-   DEBUG="-g -std=gnu99 $CFLAGS"
-   PROFILE="-g -p -std=gnu99 $CFLAGS"
-   CFLAGS="-std=gnu99 $CFLAGS"
+
+        case $host in
+        *-*-linux*)
+                DEBUG="-g -Wall -D_REENTRANT -D__NO_MATH_INLINES -fsigned-char"
+                CFLAGS="-O20 -ffast-math -D_REENTRANT -fsigned-char $CFLAGS"
+                PROFILE="-pg -g -O20 -ffast-math -D_REENTRANT -fsigned-char";;
+        sparc-sun-*)
+                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char -mv8"
+                CFLAGS="-O20 -ffast-math -D__NO_MATH_INLINES -fsigned-char -mv8 $CFLAGS"
+                PROFILE="-pg -g -O20 -D__NO_MATH_INLINES -fsigned-char -mv8" ;;
+	*-*-freebsd*)
+                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char"
+                CFLAGS="-O20 -D__NO_MATH_INLINES -fsigned-char -I/usr/local/include $CFLAGS"
+                CPPFLAGS="-I/usr/local/include $CPPFLAGS"
+		LDFLAGS="-L/usr/local/lib $LDFLAGS"
+                PROFILE="-O20 -g -pg -D__NO_MATH_INLINES -fsigned-char" ;;
+        *)
+                DEBUG="-g -Wall -D__NO_MATH_INLINES -fsigned-char"
+                CFLAGS="-O20 -D__NO_MATH_INLINES -fsigned-char $CFLAGS"
+                PROFILE="-O20 -g -pg -D__NO_MATH_INLINES -fsigned-char" ;;
+        esac
 fi
+
 
 AC_SUBST(DEBUG)
 AC_SUBST(PROFILE)
