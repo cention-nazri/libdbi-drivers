@@ -585,7 +585,8 @@ size_t dbd_quote_binary(dbi_conn_t *conn, const unsigned char *orig, size_t from
   unsigned char *temp;
   size_t len;
 
-  if ((temp = malloc(from_length*2)) == NULL) {
+  /* allocate an extra byte for NULL and two for the quotes */
+  if ((temp = malloc(2*from_length+1+2)) == NULL) {
     return 0;
   }
 
