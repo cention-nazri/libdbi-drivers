@@ -1378,21 +1378,21 @@ static int getTables(char **tables, int index, const char *statement, char *curr
 		}
 		// if word is not a table we ignore it and continue
 		for (i = 0; i < (sizeof(nottables) / sizeof *(nottables)); i++) {
-			if (strcmp(nottables[i], word_lower) == 0) {
+			if (strcmp(nottables[i], word_lower) != 0)
+				continue;
 /* 	    printf("not a table: %s\n", word_lower); */
-				// if we encounter join or as we set
-				// a flag because we know what to do next
-				if (strcmp("join", word_lower) == 0) {
-					//printf("join found\n");
-					join_flag = 1;
-				}
-				if (strcmp("as", word_lower) == 0) {
-					//printf("as found\n");
-					as_flag = 1;
-				}
-				not_word_flag = 1;
-				break;
+			// if we encounter join or as we set
+			// a flag because we know what to do next
+			if (strcmp("join", word_lower) == 0) {
+				//printf("join found\n");
+				join_flag = 1;
 			}
+			if (strcmp("as", word_lower) == 0) {
+				//printf("as found\n");
+				as_flag = 1;
+			}
+			not_word_flag = 1;
+			break;
 		}
 		if (not_word_flag == 1) {
 /* 	  printf("skipping word\n"); */
