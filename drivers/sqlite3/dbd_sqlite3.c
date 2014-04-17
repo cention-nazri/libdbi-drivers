@@ -1450,7 +1450,7 @@ static int getTables(char **tables, int index, const char *statement, char *curr
 						break;
 					}
 
-					word_lower[item - start + 1];
+					char word_lower[item - start + 1];
 					strncpy(word_lower, start, item - start);
 					word_lower[item - start] = '\0';
 					int i = 0;
