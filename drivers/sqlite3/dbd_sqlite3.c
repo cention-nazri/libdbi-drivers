@@ -1332,156 +1332,156 @@ static int getTables(char **tables, int index, const char *statement, char *curr
 /*     printf("begin parsing at %s\n", item); */
 		if (*item == ' ' || *item == '\t' || *item == ',') {
 			item++;
-		} else {
+			continue;
+		}
 /*       printf("word start at %s\n", item); */
-			start = item;	// mark the start of the word
-			if (*item == '(') {
-				//printf("sub select\n");
-				int opens = 1;
-				while (opens > 0) {
-					item++;
-					if (*item == '(')
-						opens++;
-					if (*item == ')')
-						opens--;
-				}
-				char substatement[item - start];
-				strncpy(substatement, start + 1, item - (start + 1));
-				substatement[item - (start + 1)] = '\0';
-				index = getTables(tables, index, substatement, curr_table);
-				//printf("index is at %d\n",index);
+		start = item;	// mark the start of the word
+		if (*item == '(') {
+			//printf("sub select\n");
+			int opens = 1;
+			while (opens > 0) {
 				item++;
-			} else {
+				if (*item == '(')
+					opens++;
+				if (*item == ')')
+					opens--;
+			}
+			char substatement[item - start];
+			strncpy(substatement, start + 1, item - (start + 1));
+			substatement[item - (start + 1)] = '\0';
+			index = getTables(tables, index, substatement, curr_table);
+			//printf("index is at %d\n",index);
+			item++;
+		} else {
 /* 	printf("actual word starting here: %s\n", item); */
-				while (*item && *item != ',' && *item != ' ' && *item != '\t' && *item != ')' && *item != ';') {
-					item++;
-				}
-				char word[item - start + 1];
-				char word_lower[item - start + 1];
-				strncpy(word, start, item - start);
-				word[item - start] = '\0';
-				strncpy(word_lower, start, item - start);
-				word_lower[item - start] = '\0';
-				int i = 0;
-				while (word_lower[i]) {
-					word_lower[i] = tolower(word_lower[i]);
-					i++;
-				}
-				// if word is an end word we can return
-				for (i = 0; i < (sizeof(endwords) / sizeof *(endwords)); i++) {
-					if (strcmp(endwords[i], word_lower) == 0) {
+			while (*item && *item != ',' && *item != ' ' && *item != '\t' && *item != ')' && *item != ';') {
+				item++;
+			}
+			char word[item - start + 1];
+			char word_lower[item - start + 1];
+			strncpy(word, start, item - start);
+			word[item - start] = '\0';
+			strncpy(word_lower, start, item - start);
+			word_lower[item - start] = '\0';
+			int i = 0;
+			while (word_lower[i]) {
+				word_lower[i] = tolower(word_lower[i]);
+				i++;
+			}
+			// if word is an end word we can return
+			for (i = 0; i < (sizeof(endwords) / sizeof *(endwords)); i++) {
+				if (strcmp(endwords[i], word_lower) == 0) {
 /* 	    printf("end word!\n"); */
-						return index;
-					}
+					return index;
 				}
-				// if word is not a table we ignore it and continue
-				for (i = 0; i < (sizeof(nottables) / sizeof *(nottables)); i++) {
-					if (strcmp(nottables[i], word_lower) == 0) {
+			}
+			// if word is not a table we ignore it and continue
+			for (i = 0; i < (sizeof(nottables) / sizeof *(nottables)); i++) {
+				if (strcmp(nottables[i], word_lower) == 0) {
 /* 	    printf("not a table: %s\n", word_lower); */
-						// if we encounter join or as we set
-						// a flag because we know what to do next
-						if (strcmp("join", word_lower) == 0) {
-							//printf("join found\n");
-							join_flag = 1;
-						}
-						if (strcmp("as", word_lower) == 0) {
-							//printf("as found\n");
-							as_flag = 1;
-						}
-						not_word_flag = 1;
-						break;
+					// if we encounter join or as we set
+					// a flag because we know what to do next
+					if (strcmp("join", word_lower) == 0) {
+						//printf("join found\n");
+						join_flag = 1;
 					}
+					if (strcmp("as", word_lower) == 0) {
+						//printf("as found\n");
+						as_flag = 1;
+					}
+					not_word_flag = 1;
+					break;
 				}
-				if (not_word_flag == 1) {
+			}
+			if (not_word_flag == 1) {
 /* 	  printf("skipping word\n"); */
-					not_word_flag = 0;
-				} else {
-					if (as_flag == 1) {
-						// if this word matches what is currently in curr_table
-						// then curr_table is an alias for the last found table
-						//printf("++++ AS FLAG ++++ curr_table = %s , word = %s\n",curr_table,word);
-						if (strcmp(curr_table, word) == 0) {
+				not_word_flag = 0;
+			} else {
+				if (as_flag == 1) {
+					// if this word matches what is currently in curr_table
+					// then curr_table is an alias for the last found table
+					//printf("++++ AS FLAG ++++ curr_table = %s , word = %s\n",curr_table,word);
+					if (strcmp(curr_table, word) == 0) {
 /* 	      printf("Setting curr_table\n",curr_table,word); */
-							strcpy(curr_table, tables[index - 1]);
-						}
-						as_flag = 0;
-						//printf("++++ AS FLAG ++++ curr_table set to %s\n",curr_table);
-					} else {
+						strcpy(curr_table, tables[index - 1]);
+					}
+					as_flag = 0;
+					//printf("++++ AS FLAG ++++ curr_table set to %s\n",curr_table);
+				} else {
 /* 	    printf("found table!\n"); */
-						// if we get here the word is a table name
-						tables[index] = strdup(word);
+					// if we get here the word is a table name
+					tables[index] = strdup(word);
 /* 	    printf("table index %d = %s\n",index,tables[index]); */
-						index++;
-						if (join_flag == 1) {
-							//printf("skipping after joined table\n");
-							// we can ignore everything until the next ',' or 'join'
-							join_flag = 0;
-							int skip_flag = 1;
-							while (skip_flag == 1) {
-								if (*item == ' ' || *item == '\t') {
-									item++;
-								} else {
-									start = item;	// mark the start of the word
-									// this will skip over the using (id-list)
-									if (*item == '(') {
-										//printf("skip over the using (id-list)\n");
-										int opens = 1;
-										while (opens > 0) {
-											item++;
-											if (*item == '(')
-												opens++;
-											if (*item == ')')
-												opens--;
-										}
-									}
-									while (*item && *item != ',' && *item != ' ' && *item != '\t' && *item != '(') {
+					index++;
+					if (join_flag == 1) {
+						//printf("skipping after joined table\n");
+						// we can ignore everything until the next ',' or 'join'
+						join_flag = 0;
+						int skip_flag = 1;
+						while (skip_flag == 1) {
+							if (*item == ' ' || *item == '\t') {
+								item++;
+							} else {
+								start = item;	// mark the start of the word
+								// this will skip over the using (id-list)
+								if (*item == '(') {
+									//printf("skip over the using (id-list)\n");
+									int opens = 1;
+									while (opens > 0) {
 										item++;
+										if (*item == '(')
+											opens++;
+										if (*item == ')')
+											opens--;
 									}
-									if (*item == '\0') {
+								}
+								while (*item && *item != ',' && *item != ' ' && *item != '\t' && *item != '(') {
+									item++;
+								}
+								if (*item == '\0') {
 /* 		    printf("returning %d, *item went to NULL1\n",index); */
-										return index;
-									}
-									if (*item == ',') {
-										//printf("stop skip after comma\n");
-										// we have come to a comma, so we can stop skipping
-										skip_flag = 0;
-										break;
-									}
+									return index;
+								}
+								if (*item == ',') {
+									//printf("stop skip after comma\n");
+									// we have come to a comma, so we can stop skipping
+									skip_flag = 0;
+									break;
+								}
 
-									word_lower[item - start + 1];
-									strncpy(word_lower, start, item - start);
-									word_lower[item - start] = '\0';
-									int i = 0;
-									while (word_lower[i]) {
-										word_lower[i] = tolower(word_lower[i]);
-										i++;
-									}
-									if (strcmp("join", word_lower) == 0) {
-										//printf("stop skip after join found\n");
-										// we have found the next join, stop skipping
-										join_flag = 1;
-										skip_flag = 0;
-										break;
-									}
-									for (i = 0; i < (sizeof(endwords) / sizeof *(endwords)); i++) {
-										if (strcmp(endwords[i], word_lower) == 0) {
-											/* printf("end word!\n"); */
-											return index;
-										}
+								word_lower[item - start + 1];
+								strncpy(word_lower, start, item - start);
+								word_lower[item - start] = '\0';
+								int i = 0;
+								while (word_lower[i]) {
+									word_lower[i] = tolower(word_lower[i]);
+									i++;
+								}
+								if (strcmp("join", word_lower) == 0) {
+									//printf("stop skip after join found\n");
+									// we have found the next join, stop skipping
+									join_flag = 1;
+									skip_flag = 0;
+									break;
+								}
+								for (i = 0; i < (sizeof(endwords) / sizeof *(endwords)); i++) {
+									if (strcmp(endwords[i], word_lower) == 0) {
+										/* printf("end word!\n"); */
+										return index;
 									}
 								}
 							}
-						}	// if join_flag
-					}	// if as_flag else
-				}	// if not_word_flag else
-				if (*item == '\0') {
+						}
+					}	// if join_flag
+				}	// if as_flag else
+			}	// if not_word_flag else
+			if (*item == '\0') {
 /* 	  printf("returning %d",index); */
-					return index;
-				}
-				item++;
-			}	// if *item == '(' else
-		}		// if *item == ' '|| *item == '\t' || *item == ',' else
-	}			// while
+				return index;
+			}
+			item++;
+		}	// if *item == '(' else
+	}	// while
 /*   printf("returning %d\n",index); */
 	return index;
 }
