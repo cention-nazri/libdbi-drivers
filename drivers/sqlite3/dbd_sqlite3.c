@@ -1458,11 +1458,8 @@ static int getTables(char **tables, int index, const char *statement, char *curr
 				char word_lower[item - start + 1];
 				strncpy(word_lower, start, item - start);
 				word_lower[item - start] = '\0';
-				int i = 0;
-				while (word_lower[i]) {
+				for (i = 0; word_lower[i] != '\0'; ++i)
 					word_lower[i] = tolower(word_lower[i]);
-					i++;
-				}
 				if (strcmp("join", word_lower) == 0) {
 					//printf("stop skip after join found\n");
 					// we have found the next join, stop skipping
