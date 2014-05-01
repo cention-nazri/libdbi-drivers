@@ -31,7 +31,8 @@ endif
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @DB2_INCLUDE@
 
 driver_LTLIBRARIES = $(db2_ltlibs)
-libdbddb2_la_LDFLAGS = $(db2_ldflags) @DB2_LDFLAGS@ @DB2_LIBS@ @LIBADD_LIBDBI@
+libdbddb2_la_LDFLAGS = $(db2_ldflags)
+libdbddb2_la_LIBADD = @DB2_LDFLAGS@ @DB2_LIBS@ @LIBADD_LIBDBI@
 libdbddb2_la_SOURCES = $(db2_sources)
 libdbddb2_la_DEPENDENCIES = dbd_db2.h
 

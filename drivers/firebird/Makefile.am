@@ -29,7 +29,8 @@ endif
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @FIREBIRD_INCLUDE@
 
 driver_LTLIBRARIES = $(firebird_ltlibs)
-libdbdfirebird_la_LDFLAGS = $(firebird_ldflags) @FIREBIRD_LDFLAGS@ @FIREBIRD_LIBS@ @LIBADD_LIBDBI@
+libdbdfirebird_la_LDFLAGS = $(firebird_ldflags)
+libdbdfirebird_la_LIBADD = @FIREBIRD_LDFLAGS@ @FIREBIRD_LIBS@ @LIBADD_LIBDBI@
 libdbdfirebird_la_SOURCES = $(firebird_sources)
 libdbdfirebird_la_DEPENDENCIES = dbd_firebird.h utility.h firebird_charsets.h
 

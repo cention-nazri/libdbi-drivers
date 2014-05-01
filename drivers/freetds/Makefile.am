@@ -30,7 +30,8 @@ endif
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @FREETDS_INCLUDE@
 
 driver_LTLIBRARIES = $(freetds_ltlibs)
-libdbdfreetds_la_LDFLAGS = $(freetds_ldflags) @FREETDS_LDFLAGS@ @FREETDS_LIBS@ @LIBADD_LIBDBI@
+libdbdfreetds_la_LDFLAGS = $(freetds_ldflags)
+libdbdfreetds_la_LIBADD = @FREETDS_LDFLAGS@ @FREETDS_LIBS@ @LIBADD_LIBDBI@
 libdbdfreetds_la_SOURCES = $(freetds_sources)
 libdbdfreetds_la_DEPENDENCIES = dbd_freetds.h
 

@@ -31,7 +31,8 @@ endif
 AM_CPPFLAGS = -I$(top_srcdir) -I$(top_srcdir)/include @DBI_INCLUDE@ @PGSQL_INCLUDE@
 
 driver_LTLIBRARIES = $(pgsql_ltlibs)
-libdbdpgsql_la_LDFLAGS = $(pgsql_ldflags) @PGSQL_LDFLAGS@ @PGSQL_LIBS@ @LIBADD_LIBDBI@
+libdbdpgsql_la_LDFLAGS = $(pgsql_ldflags)
+libdbdpgsql_la_LIBADD = @PGSQL_LDFLAGS@ @PGSQL_LIBS@ @LIBADD_LIBDBI@
 libdbdpgsql_la_SOURCES = $(pgsql_sources)
 libdbdpgsql_la_DEPENDENCIES = dbd_pgsql.h
 
