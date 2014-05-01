@@ -272,14 +272,23 @@ int dbd_free_query(dbi_result_t *result) {
 	return 0;
 }
 
-int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx, unsigned long long currowidx) {
-  if (rowidx != currowidx+1) {
-	mysql_data_seek((MYSQL_RES *)result->result_handle, rowidx);
-	/* the return type of this function is indeed void, so it is
-	   unclear what happens if rowidx is outside the range. The
-	   calling function must make sure the row index is valid */
-  }
-  /* else: nothing to do, next fetch will fetch next row */
+int dbd_goto_row(dbi_result_t *result, unsigned long long rowidx,
+    unsigned long long currowidx)
+{
+	/*
+	 * libmysqlclient, as of mysql-community-server-5.6.12, still uses
+	 * a singly-linked list to collect rows, which explains the abysmal
+	 * performance when seeking to large row indices.
+	 */
+	if (rowidx != currowidx + 1) {
+		/*
+		 * The return type of this function is indeed void, so it is
+		 * unspecified what happens if rowidx is outside the range. The
+		 * calling function must therefore make sure the row index is
+		 * valid.
+		 */
+		mysql_data_seek((MYSQL_RES *)result->result_handle, rowidx);
+	}
 	return 1;
 }
 
@@ -837,6 +846,8 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 	dbi_data_t *data;	
 
 	_row = mysql_fetch_row(_res);
+	if (_row == NULL)
+		return;
 	strsizes = (size_t *)mysql_fetch_lengths(_res);
 
 	while (curfield < result->numfields) {

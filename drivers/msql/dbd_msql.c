@@ -462,6 +462,8 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
   
 	msqlDataSeek(_res, rowidx);
 	_row = msqlFetchRow(_res);
+	if (_row == NULL)
+		return;
 	while ( curfield < result->numfields  ) {
 		raw = _row[curfield];
 		data = &row->field_values[curfield];
