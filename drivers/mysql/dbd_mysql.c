@@ -164,6 +164,7 @@ int dbd_connect(dbi_conn_t *conn) {
 	const char *dbname = dbi_conn_get_option(conn, "dbname");
 	const char *encoding = dbi_conn_get_option(conn, "encoding");
 	const char *port = dbi_conn_get_option(conn, "port");
+	int reconnect;
 	if (port) {
 	  n_port = strtol(port, NULL, 10);
 	}
@@ -204,6 +205,12 @@ int dbd_connect(dbi_conn_t *conn) {
 	if (timeout != -1) { /* option was specified */
 	  /* the mysql_options prototype is braindead */
 	  mysql_options(mycon, MYSQL_OPT_CONNECT_TIMEOUT, (const char*) &timeout);
+	}
+
+	reconnect = dbi_conn_require_option_numeric(conn, "reconnect");
+	if (reconnect >= 0) {
+		my_bool opt = reconnect;
+		mysql_options(mycon, MYSQL_OPT_RECONNECT, &opt);
 	}
 
 	if (!mysql_real_connect(mycon, host, username, password, dbname, (unsigned int)n_port, unix_socket, client_flags)) {
