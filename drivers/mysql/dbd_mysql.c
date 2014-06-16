@@ -231,17 +231,13 @@ int dbd_connect(dbi_conn_t *conn) {
 	  if (!strcmp(encoding, "auto")) {
 	    encoding = dbd_get_encoding(conn);
 	    if (encoding) {
-	      asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	      result = dbd_query(conn, sql_cmd);
-	      free(sql_cmd);
-	      dbi_result_free(result);
+	      if (mysql_set_character_set(conn->connection, dbd_encoding_from_iana(encoding)) != 0)
+	      	printf("failure on charset\n");
 	    }
 	  }
 	  else {
-	    asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	    result = dbd_query(conn, sql_cmd);
-	    free(sql_cmd);
-	    dbi_result_free(result);
+	      if (mysql_set_character_set(conn->connection, dbd_encoding_from_iana(encoding)) != 0)
+	      	printf("failure on charset\n");
 	  }
 	}
 
@@ -562,6 +558,8 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	MYSQL_RES *res;
 	
 	if (mysql_query((MYSQL *)conn->connection, statement)) {
+		fprintf(stderr, "mysql error: %s\n",
+			mysql_error((MYSQL *)conn->connection));
 		return NULL;
 	}
 	
