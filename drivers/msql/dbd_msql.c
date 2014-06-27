@@ -402,6 +402,8 @@ void _translate_msql_type(int fieldtype, unsigned short *type, unsigned int *att
 		break;
 
 	case MONEY_TYPE:
+		_type = DBI_TYPE_XDECIMAL;
+		break;
 	case IPV4_TYPE:
 	case CIDR4_TYPE:
 	case CIDR6_TYPE:
@@ -503,6 +505,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 			}
 			break;
 		case DBI_TYPE_STRING:
+		case DBI_TYPE_XDECIMAL:
 			data->d_string = strdup(raw);
 			row->field_sizes[curfield] = strlen( raw );
 			break;

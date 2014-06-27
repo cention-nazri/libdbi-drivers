@@ -708,6 +708,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 		switch (result->field_types[curfield]) {
 		case DBI_TYPE_BINARY:
 		case DBI_TYPE_STRING:
+		case DBI_TYPE_XDECIMAL:
 			row->field_sizes[curfield] = length;
 			break;
 		
@@ -755,6 +756,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 			break;
 
 		case DBI_TYPE_STRING:
+		case DBI_TYPE_XDECIMAL:
 			
 			slen = row->field_sizes[curfield];
 			

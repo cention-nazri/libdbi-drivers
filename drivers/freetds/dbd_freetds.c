@@ -1061,6 +1061,7 @@ dbi_row_t *_dbd_freetds_buffers_binding(dbi_conn_t * conn, dbi_result_t * result
 	switch (result->field_types[idx]) {
 	case DBI_TYPE_BINARY:
 	case DBI_TYPE_STRING:
+	case DBI_TYPE_XDECIMAL:
 	    /* 
 	     * Result is more that 8 bytes - 
 	     * allocate additional memory

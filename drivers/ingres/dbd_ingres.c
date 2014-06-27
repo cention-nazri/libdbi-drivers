@@ -614,10 +614,12 @@ void ingres_classify_field(IIAPI_DESCRIPTOR *ds, unsigned short *type, unsigned 
 	// variable length UTF-16 string; first 2 bytes are length
 	case IIAPI_NVCH_TYPE:
 	case IIAPI_LNVCH_TYPE:
+		*type = DBI_TYPE_STRING;
+		break;
 	// Ingres-native types, must be converted
 	case IIAPI_DEC_TYPE: // packed decimal; use convertData or formatData
 	case IIAPI_MNY_TYPE: // Ingres money; use convertData or formatData
-		*type = DBI_TYPE_STRING;
+		*type = DBI_TYPE_XDECIMAL;
 		break;
 	case IIAPI_DTE_TYPE: // Ingres date; use convertData or formatData
 		*type = DBI_TYPE_DATETIME;
