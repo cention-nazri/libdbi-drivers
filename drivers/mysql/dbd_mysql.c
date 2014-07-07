@@ -807,17 +807,18 @@ void _translate_mysql_type(MYSQL_FIELD *field, unsigned short *type, unsigned in
 				_type = DBI_TYPE_BINARY;
 				break;
 			}
-#ifdef FIELD_TYPE_NEWDECIMAL
-		case FIELD_TYPE_NEWDECIMAL: // Precision math DECIMAL or NUMERIC field (MySQL 5.0.3 and up)
-#endif
-		case FIELD_TYPE_DECIMAL: /* decimal is actually a string, has arbitrary precision, no floating point rounding */
-			_type = DBI_TYPE_XDECIMAL;
-			break;
+			/* fallthru */
 		case FIELD_TYPE_VAR_STRING:
 		case FIELD_TYPE_STRING:
 		case FIELD_TYPE_ENUM:
 		case FIELD_TYPE_SET:
 			_type = DBI_TYPE_STRING;
+			break;
+#ifdef FIELD_TYPE_NEWDECIMAL
+		case FIELD_TYPE_NEWDECIMAL: // Precision math DECIMAL or NUMERIC field (MySQL 5.0.3 and up)
+#endif
+		case FIELD_TYPE_DECIMAL: /* decimal is actually a string, has arbitrary precision, no floating point rounding */
+			_type = DBI_TYPE_XDECIMAL;
 			break;
 	}
 	
