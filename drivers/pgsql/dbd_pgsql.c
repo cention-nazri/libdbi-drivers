@@ -843,6 +843,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				}
 				break;
 			case DBI_TYPE_STRING:
+			case DBI_TYPE_XDECIMAL:
 			    strsize = (size_t)PQgetlength((PGresult *)result->result_handle, rowidx, curfield);
 				data->d_string = strdup(raw);
 				row->field_sizes[curfield] = strsize;

@@ -1654,6 +1654,8 @@ static void _translate_sqlite3_type(enum enum_field_types fieldtype, unsigned sh
     break;
 			
   case FIELD_TYPE_DECIMAL: /* decimal is actually a string, has arbitrary precision, no floating point rounding */
+    _type = DBI_TYPE_XDECIMAL;
+    break;
   case FIELD_TYPE_ENUM:
   case FIELD_TYPE_SET:
   case FIELD_TYPE_VAR_STRING:
@@ -1732,6 +1734,7 @@ static void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long lo
       }
       break;
     case DBI_TYPE_STRING:
+    case DBI_TYPE_XDECIMAL:
       data->d_string = strdup(raw);
       row->field_sizes[curfield] = strlen(raw);
       break;

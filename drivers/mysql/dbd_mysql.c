@@ -231,17 +231,13 @@ int dbd_connect(dbi_conn_t *conn) {
 	  if (!strcmp(encoding, "auto")) {
 	    encoding = dbd_get_encoding(conn);
 	    if (encoding) {
-	      asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	      result = dbd_query(conn, sql_cmd);
-	      free(sql_cmd);
-	      dbi_result_free(result);
+	      if (mysql_set_character_set(conn->connection, dbd_encoding_from_iana(encoding)) != 0)
+	      	printf("failure on charset\n");
 	    }
 	  }
 	  else {
-	    asprintf(&sql_cmd, "SET NAMES '%s'", dbd_encoding_from_iana(encoding));
-	    result = dbd_query(conn, sql_cmd);
-	    free(sql_cmd);
-	    dbi_result_free(result);
+	      if (mysql_set_character_set(conn->connection, dbd_encoding_from_iana(encoding)) != 0)
+	      	printf("failure on charset\n");
 	  }
 	}
 
@@ -562,6 +558,8 @@ dbi_result_t *dbd_query(dbi_conn_t *conn, const char *statement) {
 	MYSQL_RES *res;
 	
 	if (mysql_query((MYSQL *)conn->connection, statement)) {
+		fprintf(stderr, "mysql error: %s\n",
+			mysql_error((MYSQL *)conn->connection));
 		return NULL;
 	}
 	
@@ -809,15 +807,18 @@ void _translate_mysql_type(MYSQL_FIELD *field, unsigned short *type, unsigned in
 				_type = DBI_TYPE_BINARY;
 				break;
 			}
+			/* fallthru */
 		case FIELD_TYPE_VAR_STRING:
 		case FIELD_TYPE_STRING:
+		case FIELD_TYPE_ENUM:
+		case FIELD_TYPE_SET:
+			_type = DBI_TYPE_STRING;
+			break;
 #ifdef FIELD_TYPE_NEWDECIMAL
 		case FIELD_TYPE_NEWDECIMAL: // Precision math DECIMAL or NUMERIC field (MySQL 5.0.3 and up)
 #endif
 		case FIELD_TYPE_DECIMAL: /* decimal is actually a string, has arbitrary precision, no floating point rounding */
-		case FIELD_TYPE_ENUM:
-		case FIELD_TYPE_SET:
-			_type = DBI_TYPE_STRING;
+			_type = DBI_TYPE_XDECIMAL;
 			break;
 	}
 	
@@ -898,6 +899,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
 				break;
 			default:
 			case DBI_TYPE_STRING:
+			case DBI_TYPE_XDECIMAL:
 				data->d_string = strdup(raw);
 				row->field_sizes[curfield] = strsizes[curfield];
 				break;

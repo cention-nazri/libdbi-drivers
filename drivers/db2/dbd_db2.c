@@ -714,6 +714,8 @@ void _translate_db2_type(int fieldtype, short int scale, unsigned short *type, u
   case SQL_DECIMAL:
   case SQL_NUMERIC:
   case SQL_DECFLOAT:
+    _type = DBI_TYPE_XDECIMAL;
+    break;
   case SQL_CHAR:
   case SQL_LONGVARCHAR:
   case SQL_VARCHAR:
@@ -942,6 +944,7 @@ void _get_row_data(dbi_result_t *result, dbi_row_t *row, unsigned long long rowi
         }
         break;
         case DBI_TYPE_STRING:
+        case DBI_TYPE_XDECIMAL:
           ptr = malloc(100);
           CALL_SQL_GET_DATA(ptr, SQL_C_CHAR, 100);
           RETVAL
